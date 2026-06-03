@@ -1,62 +1,48 @@
-🐄 Gestión Ganadera - Proyecto Finca La Rosa
-Sistema integral de gestión ganadera desarrollado para automatizar y optimizar el control administrativo, productivo y sanitario de una finca. Este proyecto permite llevar un registro detallado de los bovinos, la producción láctea, los lotes de producción y el historial clínico de los animales.
+# 🐄 Sistema de Gestión Ganadera (Finca La Rosa)
 
-🛠 Tecnologías Utilizadas
-Lenguaje: Java
+![GitHub](https://img.shields.io/badge/Java-21-orange) ![GitHub](https://img.shields.io/badge/Bootstrap-5.3-blue) ![GitHub](https://img.shields.io/badge/PostgreSQL-Supabase-green)
 
-Arquitectura: MVC (Model-View-Controller)
+Bienvenido al repositorio oficial del sistema de gestión para la **Finca La Rosa**. Este proyecto está diseñado para centralizar la información ganadera, optimizando la toma de decisiones mediante un control preciso del hato.
 
-Servidor Web: Apache Tomcat 11.0
+---
 
-Base de Datos: PostgreSQL (alojado en Supabase)
+## 🚀 Características Principales
 
-Gestión de Dependencias: Apache Maven
+*   **🐄 Inventario Ganadero:** CRUD completo con soporte para subida de imágenes dinámica.
+*   **🩺 Historial Médico:** Seguimiento detallado de vacunas, enfermedades y eventos sanitarios por animal.
+*   **🥛 Control de Producción:** Registro de ordeños y gestión de inventario de leche cruda.
+*   **🧀 Gestión de Lácteos:** Transformación de materia prima en productos finales (lotes).
+*   **🔐 Seguridad:** Autenticación de usuarios por roles.
 
-Frontend: HTML5, Bootstrap 5.3, CSS3, JavaScript
+---
 
-Control de Versiones: Git
+## 🛠️ Tecnologías
 
-📋 Funcionalidades Principales
-CRUD de Bovinos: Registro, edición, eliminación y visualización completa del inventario (Hato Lechero y Lote para Venta).
+| Componente | Tecnología |
+| :--- | :--- |
+| **Backend** | Java EE (Servlets, JDBC) |
+| **Frontend** | JSP, Bootstrap 5.3, Bootstrap Icons |
+| **Base de Datos** | PostgreSQL (vía Supabase) |
+| **Herramientas** | Apache Maven, Tomcat 11 |
 
-Gestión de Imágenes Dinámica: Subida de fotografías de bovinos con nombre único generado mediante UUID y aretes, asegurando persistencia de datos.
+---
 
-Historial Médico: Registro de eventos médicos (vacunas, enfermedades, controles) vinculados al historial de cada bovino.
+## 📸 Capturas de Pantalla
 
-Control de Producción: Registro de ordeños diarios y cálculo automático de stock.
+*(Aquí puedes añadir imágenes de tu sistema más adelante)*
 
-Gestión de Lotes: Producción y transformación de leche cruda a productos lácteos (quesos, etc.).
+---
 
-Autenticación: Sistema de usuarios con roles y gestión de sesiones.
+## 🏗️ Estructura del Proyecto
 
-🚀 Instalación y Configuración
-Clonar el repositorio:
+```text
+gestion-ganadera/
+├── src/main/java/com/finca/controllers/  # Lógica de Servlets
+├── src/main/java/com/finca/dao/          # Acceso a base de datos
+├── src/main/java/com/finca/models/       # Clases de entidad (Bovino, etc.)
+├── src/main/webapp/                      # Vistas JSP y estilos
+└── uploads/                              # Almacenamiento de imágenes
+👨‍💻 Autor
+Desarrollado con pasión por Ángel (Aprendiz ADSO - SENA).
 
-Bash
-git clone [URL_DE_TU_REPOSITORIO]
-cd gestion-ganadera
-
-2. **Base de Datos:**
-   * Asegúrate de tener una base de datos PostgreSQL activa.
-   * Configura las credenciales de conexión en `src/main/java/com/finca/utils/DbConnection.java`.
-
-3. **Compilación:**
-   ```bash
-mvn clean install
-Despliegue:
-
-Despliega el archivo .war generado en la carpeta target/ en tu servidor Tomcat.
-
-📁 Estructura del Proyecto
-/src/main/java/com/finca/controllers: Controladores (Servlets) de la aplicación.
-
-/src/main/java/com/finca/dao: Objetos de Acceso a Datos para las consultas SQL.
-
-/src/main/java/com/finca/models: Clases POJO representando las entidades (Bovino, Usuario, etc.).
-
-/src/main/webapp: Vistas JSP y recursos estáticos.
-
-/uploads: Carpeta de almacenamiento persistente para imágenes de los bovinos.
-
-👤 Autor
-Ángel - [Aprendiz ADSO - SENA]
+Proyecto enfocado en la transformación digital del sector agropecuario.
