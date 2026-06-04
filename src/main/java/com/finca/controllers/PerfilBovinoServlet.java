@@ -68,6 +68,22 @@ public class PerfilBovinoServlet extends HttpServlet {
             h.setVeterinarioId(usuarioLogueado.getId()); 
 
             if (bovinoDAO.registrarHistorial(h)) {
+                
+                // ==============================================================================
+                // LÓGICA AUTOMÁTICA: CAMBIO DE ESTADO DE SALUD
+                // ==============================================================================
+                String nuevoEstado = request.getParameter("nuevoEstadoSalud");
+                
+                // Si el JSP envió un nuevo estado (ej. "En Tratamiento"), actualizamos la vaca
+                if (nuevoEstado != null && !nuevoEstado.isEmpty()) {
+                    Bovino vacaUpdate = bovinoDAO.obtenerPorId(idBovino);
+                    if (vacaUpdate != null) {
+                        vacaUpdate.setEstadoSalud(nuevoEstado);
+                        bovinoDAO.actualizar(vacaUpdate); // Actualiza la vaca en la base de datos
+                    }
+                }
+                // ==============================================================================
+
                 // Recargamos el perfil de esa misma vaca con mensaje de éxito
                 response.sendRedirect("perfil-bovino?id=" + idBovino + "&msg=ok");
             } else {
