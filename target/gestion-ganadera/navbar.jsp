@@ -7,187 +7,354 @@
     // Si es nulo, significa que intentó saltarse el login. ¡Lo pateamos de vuelta!
     if (usuarioActual == null) {
         response.sendRedirect("login");
-        return; // Detiene la carga de la página
+        return; 
     }
 %>
 
 <style>
-    /* --- ESTILOS APPLE GLASSMORPHISM PARA LA NAVBAR --- */
-    .apple-navbar {
-        background: rgba(255, 255, 255, 0.75);
+    :root {
+        --brand-main: #1C7345;
+        --brand-hover: #165c37;
+        --brand-light: #eaf6ee;
+        --sidebar-width: 270px;
+    }
+
+    /* =======================================================
+       MAGIA CSS: Hacemos espacio en el body para la Sidebar 
+       ======================================================= */
+    @media (min-width: 992px) {
+        body {
+            padding-left: calc(var(--sidebar-width) + 40px) !important;
+            padding-top: 20px !important;
+            padding-right: 20px !important;
+        }
+    }
+
+    /* --- ESTILOS DE LA SIDEBAR FLOTANTE --- */
+    .sidebar-finca {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        width: var(--sidebar-width);
+        height: calc(100vh - 40px);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(24px) saturate(180%);
         -webkit-backdrop-filter: blur(24px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        padding: 12px 24px;
-        margin: 20px auto 30px auto;
-        width: 96%;
-        z-index: 1000;
-    }
-    
-    .apple-navbar .navbar-brand {
-        color: #2F855A !important;
-        font-weight: 800;
-        font-size: 1.3rem;
-        letter-spacing: -0.5px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 28px;
+        box-shadow: 0 15px 35px rgba(28, 115, 69, 0.08);
+        display: flex;
+        flex-direction: column;
+        padding: 24px 20px;
+        z-index: 1040;
+        transition: transform 0.3s ease;
     }
 
-    .apple-navbar .nav-link {
-        color: #1d1d1f !important;
-        font-weight: 600;
-        border-radius: 12px;
-        padding: 8px 16px !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        margin: 0 4px;
-    }
-
-    /* Efecto al pasar el mouse */
-    .apple-navbar .nav-link:hover {
-        background: rgba(47, 133, 90, 0.08);
-        color: #2F855A !important;
-        transform: translateY(-1px);
-    }
-
-    /* Efecto cuando la página está activa */
-    .apple-navbar .nav-link.active-page {
-        background: rgba(47, 133, 90, 0.15);
-        color: #2F855A !important;
-        font-weight: 700;
-    }
-
-    .apple-navbar .navbar-toggler {
-        border: none;
-        box-shadow: none;
-        padding: 5px;
-    }
-    
-    .apple-navbar .navbar-toggler:focus {
-        box-shadow: 0 0 0 3px rgba(47, 133, 90, 0.2);
-    }
-
-    .user-pill {
-        background: rgba(47, 133, 90, 0.1);
-        color: #2F855A;
-        padding: 8px 20px;
-        border-radius: 20px;
-        font-weight: 700;
-        font-size: 0.9rem;
-        border: 1px solid rgba(47, 133, 90, 0.2);
-    }
-
-    /* --- NUEVO: ESTILO PARA EL RELOJ --- */
-    .live-clock {
-        background: rgba(0, 0, 0, 0.05);
-        color: #495057;
-        padding: 8px 20px;
-        border-radius: 20px;
-        font-weight: 700;
-        font-size: 0.9rem;
-        border: 1px solid rgba(0, 0, 0, 0.1);
+    /* Cabecera / Logo */
+    .sidebar-header {
         display: flex;
         align-items: center;
-        gap: 8px;
-        font-variant-numeric: tabular-nums; /* Evita que el reloj brinque al cambiar los números */
+        gap: 12px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        margin-bottom: 15px;
     }
 
-    .btn-logout {
-        background: #2F855A;
+    .sidebar-logo {
+        background: linear-gradient(135deg, var(--brand-main), #00A859);
         color: white;
-        border-radius: 20px;
-        padding: 8px 20px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+        box-shadow: 0 5px 15px rgba(28, 115, 69, 0.3);
+    }
+
+    .sidebar-brand-text {
+        font-weight: 800;
+        color: #1d1d1f;
+        font-size: 1.15rem;
+        letter-spacing: -0.5px;
+        line-height: 1.2;
+    }
+
+    /* Enlaces de Navegación */
+    .sidebar-nav {
+        flex: 1;
+        overflow-y: auto;
+        /* Ocultar scrollbar pero permitir scroll */
+        scrollbar-width: none;
+    }
+    .sidebar-nav::-webkit-scrollbar { display: none; }
+
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #637068;
         text-decoration: none;
-        font-size: 0.9rem;
+        padding: 12px 16px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 5px;
+        transition: all 0.3s ease;
     }
 
-    .btn-logout:hover {
-        background: #246b48;
+    .sidebar-link i {
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar-link:hover {
+        background-color: rgba(28, 115, 69, 0.05);
+        color: var(--brand-main);
+    }
+
+    .sidebar-link:hover i {
+        transform: scale(1.1);
+    }
+
+    /* Página Activa */
+    .sidebar-link.active-page {
+        background-color: var(--brand-light);
+        color: var(--brand-main);
+        font-weight: 700;
+    }
+
+    /* --- ZONA INFERIOR (RELOJ Y PERFIL) --- */
+    .sidebar-footer {
+        padding-top: 15px;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .live-clock {
+        background: #f4f7f5;
+        color: #4a5550;
+        padding: 10px 15px;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-variant-numeric: tabular-nums;
+        border: 1px solid #e2e8e4;
+    }
+
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e2e8e4;
+    }
+
+    .user-avatar {
+        background: var(--brand-light);
+        color: var(--brand-main);
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .user-info {
+        flex: 1;
+        overflow: hidden;
+    }
+    
+    .user-name {
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: #1d1d1f;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+    }
+
+    .user-role {
+        font-size: 0.7rem;
+        color: #848f9a;
+        font-weight: 600;
+    }
+
+    .btn-logout-side {
+        color: #dc3545;
+        background: rgba(220, 53, 69, 0.1);
+        width: 35px;
+        height: 35px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-logout-side:hover {
+        background: #dc3545;
         color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(47, 133, 90, 0.25);
+        transform: scale(1.05);
     }
 
-    /* Adaptación elegante para celulares */
+    /* --- RESPONSIVIDAD PARA CELULARES --- */
+    .mobile-header {
+        display: none;
+    }
+
     @media (max-width: 991px) {
-        .apple-navbar .navbar-collapse {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 16px;
-            padding: 15px;
-            margin-top: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border: 1px solid rgba(0,0,0,0.05);
+        /* Ocultar barra lateral por defecto en móvil */
+        .sidebar-finca {
+            transform: translateX(-120%);
+            border-radius: 0 28px 28px 0;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            box-shadow: 20px 0 50px rgba(0,0,0,0.5);
         }
-        .apple-navbar .nav-link { margin-bottom: 5px; }
-        .user-pill, .live-clock { justify-content: center; }
-        .btn-logout { display: block; text-align: center; margin-top: 10px; }
+
+        /* Clase para mostrarla vía JS */
+        .sidebar-finca.show-mobile {
+            transform: translateX(0);
+        }
+
+        /* Mostrar cabecera móvil superior */
+        .mobile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1030;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* Espacio para que el contenido no quede debajo de la cabecera móvil */
+        body {
+            padding-top: 80px !important;
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+
+        /* Fondo oscuro al abrir el menú en celular */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(3px);
+            z-index: 1035;
+            display: none;
+        }
+        .sidebar-overlay.show { display: block; }
     }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-light apple-navbar">
-    <div class="container-fluid px-0">
-        <a class="navbar-brand d-flex align-items-center" href="inventario-ganado">
-            <i class="bi bi-house-door-fill me-2"></i> Finca La Rosa
+<div class="mobile-header">
+    <div class="d-flex align-items-center gap-2">
+        <div class="sidebar-logo" style="width: 35px; height: 35px; font-size: 1rem;">
+            <i class="bi bi-moisture"></i>
+        </div>
+        <span class="sidebar-brand-text fs-5">La Rosa</span>
+    </div>
+    <button class="btn border-0 p-0 fs-1 text-dark" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+    </button>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<aside class="sidebar-finca" id="mainSidebar">
+    
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <i class="bi bi-moisture"></i>
+        </div>
+        <div>
+            <span class="sidebar-brand-text d-block">Finca La Rosa</span>
+            <span style="font-size: 10px; color: #848f9a; font-weight: 700; letter-spacing: 0.5px;">SISTEMA GANADERO</span>
+        </div>
+        <button class="btn border-0 p-0 fs-3 text-secondary d-lg-none ms-auto" onclick="toggleSidebar()">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a href="dashboard" class="sidebar-link nav-auto-active">
+            <i class="bi bi-grid-1x2-fill"></i> Dashboard
         </a>
         
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: #a0aba5; letter-spacing: 1px;">Gestión Animal</div>
         
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto ms-lg-4">
-                <li class="nav-item">
-                    <a class="nav-link nav-auto-active" href="inventario-ganado">
-                        <i class="bi bi-clipboard2-data-fill me-1"></i> Inventario Bovino
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-auto-active" href="produccion">
-                        <i class="bi bi-droplet-half me-1"></i> Producción y Ordeño
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-auto-active" href="lacteos">
-                        <i class="bi bi-basket-fill me-1"></i> Lácteos y Quesos
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-auto-active" href="lotes-produccion">
-                        <i class="bi bi-gear-wide-connected me-1"></i> Fábrica / Procesos
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-auto-active" href="empleados">
-                        <i class="bi bi-people-fill me-1"></i> Empleados
-                    </a>
-                </li>
-            </ul>
-            
-            <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3 mt-3 mt-lg-0 pb-2 pb-lg-0">
-                
-                <!-- NUEVO: RELOJ EN VIVO -->
-                <div class="live-clock" title="Hora actual del sistema">
-                    <i class="bi bi-clock-history"></i>
-                    <span id="systemClock">00:00:00 AM</span>
-                </div>
+        <a href="inventario-ganado" class="sidebar-link nav-auto-active">
+            <i class="bi bi-clipboard2-data-fill"></i> Inventario Bovino
+        </a>
+        
+        <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: #a0aba5; letter-spacing: 1px;">Lechería y Fábrica</div>
+        
+        <a href="produccion" class="sidebar-link nav-auto-active">
+            <i class="bi bi-droplet-half"></i> Producción / Ordeño
+        </a>
+        <a href="lacteos" class="sidebar-link nav-auto-active">
+            <i class="bi bi-basket-fill"></i> Catálogo Lácteos
+        </a>
+        <a href="lotes-produccion" class="sidebar-link nav-auto-active">
+            <i class="bi bi-gear-wide-connected"></i> Lotes de Fábrica
+        </a>
+        
+        <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: #a0aba5; letter-spacing: 1px;">Administración</div>
+        
+        <a href="kanban" class="sidebar-link nav-auto-active">
+            <i class="bi bi-kanban"></i> Tablero de Tareas
+        </a>
+        <a href="empleados" class="sidebar-link nav-auto-active">
+            <i class="bi bi-people-fill"></i> Personal
+        </a>
+    </nav>
 
-                <div class="user-pill d-flex align-items-center gap-2">
-                    <i class="bi bi-person-circle fs-5"></i>
-                    <span><%= usuarioActual.getFullName() %></span>
-                </div>
-                <a href="logout" class="btn-logout">
-                    <i class="bi bi-box-arrow-right me-1"></i> Cerrar Sesión
-                </a>
+    <div class="sidebar-footer">
+        <div class="live-clock" title="Hora actual de la Finca">
+            <i class="bi bi-clock-history"></i>
+            <span id="systemClock">00:00:00 AM</span>
+        </div>
+
+        <div class="user-profile">
+            <div class="user-avatar">
+                <%= usuarioActual.getFullName().substring(0, 1).toUpperCase() %>
             </div>
+            <div class="user-info">
+                <span class="user-name" title="<%= usuarioActual.getFullName() %>"><%= usuarioActual.getFullName() %></span>
+                <span class="user-role"><%= usuarioActual.getRol() %></span>
+            </div>
+            <a href="logout" class="btn-logout-side" title="Cerrar Sesión">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
         </div>
     </div>
-</nav>
+</aside>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // --- 1. LÓGICA DE PÁGINA ACTIVA ---
+        // --- 1. LÓGICA DE PÁGINA ACTIVA INTACTA ---
         let currentPath = window.location.pathname;
         let navLinks = document.querySelectorAll('.nav-auto-active');
         
@@ -198,7 +365,7 @@
             }
         });
 
-        // --- 2. LÓGICA DEL RELOJ EN VIVO ---
+        // --- 2. LÓGICA DEL RELOJ EN VIVO INTACTA ---
         function updateClock() {
             const now = new Date();
             let hours = now.getHours();
@@ -206,11 +373,9 @@
             let seconds = now.getSeconds();
             let ampm = hours >= 12 ? 'PM' : 'AM';
 
-            // Formato de 12 horas
             hours = hours % 12;
-            hours = hours ? hours : 12; // La hora '0' debe ser '12'
+            hours = hours ? hours : 12; 
 
-            // Añadir ceros a la izquierda si es necesario (ej: 09 en vez de 9)
             hours = hours < 10 ? '0' + hours : hours;
             minutes = minutes < 10 ? '0' + minutes : minutes;
             seconds = seconds < 10 ? '0' + seconds : seconds;
@@ -218,9 +383,15 @@
             const timeString = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
             document.getElementById('systemClock').textContent = timeString;
         }
-
-        // Ejecutar el reloj inmediatamente y luego cada 1000ms (1 segundo)
         updateClock();
         setInterval(updateClock, 1000);
     });
+
+    // --- 3. LÓGICA PARA EL MENÚ EN CELULARES ---
+    function toggleSidebar() {
+        const sidebar = document.getElementById('mainSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('show-mobile');
+        overlay.classList.toggle('show');
+    }
 </script>

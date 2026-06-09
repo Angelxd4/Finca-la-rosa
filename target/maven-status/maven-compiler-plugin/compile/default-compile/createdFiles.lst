@@ -18,5 +18,6 @@ com\finca\controllers\LotesServlet.class
 com\finca\dao\BovinoDAO.class
 com\finca\controllers\ProduccionServlet.class
 com\finca\models\ProductoLacteo.class
+com\finca\controllers\DashboardServlet.class
 com\finca\models\HistorialClinico.class
 com\finca\controllers\LacteosServlet.class
