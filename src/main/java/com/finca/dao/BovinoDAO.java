@@ -13,6 +13,35 @@ import com.finca.utils.DbConnection;
 
 public class BovinoDAO {
 
+    public List<Bovino> obtenerTodos() {
+        List<Bovino> lista = new ArrayList<>();
+        String sql = "SELECT * FROM bovinos ORDER BY id_bovino DESC";
+
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                Bovino b = new Bovino();
+                b.setIdBovino(rs.getInt("id_bovino"));
+                b.setNumeroArete(rs.getString("numero_arete"));
+                b.setRaza(rs.getString("raza"));
+                b.setGenero(rs.getString("genero"));
+                b.setPesoKg(rs.getDouble("peso_kg"));
+                b.setProposito(rs.getString("proposito"));
+                b.setEstadoSalud(rs.getString("estado_salud"));
+                b.setFechaNacimiento(rs.getDate("fecha_nacimiento"));
+                b.setPrecioEstimado(rs.getDouble("precio_estimado"));
+                b.setClasificacion(rs.getString("clasificacion"));
+                b.setNumeroPartos(rs.getInt("numero_partos"));
+                b.setLitrosDiariosPromedio(rs.getDouble("litros_diarios_promedio"));
+                b.setImageUrl(rs.getString("image_url")); 
+                lista.add(b);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return lista;
+    }
+
     public List<Bovino> obtenerPorClasificacion(String clasificacion) {
         List<Bovino> lista = new ArrayList<>();
         String sql = "SELECT * FROM bovinos WHERE clasificacion = ? ORDER BY id_bovino DESC";
@@ -141,7 +170,6 @@ public class BovinoDAO {
         }
     }
 
-    // NUEVO MÉTODO: Actualizar un animal (Update del CRUD)
     public boolean actualizar(Bovino b) {
         String sql = "UPDATE bovinos SET numero_arete=?, raza=?, genero=?, peso_kg=?, proposito=?, estado_salud=?, fecha_nacimiento=?, precio_estimado=?, clasificacion=?, numero_partos=?, litros_diarios_promedio=?, image_url=? WHERE id_bovino=?";
         try (Connection conn = DbConnection.getConnection();
@@ -166,7 +194,6 @@ public class BovinoDAO {
         }
     }
 
-    // NUEVO MÉTODO: Eliminar un animal (Delete del CRUD)
     public boolean eliminar(int idBovino) {
         String sql = "DELETE FROM bovinos WHERE id_bovino = ?";
         try (Connection conn = DbConnection.getConnection();
@@ -174,9 +201,33 @@ public class BovinoDAO {
             stmt.setInt(1, idBovino);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            // Saltará error si la vaca ya tiene un registro médico u ordeño asociado (Violación de llave foránea).
             System.err.println("No se puede eliminar la vaca porque tiene registros dependientes: " + e.getMessage());
             return false; 
         }
+    }
+
+    // MÉTODO AGREGADO: Obtener historial general de todos los animales para el Dashboard
+    public List<HistorialClinico> obtenerHistorialGeneral() {
+        List<HistorialClinico> lista = new ArrayList<>();
+        String sql = "SELECT h.*, u.full_name as veterinario FROM historial_clinico h " +
+                     "LEFT JOIN usuarios u ON h.veterinario_id = u.id " +
+                     "ORDER BY h.fecha_evento DESC LIMIT 10";
+                     
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+             
+            while (rs.next()) {
+                HistorialClinico h = new HistorialClinico();
+                h.setIdRegistro(rs.getInt("id_registro"));
+                h.setIdBovino(rs.getInt("id_bovino"));
+                h.setFechaEvento(rs.getDate("fecha_evento"));
+                h.setTipoEvento(rs.getString("tipo_evento"));
+                h.setDescripcion(rs.getString("descripcion"));
+                h.setNombreVeterinario(rs.getString("veterinario"));
+                lista.add(h);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return lista;
     }
 }

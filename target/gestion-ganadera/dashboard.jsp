@@ -6,6 +6,8 @@
 <%@ page import="com.finca.models.DetalleOrdeno" %>
 <%@ page import="com.finca.models.Usuario" %>
 <%@ page import="com.finca.models.Bovino" %>
+<%@ page import="com.finca.models.HistorialClinico" %>
+<%@ page import="com.finca.models.LoteProduccion" %>
 
 <%
     SimpleDateFormat sdf = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy, hh:mm a");
@@ -37,19 +39,15 @@
         }
     }
     
-    // Cálculos Finales Redondeados
     double promedioHistorico = totalSesiones > 0 ? (Math.round((sumaPromedios / totalSesiones) * 10.0) / 10.0) : 0.0;
     
-    // BARRAS DE PROGRESO (Reglas de Negocio)
-    double capacidadTanque = 1000.0; // Límite del tanque de la finca
+    double capacidadTanque = 1000.0; 
     double porcentajeTanque = (stockLecheObj / capacidadTanque) * 100;
     if(porcentajeTanque > 100) porcentajeTanque = 100;
     
-    double metaVaca = 15.0; // Meta ideal de la finca: 15 Litros por vaca
+    double metaVaca = 15.0; 
     double porcentajeRendimiento = (promedioHistorico / metaVaca) * 100;
     if(porcentajeRendimiento > 100) porcentajeRendimiento = 100;
-    
-    double porcentajeUltimo = maxProduccion > 0 ? (ultimaProduccion / maxProduccion) * 100 : 0;
 %>
 <!DOCTYPE html>
 <html lang="es">
@@ -66,7 +64,6 @@
 
     <style>
         :root {
-            /* Identidad Visual Finca La Rosa */
             --brand-main: #1C7345;
             --brand-hover: #165c37;
             --brand-accent: #00A859;
@@ -75,25 +72,21 @@
 
         body { font-family: 'Nunito', sans-serif; background-color: #f4f7f6; color: #2b3445; }
         
-        /* Dashboard Stats Cards */
         .card-stat { background: rgba(255, 255, 255, 0.95); border-radius: 24px; padding: 25px; border: 1px solid #e0e8e3; box-shadow: 0 15px 35px rgba(28,115,69,0.05); height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.3s ease, box-shadow 0.3s ease; }
         .card-stat:hover { transform: translateY(-5px); box-shadow: 0 20px 45px rgba(28,115,69,0.1); }
         
         .card-stock { background: linear-gradient(135deg, var(--brand-main), var(--brand-accent)); color: white; border-radius: 24px; box-shadow: 0 12px 30px rgba(28, 115, 69, 0.25); height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 25px; position: relative; overflow: hidden; }
         .card-stock .watermark { position: absolute; right: -20px; bottom: -20px; font-size: 8rem; opacity: 0.1; transform: rotate(-15deg); pointer-events: none; }
         
-        /* Modificación para progreso animado de Bootstrap */
         .progress { background-color: #e9ecef; border-radius: 50px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
         .progress-bar { font-weight: 700; font-size: 10px; line-height: 12px; }
 
         .table-container { background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(255,255,255,0.6); border-radius: 24px; padding: 24px; box-shadow: 0 16px 40px rgba(0,0,0,0.04); }
         
-        /* Clases Personalizadas */
         .text-brand { color: var(--brand-main) !important; }
         .bg-brand { background-color: var(--brand-main) !important; color: white !important; }
         .bg-brand-subtle { background-color: var(--brand-light) !important; border-color: #cde6d7 !important; color: var(--brand-main) !important; }
         
-        /* Estilos Tarjetas Mini */
         .mini-stat-card { border-radius: 12px; padding: 20px; border: none; position: relative; overflow: hidden; }
         .mini-stat-card.green { background-color: #eaf6ee; border-left: 4px solid #1C7345; }
         .mini-stat-card.yellow { background-color: #fff3cd; border-left: 4px solid #ffc107; }
@@ -104,7 +97,6 @@
         .mini-stat-value { font-size: 1.8rem; font-weight: 800; color: #2b3445; margin-bottom: 0; }
         .mini-stat-trend { font-size: 0.85rem; font-weight: 700; }
 
-        /* Timeline Actividades */
         .timeline { list-style: none; padding: 0; margin: 0; position: relative; }
         .timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 15px; width: 2px; background: #e9ecef; }
         .timeline-item { position: relative; padding-left: 45px; margin-bottom: 25px; }
@@ -113,7 +105,6 @@
         .timeline-time { font-size: 0.75rem; color: #999; font-weight: 600; margin-bottom: 4px; display: block; }
         .timeline-content { font-size: 0.9rem; color: #444; font-weight: 600; }
 
-        /* Tabla Limpia */
         .table-clean th { border-top: none; font-size: 0.75rem; text-transform: uppercase; color: #888; font-weight: 700; border-bottom: 2px solid #f1f1f1; padding-bottom: 15px; }
         .table-clean td { font-size: 0.9rem; font-weight: 600; color: #444; vertical-align: middle; border-bottom: 1px solid #f8f9fa; padding: 12px 5px; }
         .badge-status { padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
@@ -233,26 +224,38 @@
                 </div>
                 
                 <ul class="timeline mt-4">
-                    <li class="timeline-item">
-                        <div class="timeline-icon" style="background-color: #1C7345;"><i class="bi bi-droplet"></i></div>
-                        <span class="timeline-time">Hace 45 Minutos</span>
-                        <div class="timeline-content">Sesión de ordeño matutino finalizada.</div>
-                    </li>
-                    <li class="timeline-item">
-                        <div class="timeline-icon" style="background-color: #fd7e14;"><i class="bi bi-heart-pulse"></i></div>
-                        <span class="timeline-time">Ayer, 08:30 AM</span>
-                        <div class="timeline-content">Vaca entró en tratamiento por mastitis.</div>
-                    </li>
-                    <li class="timeline-item">
-                        <div class="timeline-icon" style="background-color: #198754;"><i class="bi bi-stars"></i></div>
-                        <span class="timeline-time">Ayer, 06:15 AM</span>
-                        <div class="timeline-content">Nacimiento registrado. Cría sana.</div>
-                    </li>
-                    <li class="timeline-item">
-                        <div class="timeline-icon" style="background-color: #6f42c1;"><i class="bi bi-box-seam"></i></div>
-                        <span class="timeline-time">Hace 3 días</span>
-                        <div class="timeline-content">Lote de Quesos Campesinos terminados.</div>
-                    </li>
+                    <%
+                        List<HistorialClinico> actividades = (List<HistorialClinico>) request.getAttribute("actividadesRecientes");
+                        
+                        if (actividades != null && !actividades.isEmpty()) {
+                            int limite = Math.min(actividades.size(), 5);
+                            
+                            for (int i = 0; i < limite; i++) {
+                                HistorialClinico act = actividades.get(i);
+                                String color = "#1C7345"; 
+                                String icono = "bi-clipboard-check";
+                                String tipo = act.getTipoEvento() != null ? act.getTipoEvento().toLowerCase() : "";
+                                
+                                if (tipo.contains("enfermedad") || tipo.contains("mastitis") || tipo.contains("tratamiento")) {
+                                    color = "#dc3545"; icono = "bi-heart-pulse";
+                                } else if (tipo.contains("vacuna")) {
+                                    color = "#0dcaf0"; icono = "bi-shield-plus";
+                                } else if (tipo.contains("nacimiento") || tipo.contains("parto")) {
+                                    color = "#ffc107"; icono = "bi-stars"; 
+                                }
+                    %>
+                        <li class="timeline-item">
+                            <div class="timeline-icon" style="background-color: <%= color %>;"> <i class="bi <%= icono %>"></i></div>
+                            <span class="timeline-time"><%= act.getFechaEvento() %></span>
+                            <div class="timeline-content">
+                                <strong><%= act.getTipoEvento() %>:</strong> Animal #<%= act.getIdBovino() %> - <%= act.getDescripcion() %>
+                            </div>
+                        </li>
+                    <%      }
+                        } else {
+                    %>
+                        <p class="text-muted text-center mt-3"><i class="bi bi-info-circle"></i> No hay actividades recientes registradas.</p>
+                    <%  } %>
                 </ul>
             </div>
         </div>
@@ -260,7 +263,7 @@
         <div class="col-lg-8">
             <div class="dash-card">
                 <div class="card-title mb-4">
-                    <span><i class="bi bi-table text-success me-2"></i> Últimas Ventas y Movimientos</span>
+                    <span><i class="bi bi-table text-success me-2"></i> Últimos Lotes y Movimientos</span>
                     <button class="btn btn-sm btn-light border fw-bold"><i class="bi bi-funnel"></i> Filtrar</button>
                 </div>
                 
@@ -268,42 +271,49 @@
                     <table class="table table-clean">
                         <thead>
                             <tr>
-                                <th>Factura</th>
-                                <th>Cliente / Destino</th>
-                                <th>Producto</th>
-                                <th>Monto</th>
+                                <th>Referencia</th>
+                                <th>Origen/Destino</th>
+                                <th>Detalle</th>
+                                <th>Fecha Inicio</th>
                                 <th>Estado</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>#FV-1045</td>
-                                <td>Lácteos del Valle S.A.</td>
-                                <td>150L Leche Cruda</td>
-                                <td>$ 375,000</td>
-                                <td><span class="badge badge-status text-success bg-success bg-opacity-10 border border-success">Completado</span></td>
-                            </tr>
-                            <tr>
-                                <td>#FV-1044</td>
-                                <td>Consumidor Final</td>
-                                <td>5x Queso Doble Crema</td>
-                                <td>$ 80,000</td>
-                                <td><span class="badge badge-status text-success bg-success bg-opacity-10 border border-success">Completado</span></td>
-                            </tr>
-                            <tr>
-                                <td>#INT-089</td>
-                                <td>Fábrica Finca La Rosa</td>
-                                <td>50L a Quesería</td>
-                                <td>Movimiento</td>
-                                <td><span class="badge badge-status text-warning bg-warning bg-opacity-10 border border-warning">En Proceso</span></td>
-                            </tr>
-                            <tr>
-                                <td>#FV-1043</td>
-                                <td>Panadería Central</td>
-                                <td>10x Queso Campesino</td>
-                                <td>$ 120,000</td>
-                                <td><span class="badge badge-status text-danger bg-danger bg-opacity-10 border border-danger">Pendiente</span></td>
-                            </tr>
+                            <%
+                                List<LoteProduccion> ultimosLotes = (List<LoteProduccion>) request.getAttribute("ultimosLotes");
+                                
+                                if (ultimosLotes != null && !ultimosLotes.isEmpty()) {
+                                    int limiteLotes = Math.min(ultimosLotes.size(), 5);
+                                    
+                                    for(int i = 0; i < limiteLotes; i++) {
+                                        LoteProduccion lote = ultimosLotes.get(i);
+                                        
+                                        String badgeClass = "bg-warning text-warning border-warning"; 
+                                        String estado = lote.getEstado() != null ? lote.getEstado() : "Pendiente";
+                                        if(estado.equalsIgnoreCase("Completado") || estado.equalsIgnoreCase("Terminado")) {
+                                            badgeClass = "bg-success text-success border-success";
+                                        } else if (estado.equalsIgnoreCase("Rechazado") || estado.equalsIgnoreCase("Cancelado")) {
+                                            badgeClass = "bg-danger text-danger border-danger";
+                                        }
+                            %>
+                                <tr>
+                                    <td class="fw-bold">#LOT-00<%= lote.getIdLote() %></td>
+                                    <td>Producción Interna</td>
+                                    <td>Lote de <%= lote.getCantidad() %> u.</td>
+                                    <td><%= lote.getFechaInicio() != null ? new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(lote.getFechaInicio()) : "N/A" %></td>
+                                    <td>
+                                        <span class="badge badge-status bg-opacity-10 border <%= badgeClass %>">
+                                            <%= estado %>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <%      }
+                                } else {
+                            %>
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-3">No hay movimientos recientes en el sistema.</td>
+                                </tr>
+                            <%  } %>
                         </tbody>
                     </table>
                 </div>
@@ -315,26 +325,15 @@
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     
-    // =========================================================
-    // LECTURA DE DATOS OCULTOS (Limpia VS Code de errores rojos)
-    // =========================================================
-    
-    // Extraemos el texto crudo y quitamos comillas para los Labels
     const rawLabels = document.getElementById('dashLabels').value;
     const labelsArr = rawLabels.split(',').map(s => s.replace(/'/g, '').trim());
     
-    // Extraemos y convertimos a números los datos
     const rawDatos = document.getElementById('dashDatos').value;
     const datosArr = rawDatos.split(',').map(Number);
     
-    // Extraemos los porcentajes del anillo circular
     const valProd = Number(document.getElementById('dashProd').value);
     const valCrias = Number(document.getElementById('dashCrias').value);
     const valToros = Number(document.getElementById('dashToros').value);
-
-    // =========================================================
-    // RENDERIZADO DE GRÁFICOS
-    // =========================================================
 
     // 1. Gráfico de Líneas
     const ctxLine = document.getElementById('lineChart').getContext('2d');
@@ -345,10 +344,10 @@ document.addEventListener("DOMContentLoaded", function() {
     new Chart(ctxLine, {
         type: 'line',
         data: {
-            labels: labelsArr, // Usamos el Array de Javascript
+            labels: labelsArr,
             datasets: [{
                 label: 'Litros Diarios',
-                data: datosArr, // Usamos el Array de Javascript
+                data: datosArr,
                 borderColor: '#1C7345',
                 backgroundColor: gradientGreen,
                 borderWidth: 3,
@@ -371,14 +370,14 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // 2. Gráfico Circular (Anillo)
+    // 2. Gráfico Circular
     const ctxDoughnut = document.getElementById('doughnutChart').getContext('2d');
     new Chart(ctxDoughnut, {
         type: 'doughnut',
         data: {
             labels: ['Producción', 'Crías', 'Toros'],
             datasets: [{
-                data: [valProd, valCrias, valToros], // Usamos las variables limpias
+                data: [valProd, valCrias, valToros],
                 backgroundColor: ['#1C7345', '#ffc107', '#fd7e14'],
                 borderWidth: 0,
                 hoverOffset: 5
@@ -391,7 +390,6 @@ document.addEventListener("DOMContentLoaded", function() {
             plugins: { legend: { display: false } }
         }
     });
-
 });
 </script>
 
