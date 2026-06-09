@@ -315,10 +315,7 @@
             <i class="bi bi-droplet-half"></i> Producción / Ordeño
         </a>
         <a href="lacteos" class="sidebar-link nav-auto-active">
-            <i class="bi bi-basket-fill"></i> Catálogo Lácteos
-        </a>
-        <a href="lotes-produccion" class="sidebar-link nav-auto-active">
-            <i class="bi bi-gear-wide-connected"></i> Lotes de Fábrica
+            <i class="bi bi-shop"></i> Fábrica de Lácteos
         </a>
         
         <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: #a0aba5; letter-spacing: 1px;">Administración</div>

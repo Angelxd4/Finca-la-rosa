@@ -22,7 +22,6 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/produccion")
 public class ProduccionServlet extends HttpServlet {
 
-    // CORRECCIÓN HINTS VS CODE: Añadimos 'final' para optimizar la memoria y quitar alertas
     private final ProduccionDAO produccionDAO = new ProduccionDAO();
     private final UsuarioDAO usuarioDAO = new UsuarioDAO(); 
     private final BovinoDAO bovinoDAO = new BovinoDAO(); 
@@ -32,16 +31,29 @@ public class ProduccionServlet extends HttpServlet {
         HttpSession session = request.getSession();
         if (session.getAttribute("usuarioLogueado") == null) { response.sendRedirect("login"); return; }
 
-        request.setAttribute("historial", produccionDAO.obtenerHistorial());
-        request.setAttribute("stockLeche", produccionDAO.obtenerStockLeche());
+        String filtro = request.getParameter("f");
+        if (filtro == null) filtro = "dia";
+        request.setAttribute("filtroActivo", filtro);
+
+        request.setAttribute("historial", produccionDAO.obtenerHistorial(filtro));
+        
+        request.setAttribute("stockFabrica", produccionDAO.obtenerStock("LAC-001"));
+        request.setAttribute("stockVenta", produccionDAO.obtenerStock("LAC-002"));
+        
+        double[] stats = produccionDAO.obtenerEstadisticas(filtro);
+        request.setAttribute("stats", stats);
         
         try {
             request.setAttribute("listaEmpleados", usuarioDAO.obtenerTodos());
             request.setAttribute("listaVacas", bovinoDAO.obtenerPorClasificacion("Producción"));
         } catch (Exception e) {}
         
-        if (request.getParameter("msg") != null) request.setAttribute("successMessage", "¡Sesión de ordeño registrada exitosamente!");
-        if (request.getParameter("error") != null) request.setAttribute("errorMessage", "Debe ingresar litros en al menos una vaca.");
+        if (request.getParameter("msg") != null) {
+            String m = request.getParameter("msg");
+            if(m.equals("vaciado")) request.setAttribute("successMessage", "El tanque de descarte fue vaciado y lavado exitosamente.");
+            else request.setAttribute("successMessage", "¡Operación completada exitosamente!");
+        }
+        if (request.getParameter("error") != null) request.setAttribute("errorMessage", "Error al procesar la solicitud.");
         
         request.getRequestDispatcher("produccion.jsp").forward(request, response);
     }
@@ -51,20 +63,48 @@ public class ProduccionServlet extends HttpServlet {
         HttpSession session = request.getSession();
         if (session.getAttribute("usuarioLogueado") == null) { response.sendRedirect("login"); return; }
 
+        String action = request.getParameter("action");
+        String filtroRetorno = request.getParameter("filtroActual");
+        if (filtroRetorno == null) filtroRetorno = "dia";
+
+        // ACCIÓN: DISTRIBUIR LECHE AL TANQUE
+        if ("asignar".equals(action)) {
+            String turno = request.getParameter("turno");
+            double porcFabrica = Double.parseDouble(request.getParameter("porcFabrica"));
+            
+            if (produccionDAO.asignarLeche(filtroRetorno, turno, porcFabrica)) {
+                response.sendRedirect("produccion?f=" + filtroRetorno + "&msg=asignado");
+            } else {
+                response.sendRedirect("produccion?f=" + filtroRetorno + "&error=1");
+            }
+            return;
+        }
+
+        // ACCIÓN: VACIAR EL TANQUE DE DESCARTE (Para higiene)
+        if ("vaciar_descarte".equals(action)) {
+            if (produccionDAO.vaciarDescartePendiente(filtroRetorno)) {
+                response.sendRedirect("produccion?f=" + filtroRetorno + "&msg=vaciado");
+            } else {
+                response.sendRedirect("produccion?f=" + filtroRetorno + "&error=1");
+            }
+            return;
+        }
+
+        // ACCIÓN: REGISTRAR UN NUEVO ORDEÑO
         Ordeno sesionOrdeno = new Ordeno();
         String fechaStr = request.getParameter("fechaHora").replace("T", " ") + ":00";
         sesionOrdeno.setFechaHora(Timestamp.valueOf(fechaStr));
         sesionOrdeno.setLugar(request.getParameter("lugar"));
         sesionOrdeno.setSupervisorId(Integer.parseInt(request.getParameter("supervisorId"))); 
         
-        String observacionesOriginales = request.getParameter("observaciones");
-        if(observacionesOriginales == null) observacionesOriginales = "";
+        String observaciones = request.getParameter("observaciones");
+        if(observaciones == null) observaciones = "";
 
         List<Bovino> vacas = bovinoDAO.obtenerPorClasificacion("Producción");
         List<DetalleOrdeno> detalles = new ArrayList<>();
         double totalLitros = 0.0;
         int totalVacas = 0;
-        
+        double totalDescarte = 0.0;
         StringBuilder anotacionDescarte = new StringBuilder();
 
         for(Bovino v : vacas) {
@@ -76,7 +116,6 @@ public class ProduccionServlet extends HttpServlet {
                     d.setIdBovino(v.getIdBovino());
                     d.setLitrosObtenidos(litrosObtenidos);
                     detalles.add(d);
-                    
                     totalLitros += litrosObtenidos;
                     totalVacas++;
                 }
@@ -84,33 +123,32 @@ public class ProduccionServlet extends HttpServlet {
             
             String litrosDescarteStr = request.getParameter("litros_descarte_vaca_" + v.getIdBovino());
             if(litrosDescarteStr != null && !litrosDescarteStr.trim().isEmpty()) {
-                double litrosDescarte = Double.parseDouble(litrosDescarteStr);
-                if(litrosDescarte > 0) {
-                    anotacionDescarte.append("\n⚠️ Ordeño de Descarte (").append(v.getNumeroArete()).append("): ").append(litrosDescarte).append(" Litros.");
+                double lDescarte = Double.parseDouble(litrosDescarteStr);
+                if(lDescarte > 0) {
+                    totalDescarte += lDescarte;
+                    anotacionDescarte.append("\n⚠️ Descarte (").append(v.getNumeroArete()).append("): ").append(lDescarte).append(" L.");
                 }
             }
         }
 
-        if(anotacionDescarte.length() > 0) {
-            observacionesOriginales += "\n" + anotacionDescarte.toString();
-        }
+        if(anotacionDescarte.length() > 0) observaciones += "\n" + anotacionDescarte.toString();
 
-        if (detalles.isEmpty() && anotacionDescarte.length() == 0) {
-            response.sendRedirect("produccion?error=1");
+        if (detalles.isEmpty() && totalDescarte == 0) {
+            response.sendRedirect("produccion?f=" + filtroRetorno + "&error=1");
             return;
         }
 
-        // CORRECCIÓN: El error 8 ya no ocurrirá porque el método ha regresado
-        sesionOrdeno.setObservaciones(observacionesOriginales);
+        sesionOrdeno.setObservaciones(observaciones);
         sesionOrdeno.setTotalLitros(totalLitros);
         sesionOrdeno.setTotalVacas(totalVacas);
+        sesionOrdeno.setTotalDescarte(totalDescarte);
         sesionOrdeno.setPromedioLitros(totalVacas > 0 ? (totalLitros / totalVacas) : 0.0);
         sesionOrdeno.setDetalles(detalles);
 
         if (produccionDAO.registrarSesion(sesionOrdeno)) {
-            response.sendRedirect("produccion?msg=registrado");
+            response.sendRedirect("produccion?f=" + filtroRetorno + "&msg=registrado");
         } else {
-            response.sendRedirect("produccion?error=1");
+            response.sendRedirect("produccion?f=" + filtroRetorno + "&error=1");
         }
     }
 }

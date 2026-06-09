@@ -12,7 +12,6 @@ import com.finca.utils.DbConnection;
 
 public class ProductoLacteoDAO {
 
-    // Listar todos los productos
     public List<ProductoLacteo> obtenerTodos() {
         List<ProductoLacteo> lista = new ArrayList<>();
         String sql = "SELECT * FROM productos_lacteos ORDER BY id_producto DESC";
@@ -33,12 +32,11 @@ public class ProductoLacteoDAO {
                 lista.add(p);
             }
         } catch (SQLException e) {
-            System.err.println("Error al obtener lácteos: " + e.getMessage());
+            System.err.println("Error al listar lácteos: " + e.getMessage());
         }
         return lista;
     }
 
-    // Registrar un nuevo tipo de queso o producto
     public boolean registrar(ProductoLacteo p) {
         String sql = "INSERT INTO productos_lacteos (codigo, nombre, descripcion, unidad_medida, stock, precio_unitario) VALUES (?, ?, ?, ?, ?, ?)";
         
@@ -59,7 +57,6 @@ public class ProductoLacteoDAO {
         }
     }
 
-    // Eliminar un producto
     public boolean eliminar(int id) {
         String sql = "DELETE FROM productos_lacteos WHERE id_producto = ?";
         

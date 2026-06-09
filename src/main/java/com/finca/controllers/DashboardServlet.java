@@ -2,7 +2,11 @@ package com.finca.controllers;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.finca.dao.BovinoDAO;
 import com.finca.dao.LoteDAO;
@@ -37,7 +41,6 @@ public class DashboardServlet extends HttpServlet {
         }
 
         try {
-            // Instanciar todos los DAOs
             BovinoDAO bovinoDAO = new BovinoDAO();
             ProduccionDAO produccionDAO = new ProduccionDAO();
             ProductoLacteoDAO lacteosDAO = new ProductoLacteoDAO();
@@ -68,38 +71,56 @@ public class DashboardServlet extends HttpServlet {
             int porcToros = totalBovinos > 0 ? (toros * 100) / totalBovinos : 0;
 
             // =======================================================
-            // LÁCTEOS Y QUESOS
+            // ESTADÍSTICAS DE PRODUCCIÓN Y TANQUES
             // =======================================================
-            double stockLeche = produccionDAO.obtenerStockLeche();
+            double stockFabrica = produccionDAO.obtenerStock("LAC-001");
+            double stockVenta = produccionDAO.obtenerStock("LAC-002");
+            double totalStockTanques = stockFabrica + stockVenta;
             
+            double[] statsDiarias = produccionDAO.obtenerEstadisticas("dia");
+            double totalProduccionHoy = statsDiarias[0] + statsDiarias[1];
+            double descarteHoy = statsDiarias[2];
+
             List<ProductoLacteo> lacteos = lacteosDAO.obtenerTodos();
             double lotesQueso = 0;
             for (ProductoLacteo p : lacteos) {
-                if (!"LAC-001".equals(p.getCodigo())) { 
+                if (!"LAC-001".equals(p.getCodigo()) && !"LAC-002".equals(p.getCodigo())) { 
                     lotesQueso += p.getStock();
                 }
             }
 
             // =======================================================
-            // HISTORIAL DE ORDEÑO (Gráfico de Líneas)
+            // HISTORIAL DE ORDEÑO (Agrupado por día para el Gráfico)
             // =======================================================
-            List<Ordeno> historial = produccionDAO.obtenerHistorial();
-            request.setAttribute("historial", historial);
+            List<Ordeno> historial = produccionDAO.obtenerHistorial("todo");
+            
+            // Agrupar producción por día (Últimos 7 días de actividad)
+            Map<String, Double> produccionPorDia = new LinkedHashMap<>();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
+            
+            for (Ordeno o : historial) {
+                String dia = sdf.format(o.getFechaHora());
+                produccionPorDia.put(dia, produccionPorDia.getOrDefault(dia, 0.0) + o.getTotalLitros());
+            }
+
+            // Invertir para mostrar de más antiguo a más reciente
+            List<String> diasList = produccionPorDia.keySet().stream().collect(Collectors.toList());
+            Collections.reverse(diasList);
             
             StringBuilder labels = new StringBuilder();
             StringBuilder data = new StringBuilder();
-            int limit = Math.min(historial.size(), 7);
+            int contador = 0;
             
-            for (int i = limit - 1; i >= 0; i--) {
-                Ordeno o = historial.get(i);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
-                labels.append("'").append(sdf.format(o.getFechaHora())).append("'");
-                data.append(o.getTotalLitros());
+            for (String dia : diasList) {
+                if (contador >= 7) break; // Solo los últimos 7 días
                 
-                if (i > 0) {
+                if (contador > 0) {
                     labels.append(", ");
                     data.append(", ");
                 }
+                labels.append("'").append(dia).append("'");
+                data.append(produccionPorDia.get(dia));
+                contador++;
             }
             
             if (labels.length() == 0) {
@@ -110,11 +131,9 @@ public class DashboardServlet extends HttpServlet {
             // =======================================================
             // ACTIVIDADES RECIENTES Y LOTES (Timeline y Tabla)
             // =======================================================
-            // Extraer las últimas actividades generales de los animales
             List<HistorialClinico> actividades = bovinoDAO.obtenerHistorialGeneral();
             request.setAttribute("actividadesRecientes", actividades);
 
-            // Extraer los últimos lotes/movimientos
             List<LoteProduccion> ultimosLotes = loteDAO.obtenerTodos();
             request.setAttribute("ultimosLotes", ultimosLotes);
 
@@ -122,7 +141,9 @@ public class DashboardServlet extends HttpServlet {
             // ENVIAR VARIABLES A LA VISTA
             // =======================================================
             request.setAttribute("totalBovinos", totalBovinos);
-            request.setAttribute("stockLeche", stockLeche);
+            request.setAttribute("stockLeche", totalStockTanques); // Suma de ambos tanques
+            request.setAttribute("produccionHoy", totalProduccionHoy); // Nueva métrica
+            request.setAttribute("descarteHoy", descarteHoy); // Nueva métrica
             request.setAttribute("atencionesMedicas", atencionesMedicas);
             request.setAttribute("lotesQueso", (int) lotesQueso);
             

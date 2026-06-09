@@ -14,7 +14,6 @@ com\finca\dao\UsuarioDAO.class
 com\finca\controllers\LoginServlet.class
 com\finca\controllers\BovinoServlet.class
 com\finca\dao\LoteDAO.class
-com\finca\controllers\LotesServlet.class
 com\finca\dao\BovinoDAO.class
 com\finca\controllers\ProduccionServlet.class
 com\finca\models\ProductoLacteo.class
