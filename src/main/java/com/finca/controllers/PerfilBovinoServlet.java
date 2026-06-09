@@ -1,8 +1,10 @@
 package com.finca.controllers;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.finca.dao.BovinoDAO;
+import com.finca.dao.UsuarioDAO; // Importamos el DAO para buscar a los empleados
 import com.finca.models.Bovino;
 import com.finca.models.HistorialClinico;
 import com.finca.models.Usuario;
@@ -17,6 +19,7 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/perfil-bovino")
 public class PerfilBovinoServlet extends HttpServlet {
     private BovinoDAO bovinoDAO = new BovinoDAO();
+    private UsuarioDAO usuarioDAO = new UsuarioDAO(); // Instanciamos el DAO de los usuarios
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -45,10 +48,22 @@ public class PerfilBovinoServlet extends HttpServlet {
         request.setAttribute("bovino", vaca);
         request.setAttribute("historial", bovinoDAO.obtenerHistorial(idBovino));
         
+        // ==============================================================================
+        // ¡NUEVO! Buscamos a los empleados en la base de datos para llenar el desplegable
+        // ==============================================================================
+        try {
+            // Asumimos que tienes un método obtenerTodos() o listar() en tu UsuarioDAO
+            List<Usuario> listaEmpleados = usuarioDAO.obtenerTodos(); 
+            request.setAttribute("listaEmpleados", listaEmpleados);
+        } catch (Exception e) {
+            System.out.println("Error al cargar la lista de empleados: " + e.getMessage());
+        }
+        // ==============================================================================
+        
         request.getRequestDispatcher("perfil-bovino.jsp").forward(request, response);
     }
 
-    // ¡NUEVO! Este método recibe el formulario cuando el Veterinario añade una vacuna o enfermedad
+    // Este método recibe el formulario cuando el Administrador añade un evento
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
@@ -64,8 +79,12 @@ public class PerfilBovinoServlet extends HttpServlet {
             h.setTipoEvento(request.getParameter("tipoEvento"));
             h.setDescripcion(request.getParameter("descripcion"));
             
-            // Registramos automáticamente al usuario que está usando el sistema como el veterinario
-            h.setVeterinarioId(usuarioLogueado.getId()); 
+            // ==============================================================================
+            // ¡NUEVO! Atrapamos al veterinario que el administrador seleccionó en la pantalla
+            // ==============================================================================
+            int idVeterinarioSeleccionado = Integer.parseInt(request.getParameter("veterinarioId"));
+            h.setVeterinarioId(idVeterinarioSeleccionado); 
+            // ==============================================================================
 
             if (bovinoDAO.registrarHistorial(h)) {
                 

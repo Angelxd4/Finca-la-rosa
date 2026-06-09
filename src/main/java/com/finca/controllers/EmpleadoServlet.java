@@ -62,9 +62,9 @@ public class EmpleadoServlet extends HttpServlet {
         u.setDocumentId(request.getParameter("documentId"));
         u.setEmail(request.getParameter("email"));
         u.setPassword(request.getParameter("password"));
-        u.setRoleId(Integer.parseInt(request.getParameter("roleId")));
-        // Generar un código de barras de ejemplo basado en el documento
-        u.setBarcode("EMP-" + request.getParameter("documentId"));
+        
+        // CORRECCIÓN: Usamos el nuevo método setRol() como texto
+        u.setRol(request.getParameter("rol")); 
 
         if (usuarioDAO.registrar(u)) {
             response.sendRedirect("empleados?msg=registrado");

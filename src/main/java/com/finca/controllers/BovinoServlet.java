@@ -33,6 +33,10 @@ public class BovinoServlet extends HttpServlet {
         
         request.setAttribute("listaProduccion", bovinoDAO.obtenerPorClasificacion("Producción"));
         request.setAttribute("listaVenta", bovinoDAO.obtenerPorClasificacion("Venta"));
+        
+        // ¡LA SOLUCIÓN ESTÁ AQUÍ! Ahora el Servlet busca las crías y se las envía al JSP
+        request.setAttribute("listaCrias", bovinoDAO.obtenerPorClasificacion("Cría"));
+        
         request.getRequestDispatcher("inventario-ganado.jsp").forward(request, response);
     }
 

@@ -30,8 +30,8 @@ public class UsuarioDAO {
                     usuario.setFullName(rs.getString("full_name"));
                     usuario.setDocumentId(rs.getString("document_id"));
                     usuario.setEmail(rs.getString("email"));
-                    usuario.setRoleId(rs.getInt("role_id"));
-                    usuario.setBarcode(rs.getString("barcode"));
+                    // CORRECCIÓN: Leemos "rol" como texto
+                    usuario.setRol(rs.getString("rol")); 
                     usuario.setProfilePicture(rs.getString("profile_picture"));
                 }
             }
@@ -56,8 +56,8 @@ public class UsuarioDAO {
                 u.setFullName(rs.getString("full_name"));
                 u.setDocumentId(rs.getString("document_id"));
                 u.setEmail(rs.getString("email"));
-                u.setRoleId(rs.getInt("role_id"));
-                u.setBarcode(rs.getString("barcode"));
+                // CORRECCIÓN: Leemos "rol" como texto
+                u.setRol(rs.getString("rol"));
                 lista.add(u);
             }
         } catch (SQLException e) {
@@ -68,7 +68,8 @@ public class UsuarioDAO {
 
     // NUEVO: Registrar un empleado
     public boolean registrar(Usuario u) {
-        String sql = "INSERT INTO usuarios (full_name, document_id, email, password, role_id, barcode) VALUES (?, ?, ?, ?, ?, ?)";
+        // CORRECCIÓN: Quitamos barcode y cambiamos role_id por rol
+        String sql = "INSERT INTO usuarios (full_name, document_id, email, password, rol) VALUES (?, ?, ?, ?, ?)";
         
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -77,8 +78,7 @@ public class UsuarioDAO {
             stmt.setString(2, u.getDocumentId());
             stmt.setString(3, u.getEmail());
             stmt.setString(4, u.getPassword()); // En un proyecto real esto se encriptaría
-            stmt.setInt(5, u.getRoleId());
-            stmt.setString(6, u.getBarcode());
+            stmt.setString(5, u.getRol()); // Insertamos el rol como texto
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {

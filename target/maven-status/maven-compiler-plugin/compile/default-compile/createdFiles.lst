@@ -1,3 +1,4 @@
+com\finca\models\DetalleOrdeno.class
 com\finca\controllers\PerfilBovinoServlet.class
 com\finca\utils\DbConnection.class
 com\finca\models\Usuario.class
