@@ -1,71 +1,51 @@
 package com.finca.utils;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 @SuppressWarnings("CallToPrintStackTrace")
 public class DbConnection {
     
-    // URL usando el Session-mode pooler para asegurar compatibilidad IPv4
-    private static final String URL = "jdbc:postgresql://aws-1-us-west-2.pooler.supabase.com:5432/postgres";
+    // CAMBIO CRÍTICO: Puerto 6543 (Transaction Pooler) y prepareThreshold=0 (Requerido por Supabase PgBouncer)
+    private static final String URL = "jdbc:postgresql://aws-1-us-west-2.pooler.supabase.com:6543/postgres?prepareThreshold=0&tcpKeepAlive=true&reWriteBatchedInserts=true";
     
-    // Tu usuario único del pooler
     private static final String USER = "postgres.jdzfbdkyskslgjmknoqz";
-    
-    // ATENCIÓN: Reemplaza esto por tu contraseña real
     private static final String PASSWORD = "holacomo3stas"; 
 
-    // El Pool de conexiones (HikariCP)
-    private static final HikariDataSource dataSource;
+    private static HikariDataSource dataSource;
 
     static {
         try {
-            // Cargar el driver de PostgreSQL
             Class.forName("org.postgresql.Driver");
             
-            // Configurar el Pool de Conexiones HikariCP
             HikariConfig config = new HikariConfig();
             config.setJdbcUrl(URL);
             config.setUsername(USER);
             config.setPassword(PASSWORD);
             
-            // ==========================================
-            // OPTIMIZACIONES DE RENDIMIENTO (LA MAGIA)
-            // ==========================================
-            
-            // Número máximo de conexiones simultáneas a la base de datos
-            config.setMaximumPoolSize(12); 
-            
-            // Mantiene al menos 2 conexiones vivas siempre para responder instantáneamente
-            config.setMinimumIdle(2); 
-            
-            // Si la base de datos demora más de 20 segundos en responder, cancela para no congelar el sistema
-            config.setConnectionTimeout(20000); 
-            
-            // Cierra conexiones inactivas después de 5 minutos para ahorrar memoria
+            // Límite conservador seguro para el entorno gratuito
+            config.setMaximumPoolSize(5); 
+            config.setMinimumIdle(1); 
+            config.setConnectionTimeout(15000); 
             config.setIdleTimeout(300000); 
+            config.setMaxLifetime(1800000); 
             
-            // Configuraciones recomendadas para hacer que PostgreSQL vuele (Caché de consultas)
-            config.addDataSourceProperty("cachePrepStmts", "true");
-            config.addDataSourceProperty("prepStmtCacheSize", "250");
-            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-            config.addDataSourceProperty("useServerPrepStmts", "true");
+            // Para el puerto 6543 de Supabase, las consultas preparadas del servidor deben apagarse
+            config.addDataSourceProperty("useServerPrepStmts", "false");
 
-            // Inicializamos el Pool
             dataSource = new HikariDataSource(config);
 
-        } catch (ClassNotFoundException e) {
-            System.err.println("Error crítico: Driver de PostgreSQL no encontrado.");
+        } catch (Exception e) {
+            System.err.println("Error crítico: Fallo al inicializar HikariCP.");
             e.printStackTrace();
-            throw new RuntimeException("Fallo al cargar el driver JDBC", e);
+            throw new RuntimeException("Fallo al cargar el pool JDBC", e);
         }
     }
 
     public static Connection getConnection() throws SQLException {
-        // En lugar de viajar a Supabase y conectarse desde cero, 
-        // simplemente pide una conexión ya abierta y lista al Pool.
         return dataSource.getConnection();
     }
 }

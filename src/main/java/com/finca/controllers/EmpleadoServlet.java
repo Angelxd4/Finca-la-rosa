@@ -15,28 +15,26 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/empleados")
 public class EmpleadoServlet extends HttpServlet {
 
-    private UsuarioDAO usuarioDAO = new UsuarioDAO();
+    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Seguridad: Verificar sesión
         HttpSession session = request.getSession();
         if (session.getAttribute("usuarioLogueado") == null) {
             response.sendRedirect("login");
             return;
         }
 
-        // Obtener la lista y mandarla a la vista
         request.setAttribute("empleados", usuarioDAO.obtenerTodos());
 
-        // Manejo de mensajes
         String msg = request.getParameter("msg");
         String error = request.getParameter("error");
         
         if ("registrado".equals(msg)) request.setAttribute("successMessage", "Empleado registrado exitosamente.");
-        if ("eliminado".equals(msg)) request.setAttribute("successMessage", "Empleado eliminado del sistema.");
-        if ("errorEliminar".equals(error)) request.setAttribute("errorMessage", "No se puede eliminar este empleado porque tiene registros de producción asociados.");
-        if ("errorGuardar".equals(error)) request.setAttribute("errorMessage", "Error al guardar. Verifica que el correo o documento no estén duplicados.");
+        if ("actualizado".equals(msg)) request.setAttribute("successMessage", "Datos del empleado actualizados correctamente.");
+        if ("eliminado".equals(msg)) request.setAttribute("successMessage", "Empleado retirado del sistema.");
+        if ("errorEliminar".equals(error)) request.setAttribute("errorMessage", "No se puede eliminar. Verifique que no tenga registros en producción asociados.");
+        if ("errorGuardar".equals(error)) request.setAttribute("errorMessage", "Error al guardar. Verifique que el correo o documento no estén duplicados.");
 
         request.getRequestDispatcher("empleados.jsp").forward(request, response);
     }
@@ -45,7 +43,7 @@ public class EmpleadoServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        // Acción: ELIMINAR EMPLEADO
+        // ACCIÓN: ELIMINAR EMPLEADO
         if ("delete".equals(action)) {
             int id = Integer.parseInt(request.getParameter("id"));
             if (usuarioDAO.eliminar(id)) {
@@ -56,14 +54,29 @@ public class EmpleadoServlet extends HttpServlet {
             return;
         }
 
-        // Acción: REGISTRAR EMPLEADO (Por defecto si no es delete)
+        // ACCIÓN: ACTUALIZAR (EDITAR) EMPLEADO
+        if ("edit".equals(action)) {
+            Usuario u = new Usuario();
+            u.setId(Integer.parseInt(request.getParameter("id")));
+            u.setFullName(request.getParameter("fullName"));
+            u.setDocumentId(request.getParameter("documentId"));
+            u.setEmail(request.getParameter("email"));
+            u.setRol(request.getParameter("rol"));
+            
+            if (usuarioDAO.actualizar(u)) {
+                response.sendRedirect("empleados?msg=actualizado");
+            } else {
+                response.sendRedirect("empleados?error=errorGuardar");
+            }
+            return;
+        }
+
+        // ACCIÓN: REGISTRAR NUEVO EMPLEADO (Por defecto)
         Usuario u = new Usuario();
         u.setFullName(request.getParameter("fullName"));
         u.setDocumentId(request.getParameter("documentId"));
         u.setEmail(request.getParameter("email"));
         u.setPassword(request.getParameter("password"));
-        
-        // CORRECCIÓN: Usamos el nuevo método setRol() como texto
         u.setRol(request.getParameter("rol")); 
 
         if (usuarioDAO.registrar(u)) {

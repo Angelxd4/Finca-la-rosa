@@ -7,13 +7,16 @@ public class Usuario {
     private String documentId;
     private String email;
     private String password;
-    private String rol; // CORRECCIÓN: Antes era int roleId
+    private String rol; // Manejado como String para guardar "1", "2", "Administrador", etc.
     private String profilePicture;
 
-    // Constructores
+    // Constructor vacío requerido por los estándares de Java Beans
     public Usuario() {}
 
-    // Getters y Setters
+    // ==========================================
+    // GETTERS Y SETTERS
+    // ==========================================
+    
     public int getId() {
         return id;
     }
