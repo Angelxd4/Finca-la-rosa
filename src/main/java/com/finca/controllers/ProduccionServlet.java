@@ -53,7 +53,15 @@ public class ProduccionServlet extends HttpServlet {
             if(m.equals("vaciado")) request.setAttribute("successMessage", "El tanque de descarte fue vaciado y lavado exitosamente.");
             else request.setAttribute("successMessage", "¡Operación completada exitosamente!");
         }
-        if (request.getParameter("error") != null) request.setAttribute("errorMessage", "Error al procesar la solicitud.");
+        
+        // Mapeo de errores incluyendo el biológico
+        if (request.getParameter("error") != null) {
+            if ("duplicada".equals(request.getParameter("error"))) {
+                request.setAttribute("errorMessage", "ALTO BIOLÓGICO: Una o más vacas seleccionadas ya fueron ordeñadas en el turno actual. La operación fue bloqueada.");
+            } else {
+                request.setAttribute("errorMessage", "Error al procesar la solicitud.");
+            }
+        }
         
         request.getRequestDispatcher("produccion.jsp").forward(request, response);
     }
@@ -80,7 +88,7 @@ public class ProduccionServlet extends HttpServlet {
             return;
         }
 
-        // ACCIÓN: VACIAR EL TANQUE DE DESCARTE (Para higiene)
+        // ACCIÓN: VACIAR EL TANQUE DE DESCARTE
         if ("vaciar_descarte".equals(action)) {
             if (produccionDAO.vaciarDescartePendiente(filtroRetorno)) {
                 response.sendRedirect("produccion?f=" + filtroRetorno + "&msg=vaciado");
@@ -137,6 +145,17 @@ public class ProduccionServlet extends HttpServlet {
             response.sendRedirect("produccion?f=" + filtroRetorno + "&error=1");
             return;
         }
+
+        // =========================================================================
+        // VALIDACIÓN BIOLÓGICA BACKEND: Bloquear si se intenta ordeñar dos veces
+        // =========================================================================
+        for (DetalleOrdeno det : detalles) {
+            if (produccionDAO.fueOrdenadaEnTurno(det.getIdBovino(), sesionOrdeno.getFechaHora())) {
+                response.sendRedirect("produccion?f=" + filtroRetorno + "&error=duplicada");
+                return;
+            }
+        }
+        // =========================================================================
 
         sesionOrdeno.setObservaciones(observaciones);
         sesionOrdeno.setTotalLitros(totalLitros);

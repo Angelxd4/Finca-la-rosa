@@ -1,6 +1,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
+<%@ page import="java.util.Calendar" %>
+<%@ page import="java.util.Set" %>
+<%@ page import="java.util.HashSet" %>
 <%@ page import="com.finca.models.Ordeno" %>
 <%@ page import="com.finca.models.DetalleOrdeno" %>
 <%@ page import="com.finca.models.Usuario" %>
@@ -26,6 +29,33 @@
     
     double totalDia = totalManana + totalTarde;
     String filtroActivo = (String) request.getAttribute("filtroActivo");
+
+    // Lógica Frontend: Identificar vacas ya ordeñadas en el turno actual
+    Calendar cal = Calendar.getInstance();
+    int currentHour = cal.get(Calendar.HOUR_OF_DAY);
+    boolean isMorning = currentHour < 12;
+    String turnoActualStr = isMorning ? "Mañana" : "Tarde";
+
+    Set<Integer> vacasOrdenadasEsteTurno = new HashSet<>();
+    if (lista != null) {
+        for (Ordeno o : lista) {
+            Calendar oCal = Calendar.getInstance();
+            oCal.setTime(o.getFechaHora());
+            boolean sameDay = oCal.get(Calendar.YEAR) == cal.get(Calendar.YEAR) && oCal.get(Calendar.DAY_OF_YEAR) == cal.get(Calendar.DAY_OF_YEAR);
+            if (sameDay) {
+                boolean oIsMorning = oCal.get(Calendar.HOUR_OF_DAY) < 12;
+                if (isMorning == oIsMorning) {
+                    for (DetalleOrdeno d : o.getDetalles()) {
+                        vacasOrdenadasEsteTurno.add(d.getIdBovino());
+                    }
+                }
+            }
+        }
+    }
+    
+    StringBuilder sbVacas = new StringBuilder();
+    for(Integer vid : vacasOrdenadasEsteTurno) { sbVacas.append(vid).append(","); }
+    String jsArrayVacas = sbVacas.length() > 0 ? sbVacas.substring(0, sbVacas.length() - 1) : "";
 %>
 <!DOCTYPE html>
 <html lang="es">
@@ -195,7 +225,7 @@
 <% if(request.getAttribute("errorMessage") != null) { %>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            Swal.fire({ icon: 'error', title: 'Error', text: '<%= request.getAttribute("errorMessage") %>', confirmButtonColor: '#dc3545' });
+            Swal.fire({ icon: 'error', title: 'Atención', text: '<%= request.getAttribute("errorMessage") %>', confirmButtonColor: '#dc3545' });
         });
     </script>
 <% } %>
@@ -603,6 +633,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // CORRECCIÓN VS CODE LINTER: Parseo seguro para Javascript
+    const rawVacas = '<%= jsArrayVacas %>';
+    const vacasOrdenadasTurno = rawVacas ? rawVacas.split(',').map(Number) : [];
+
     // LÓGICA PANEL DE DISTRIBUCIÓN
     const penManana = parseFloat(document.getElementById('jsPendManana').value) || 0;
     const penTarde = parseFloat(document.getElementById('jsPendTarde').value) || 0;
@@ -654,7 +688,26 @@
     let now = new Date();
     document.getElementById('inputFecha').value = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0,16);
 
-    // CERO BLOQUEOS: Agregar vaca directo a la tabla
+    const turnoActual = '<%= turnoActualStr %>';
+
+    function validarVacaOrdenada(id) {
+        if(vacasOrdenadasTurno.includes(parseInt(id))) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Vaca en Reposo',
+                text: `Esta vaca ya fue ordeñada en el turno de la ${turnoActual}. Déjela descansar hasta el próximo turno para no afectar su salud.`,
+                confirmButtonColor: '#464704'
+            });
+            return false;
+        }
+        if(document.getElementById('row_vaca_' + id)) {
+            Swal.fire({ icon: 'warning', title: 'Vaca duplicada', text: 'Esta vaca ya está en la mesa de ordeño actual.', confirmButtonColor: '#464704' });
+            return false;
+        }
+        return true;
+    }
+
+    // BOTÓN ÚNICO SIN BLOQUEO DE ENFERMEDAD
     document.getElementById('btnAgregarVaca').addEventListener('click', function() {
         let select = document.getElementById('selectorVaca');
         let selectedOption = select.options[select.selectedIndex];
@@ -664,12 +717,9 @@
         }
 
         let id = selectedOption.value;
+        if(!validarVacaOrdenada(id)) return;
 
-        if(document.getElementById('row_vaca_' + id)) {
-            Swal.fire({ icon: 'warning', title: 'Vaca duplicada', text: 'Esta vaca ya está en la mesa de ordeño actual.', confirmButtonColor: '#464704' });
-            return;
-        }
-
+        // Se detecta salud y se envía a descarte automáticamente sin molestar al operario
         let salud = selectedOption.dataset.salud;
         let isDescarte = (salud === 'En Tratamiento' || salud.includes('Enferm'));
         
@@ -693,7 +743,6 @@
             ? `<span class="badge bg-danger text-white border px-3 py-2 shadow-sm"><i class="bi bi-exclamation-triangle-fill"></i> DESCARTE AUTOMÁTICO</span>` 
             : `<span class="badge px-3 py-2 shadow-sm" style="background-color: var(--brand-info); color: white;"><i class="bi bi-clock-history"></i> ${promedio} L</span>`;
         
-        // Si está enferma manda el valor al input de descarte, sino al apto.
         let inputName = isDescarte ? `litros_descarte_vaca_${id}` : `litros_vaca_${id}`;
         let inputClass = isDescarte ? "form-control text-danger fw-bold input-litros-descarte shadow-sm border-danger" : "form-control text-brand fw-bold input-litros shadow-sm";
 

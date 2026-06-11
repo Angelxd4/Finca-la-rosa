@@ -67,7 +67,6 @@ public class ProduccionDAO {
         double[] stats = new double[7];
         String where = getWhereClause(filtro);
         
-        // Sumamos solo el descarte que NO ha sido vaciado aún
         String sql = "SELECT " +
             "COALESCE(SUM(CASE WHEN EXTRACT(HOUR FROM fecha_hora) < 12 THEN total_litros ELSE 0 END), 0) as manana, " +
             "COALESCE(SUM(CASE WHEN EXTRACT(HOUR FROM fecha_hora) >= 12 THEN total_litros ELSE 0 END), 0) as tarde, " +
@@ -99,12 +98,39 @@ public class ProduccionDAO {
         String sql = "UPDATE sesiones_ordeno SET descarte_vaciado = true WHERE descarte_vaciado = false AND total_descarte > 0 AND " + where;
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.executeUpdate(); // Puede ser 0 si no había descarte
+            stmt.executeUpdate(); 
             return true;
         } catch (SQLException e) {
             System.err.println("Error vaciando descarte: " + e.getMessage());
             return false;
         }
+    }
+
+    // =========================================================================
+    // LÓGICA BIOLÓGICA: Verifica si la vaca ya se ordeñó en ese mismo turno
+    // =========================================================================
+    public boolean fueOrdenadaEnTurno(int idBovino, java.sql.Timestamp fechaHora) {
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.setTime(fechaHora);
+        boolean isMorning = cal.get(java.util.Calendar.HOUR_OF_DAY) < 12;
+        
+        // Comprueba si el registro previo ocurrió en la mañana (<12) o en la tarde (>=12)
+        String timeCondition = isMorning ? "EXTRACT(HOUR FROM s.fecha_hora) < 12" : "EXTRACT(HOUR FROM s.fecha_hora) >= 12";
+        
+        String sql = "SELECT COUNT(*) FROM detalles_ordeno d " +
+                     "JOIN sesiones_ordeno s ON d.id_sesion = s.id_sesion " +
+                     "WHERE d.id_bovino = ? AND DATE(s.fecha_hora) = DATE(?) AND " + timeCondition;
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idBovino);
+            stmt.setTimestamp(2, fechaHora);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next() && rs.getInt(1) > 0) {
+                    return true; // Ya se ordeñó en este turno
+                }
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
     }
 
     public List<Ordeno> obtenerHistorial(String filtro) {
@@ -131,7 +157,7 @@ public class ProduccionDAO {
                 o.setLitrosFabrica(rs1.getDouble("litros_fabrica"));
                 o.setTotalDescarte(rs1.getDouble("total_descarte"));
                 o.setAsignado(rs1.getBoolean("asignado"));
-                // Mapear booleano si fue vaciado o no
+                
                 boolean descarVaciado = true;
                 try { descarVaciado = rs1.getBoolean("descarte_vaciado"); } catch(Exception e){}
                 o.setObservaciones(o.getObservaciones() + (descarVaciado ? "[VACIADO]" : ""));
