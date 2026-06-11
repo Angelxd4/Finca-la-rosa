@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario Ganadero | Finca</title>
+    <title>Inventario Ganadero | Finca La Rosa</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,180 +15,113 @@
     
     <style>
         :root {
-            /* COLOR PERSONALIZADO PRINCIPAL */
-            --brand-main: #2F855A;
-            --brand-hover: #246b48;
+            /* PALETA FINCA LA ROSA REASIGNADA PARA MÁXIMA VISIBILIDAD */
+            --sage: #9CA889 !important;       /* Verde claro visible */
+            --moss: #464704 !important;       /* Verde oscuro contraste */
+            --khaki: #B7A78C !important;      /* Tono arena */
+            --drab: #423926 !important;       /* Café oscuro */
+            --ivory: #F3F5E7 !important;      /* Fondo hueso */
             
-            /* COLOR PERSONALIZADO PARA EDICIÓN */
-            --brand-edit: #3B6A24;
-            --brand-edit-hover: #2c4f1b;
-            
-            /* VARIABLES APPLE GLASSMORPHISM */
-            --apple-bg: #f5f5f7;
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.6);
-            --glass-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+            --glass-bg: rgba(243, 245, 231, 0.85);
+            --glass-border: rgba(156, 168, 137, 0.4);
+            --border-subtle: #E2E4D5 !important; /* Tono suave para bordes limpios */
+            --glass-shadow: 0 16px 40px rgba(70, 71, 4, 0.08);
         }
 
         body { 
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
-            background-color: var(--apple-bg); 
-            color: #1d1d1f; 
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(47, 133, 90, 0.12), transparent 30%),
-                radial-gradient(circle at 85% 20%, rgba(47, 133, 90, 0.08), transparent 30%);
-            background-attachment: fixed;
+            background-color: var(--ivory) !important; 
+            color: var(--drab) !important; 
+            min-height: 100vh;
         }
 
-        /* --- CORRECCIÓN GLOBAL DE ICONOS --- */
-        i.bi {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            vertical-align: middle;
-            line-height: 1;
-        }
+        i.bi { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; line-height: 1; }
         
-        /* OVERRIDES DE BOOTSTRAP PARA EL VERDE PRINCIPAL */
-        .text-success { color: var(--brand-main) !important; }
-        .bg-success { background-color: var(--brand-main) !important; color: white !important; }
-        .btn-success { background-color: var(--brand-main); border-color: var(--brand-main); }
-        .btn-success:hover { background-color: var(--brand-hover); border-color: var(--brand-hover); }
-        .btn-outline-success { color: var(--brand-main); border-color: var(--brand-main); }
-        .btn-outline-success:hover, .btn-outline-success.active { background-color: var(--brand-main); color: white; border-color: var(--brand-main); }
-        .bg-success-subtle { background-color: rgba(47, 133, 90, 0.12) !important; }
-        .border-success-subtle { border-color: rgba(47, 133, 90, 0.25) !important; }
+        /* OVERRIDES DE BOOTSTRAP PARA LA PALETA */
+        .text-success { color: var(--moss) !important; }
+        .bg-success { background-color: var(--sage) !important; color: var(--moss) !important; font-weight: 800; border: 1px solid var(--moss) !important;}
+        
+        .btn-success { background-color: var(--sage) !important; border-color: var(--moss) !important; color: var(--moss) !important; font-weight: 800;}
+        .btn-success:hover { background-color: var(--moss) !important; border-color: var(--moss) !important; color: var(--ivory) !important; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(70, 71, 4, 0.3); }
+        
+        .btn-outline-success { color: var(--moss) !important; border-color: var(--moss) !important; background-color: transparent !important; font-weight: 800;}
+        .btn-outline-success:hover, .btn-outline-success.active { background-color: var(--moss) !important; color: var(--ivory) !important; }
+        
+        .bg-success-subtle { background-color: rgba(156, 168, 137, 0.3) !important; }
+        .border-success-subtle { border-color: var(--sage) !important; }
 
-        /* CLASES PERSONALIZADAS PARA EL VERDE DE EDICIÓN */
-        .text-edit { color: var(--brand-edit) !important; }
-        .bg-edit { background-color: var(--brand-edit) !important; color: white !important; }
-        .btn-edit { background-color: var(--brand-edit); border-color: var(--brand-edit); color: white; }
-        .btn-edit:hover { background-color: var(--brand-edit-hover); border-color: var(--brand-edit-hover); color: white; transform: translateY(-3px); box-shadow: 0 6px 16px rgba(59, 106, 36, 0.25); }
-        .border-edit { border-color: rgba(59, 106, 36, 0.4) !important; }
+        /* Edición (Khaki / Drab) */
+        .text-edit { color: var(--drab) !important; }
+        .bg-edit { background-color: var(--khaki) !important; color: var(--drab) !important; }
+        .btn-edit { background-color: var(--khaki) !important; border-color: var(--drab) !important; color: var(--drab) !important; font-weight: 800;}
+        .btn-edit:hover { background-color: var(--drab) !important; color: var(--ivory) !important; transform: translateY(-3px); box-shadow: 0 6px 16px rgba(183, 167, 140, 0.4); }
 
-        /* EFECTO CRISTAL PRINCIPAL */
+        /* Advertencia / Mover (Khaki) */
+        .text-warning { color: var(--drab) !important; }
+        .btn-warning { background-color: var(--khaki) !important; border-color: var(--drab) !important; color: var(--drab) !important; }
+        .btn-warning:hover { background-color: var(--drab) !important; color: var(--khaki) !important; }
+
+        /* Información / Ojo (Sage) */
+        .text-info { color: var(--moss) !important; }
+        .bg-info-subtle { background-color: rgba(156, 168, 137, 0.15) !important; color: var(--moss) !important; }
+        .btn-info { background-color: var(--ivory) !important; border: 2px solid var(--border-subtle) !important; color: var(--moss) !important; font-weight: 800;}
+        .btn-info:hover { background-color: var(--sage) !important; color: var(--moss) !important; border-color: var(--sage) !important;}
+
+        .text-muted, .text-secondary { color: var(--drab) !important; opacity: 0.8; }
+        .text-dark { color: var(--moss) !important; }
+
         .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border: 1px solid var(--glass-border);
+            background: #FFFFFF !important;
+            border: 1px solid var(--border-subtle) !important;
             border-radius: 24px;
             box-shadow: var(--glass-shadow);
         }
 
         .main-card { padding: 30px; margin-top: 20px; }
         
-        /* PESTAÑAS ESTILO APPLE (Segmented Controls) */
-        .apple-tabs-wrapper {
-            background: rgba(0, 0, 0, 0.05);
-            padding: 6px;
-            border-radius: 18px;
-            display: inline-flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
+        .apple-tabs-wrapper { background: var(--ivory); padding: 6px; border-radius: 18px; display: inline-flex; gap: 5px; flex-wrap: wrap; border: 1px solid var(--border-subtle); }
         .nav-tabs { border-bottom: none; gap: 0; }
-        .nav-tabs .nav-link { 
-            color: #555; 
-            font-weight: 600; 
-            border: none;
-            border-radius: 14px; 
-            padding: 10px 24px; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            background-color: transparent; 
-        }
-        .nav-tabs .nav-link:hover { color: var(--brand-main); }
-        .nav-tabs .nav-link.active { 
-            color: var(--brand-main); 
-            background-color: #ffffff; 
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
-        }
+        .nav-tabs .nav-link { color: var(--drab); font-weight: 700; border: none; border-radius: 14px; padding: 10px 24px; transition: all 0.3s ease; background-color: transparent; }
+        .nav-tabs .nav-link:hover { color: var(--moss); }
+        .nav-tabs .nav-link.active { color: var(--moss) !important; background-color: var(--bg-card) !important; border: 1px solid var(--border-subtle); box-shadow: 0 4px 12px rgba(70, 71, 4, 0.08); }
         
         /* --- ESTILOS DE TABLA --- */
-        .table-custom-wrapper { border-radius: 18px; overflow: hidden; background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); }
+        .table-custom-wrapper { border-radius: 18px; overflow: hidden; background: #FFFFFF; border: 1px solid var(--border-subtle); }
         .table { margin-bottom: 0; background: transparent; }
-        .table th { white-space: nowrap; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; padding: 18px 15px; border-bottom: 1px solid rgba(0,0,0,0.05); background-color: rgba(255,255,255,0.6); }
-        .table td { vertical-align: middle; padding: 16px 15px; color: #495057; font-size: 0.95rem; border-bottom: 1px solid rgba(0,0,0,0.03); background: transparent; }
-        .table-hover tbody tr { transition: all 0.2s ease; }
-        .table-hover tbody tr:hover td { background-color: rgba(255,255,255,0.9); transform: scale(1.001); position: relative; z-index: 1; }
+        .table th { white-space: nowrap; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; padding: 18px 15px; border-bottom: 2px solid var(--border-subtle) !important; background-color: var(--ivory); color: var(--moss);}
+        .table td { vertical-align: middle; padding: 16px 15px; color: var(--drab); font-size: 0.95rem; border-bottom: 1px solid var(--border-subtle) !important; }
+        .table-hover tbody tr:hover td { background-color: var(--ivory); transform: scale(1.001); position: relative; z-index: 1; }
         
-        /* --- IMÁGENES (CUADRADAS APPLE STYLE) --- */
-        .cow-thumbnail { width: 60px; height: 60px; object-fit: cover; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .cow-thumbnail:hover { transform: scale(1.15); z-index: 10; position: relative; }
-        .cow-placeholder { width: 60px; height: 60px; border-radius: 14px; background: rgba(0,0,0,0.04); border: 1px dashed rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        /* --- IMÁGENES (CUADRADAS) --- */
+        .cow-thumbnail { width: 60px; height: 60px; object-fit: cover; border-radius: 14px; border: 1px solid var(--border-subtle); box-shadow: 0 4px 12px rgba(70,71,4,0.1); transition: transform 0.4s ease; }
+        .cow-thumbnail:hover { transform: scale(1.15); z-index: 10; position: relative; border-color: var(--moss); }
+        .cow-placeholder { width: 60px; height: 60px; border-radius: 14px; background: var(--ivory); border: 2px dashed var(--border-subtle); display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--moss); }
         
-        /* --- ESTILOS DE TARJETAS APPLE --- */
-        .bovino-card { 
-            background: rgba(255,255,255,0.7); 
-            border: 1px solid rgba(255,255,255,0.8); 
-            border-radius: 24px;
-            overflow: hidden; 
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            backdrop-filter: blur(12px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
-        }
-        .bovino-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); background: rgba(255,255,255,0.95); }
-        .card-img-wrapper { height: 190px; overflow: hidden; position: relative; background: rgba(0,0,0,0.02); display: flex; justify-content: center; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.03); }
+        /* --- ESTILOS DE TARJETAS GRID --- */
+        .bovino-card { background: #FFFFFF; border: 1px solid var(--border-subtle) !important; border-radius: 24px; overflow: hidden; transition: all 0.4s ease; box-shadow: 0 8px 24px rgba(70,71,4,0.05); }
+        .bovino-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(70,71,4,0.15); border-color: var(--border-subtle) !important;}
+        .card-img-wrapper { height: 190px; overflow: hidden; position: relative; background: var(--ivory); display: flex; justify-content: center; align-items: center; border-bottom: 1px solid var(--border-subtle); }
         .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
         .bovino-card:hover .card-img-wrapper img { transform: scale(1.05); }
-        .card-placeholder-icon { font-size: 70px; opacity: 0.2; }
+        .card-placeholder-icon { font-size: 70px; opacity: 0.5; color: var(--sage); }
         
-        /* BOTONES DE ACCIÓN CENTRADOS */
         .action-btn { transition: all 0.3s ease; border-radius: 12px; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border: none; }
         .action-btn i { font-size: 1rem; margin: 0; padding: 0; line-height: 1; }
-        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
+        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(70,71,4,0.15); }
         .view-toggle-btn { border-radius: 12px; padding: 8px 16px; font-weight: 600; }
         
-        /* --- MODALES ESTILO APPLE PURO --- */
-        .modal-content {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(40px) saturate(200%);
-            -webkit-backdrop-filter: blur(40px) saturate(200%);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 28px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-        }
-        
-        .modal-header, .modal-footer {
-            border: none !important;
-        }
+        /* --- MODALES --- */
+        .modal-content { background: #FFFFFF; border: none !important; border-radius: 28px; box-shadow: 0 25px 50px rgba(70,71,4,0.25); }
+        .modal-header, .modal-footer { border: none !important; }
 
         /* Inputs de los formularios en Modales */
-        .form-control, .form-select {
-            border-radius: 16px;
-            padding: 14px 18px;
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            color: #1d1d1f;
-            transition: all 0.3s ease;
-        }
-        .form-control:focus, .form-select:focus {
-            background: #ffffff;
-            border-color: var(--brand-main);
-            box-shadow: 0 0 0 4px rgba(47, 133, 90, 0.15);
-            outline: none;
-        }
+        .form-control, .form-select { border-radius: 16px; padding: 14px 18px; background: var(--ivory) !important; border: 1px solid var(--border-subtle) !important; color: var(--drab) !important; transition: all 0.3s ease; font-weight: 600; }
+        .form-control:focus, .form-select:focus { background: #ffffff !important; border-color: var(--moss) !important; box-shadow: 0 0 0 4px rgba(70, 71, 4, 0.2) !important; outline: none; }
+        
+        .modal-section-card { background: var(--ivory) !important; border: 1px solid var(--border-subtle) !important; border-radius: 20px; padding: 20px; margin-bottom: 20px; }
 
-        /* Grupos internos del Modal */
-        .modal-section-card {
-            background: rgba(0, 0, 0, 0.02);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        /* Estilo para los Toggles (Switch) */
-        .form-switch .form-check-input {
-            width: 3rem;
-            height: 1.5rem;
-            margin-top: 0.1rem;
-            cursor: pointer;
-        }
-        .form-switch .form-check-input:checked {
-            background-color: var(--brand-main);
-            border-color: var(--brand-main);
-        }
+        .form-switch .form-check-input { width: 3rem; height: 1.5rem; margin-top: 0.1rem; cursor: pointer; background-color: var(--sage); border-color: var(--moss); }
+        .form-switch .form-check-input:checked { background-color: var(--moss) !important; border-color: var(--moss) !important; }
 
         .d-none { display: none !important; }
     </style>
@@ -198,18 +131,15 @@
 <jsp:include page="navbar.jsp" />
 
 <%
-    // Recibimos las listas que mande el Servlet
     List<Bovino> listaProd = (List<Bovino>) request.getAttribute("listaProduccion");
     List<Bovino> listaVenta = (List<Bovino>) request.getAttribute("listaVenta");
     List<Bovino> listaCriasData = (List<Bovino>) request.getAttribute("listaCrias");
     
-    // Lista para la pestaña "Todos"
     List<Bovino> listaTodos = new ArrayList<>();
     if(listaProd != null) listaTodos.addAll(listaProd);
     if(listaVenta != null) listaTodos.addAll(listaVenta);
     if(listaCriasData != null) listaTodos.addAll(listaCriasData);
     
-    // Lista para la pestaña "Crías"
     List<Bovino> listaCrias = new ArrayList<>();
     if(listaCriasData != null) {
         listaCrias.addAll(listaCriasData);
@@ -239,8 +169,8 @@
 <div class="container py-4">
     <div class="glass-panel p-4 mb-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
         <div>
-            <h2 class="fw-bold mb-1" style="color: #1d1d1f;"><i class="bi bi-boxes text-success"></i> Gestión de Inventario</h2>
-            <p class="text-muted mb-0">Administración general del ganado de la finca</p>
+            <h2 class="fw-bold mb-1" style="color: var(--moss);"><i class="bi bi-boxes text-success"></i> Gestión de Inventario</h2>
+            <p class="text-muted mb-0 fw-bold">Administración general del ganado de la finca</p>
         </div>
         
         <div class="d-flex gap-3 mt-3 mt-md-0 align-items-center">
@@ -253,22 +183,22 @@
                 </button>
             </div>
 
-            <button class="btn btn-success btn-lg fw-bold shadow-sm rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalBovino">
+            <button class="btn btn-success btn-lg shadow-sm rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalBovino">
                 <i class="bi bi-plus-circle-fill me-1"></i> Registrar
             </button>
         </div>
     </div>
 
     <% if(request.getAttribute("successMessage") != null) { %>
-        <div class="alert alert-success alert-dismissible fade show glass-panel border-0 border-start border-5 border-success mb-4">
-            <i class="bi bi-check-circle-fill me-2 fs-5"></i> <strong>¡Éxito!</strong> <%= request.getAttribute("successMessage") %>
+        <div class="alert alert-success alert-dismissible fade show glass-panel border-0 border-start border-5 mb-4" style="border-color: var(--moss) !important;">
+            <i class="bi bi-check-circle-fill me-2 fs-5" style="color: var(--moss);"></i> <strong class="text-dark">¡Éxito!</strong> <span class="text-dark"><%= request.getAttribute("successMessage") %></span>
             <button class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <% } %>
     
     <% if(request.getAttribute("errorMessage") != null) { %>
         <div class="alert alert-danger alert-dismissible fade show glass-panel border-0 border-start border-5 border-danger mb-4">
-            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i> <strong>Error:</strong> <%= request.getAttribute("errorMessage") %>
+            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i> <strong class="text-dark">Error:</strong> <span class="text-dark"><%= request.getAttribute("errorMessage") %></span>
             <button class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <% } %>
@@ -296,7 +226,7 @@
         <div class="tab-pane fade show active" id="todos">
             <div class="view-list table-responsive table-custom-wrapper shadow-sm">
                 <table class="table align-middle">
-                    <thead class="text-secondary text-center">
+                    <thead class="text-center">
                         <tr>
                             <th>Foto</th>
                             <th>Arete</th>
@@ -312,7 +242,7 @@
                         <tr>
                             <td>
                                 <% if(b.getImageUrl() != null && !b.getImageUrl().trim().isEmpty() && !b.getImageUrl().equals("null")) { %>
-                                    <img src="<%= request.getContextPath() %>/<%= b.getImageUrl() %>" alt="Foto" class="cow-thumbnail border border-2 border-white">
+                                    <img src="<%= request.getContextPath() %>/<%= b.getImageUrl() %>" alt="Foto" class="cow-thumbnail">
                                 <% } else { %>
                                     <div class="cow-placeholder mx-auto text-secondary"><i class="bi bi-camera"></i></div>
                                 <% } %>
@@ -324,16 +254,16 @@
                             </td>
                             <td>
                                 <%
-                                    String badgeClass = "bg-warning-subtle text-warning-emphasis border border-warning-subtle";
-                                    if(b.getClasificacion().equals("Producción")) badgeClass = "bg-success-subtle text-success border border-success-subtle";
-                                    else if(b.getClasificacion().equals("Cría")) badgeClass = "bg-info-subtle text-info-emphasis border border-info-subtle";
+                                    String badgeClass = "bg-warning text-dark border border-dark";
+                                    if(b.getClasificacion().equals("Producción")) badgeClass = "bg-success text-dark border border-dark";
+                                    else if(b.getClasificacion().equals("Cría")) badgeClass = "bg-info text-dark border border-dark";
                                 %>
                                 <span class="badge <%= badgeClass %> px-3 py-2 rounded-pill fw-bold">
                                     <%= b.getClasificacion() %>
                                 </span>
                             </td>
                             <td>
-                                <span class="badge <%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "bg-success" : "bg-danger" %> px-3 py-2 rounded-pill">
+                                <span class="badge <%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "bg-success" : "bg-danger" %> px-3 py-2 rounded-pill border border-dark">
                                     <i class="bi <%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "bi-heart-fill" : "bi-bandaid-fill" %>"></i> <%= b.getEstadoSalud() %>
                                 </span>
                             </td>
@@ -372,11 +302,11 @@
                         <div class="card h-100 bovino-card border-0">
                             <div class="card-img-wrapper">
                                 <%
-                                    String badgeClassGrid = "bg-warning text-dark";
-                                    if(b.getClasificacion().equals("Producción")) badgeClassGrid = "bg-success";
-                                    else if(b.getClasificacion().equals("Cría")) badgeClassGrid = "bg-info text-dark";
+                                    String badgeClassGrid = "bg-warning text-dark border border-dark";
+                                    if(b.getClasificacion().equals("Producción")) badgeClassGrid = "bg-success border border-dark";
+                                    else if(b.getClasificacion().equals("Cría")) badgeClassGrid = "bg-info text-dark border border-dark";
                                 %>
-                                <span class="position-absolute top-0 start-0 m-3 badge <%= badgeClassGrid %> rounded-pill z-2 shadow-sm px-3 py-2"><%= b.getClasificacion() %></span>
+                                <span class="position-absolute top-0 start-0 m-3 badge <%= badgeClassGrid %> rounded-pill z-2 shadow-sm px-3 py-2 fw-bold"><%= b.getClasificacion() %></span>
                                 <% if(b.getImageUrl() != null && !b.getImageUrl().trim().isEmpty() && !b.getImageUrl().equals("null")) { %>
                                     <img src="<%= request.getContextPath() %>/<%= b.getImageUrl() %>" alt="Foto Bovino">
                                 <% } else { %>
@@ -390,7 +320,7 @@
                                 </div>
                                 <p class="text-muted fw-semibold mb-3"><%= b.getRaza() %></p>
                                 
-                                <div class="d-flex justify-content-around mb-3 p-2 rounded-4" style="background: rgba(0,0,0,0.03);">
+                                <div class="d-flex justify-content-around mb-3 p-2 rounded-4" style="background: var(--ivory); border: 1px solid var(--border-subtle);">
                                     <div class="text-center w-50 border-end border-light">
                                         <small class="text-muted d-block" style="font-size: 11px; font-weight:700;">PESO</small>
                                         <strong class="text-dark"><%= b.getPesoKg() %> kg</strong>
@@ -401,7 +331,7 @@
                                     </div>
                                 </div>
                                 
-                                <div class="d-flex gap-2 justify-content-center flex-wrap mt-3">
+                                <div class="d-flex gap-2 justify-content-center flex-wrap mt-3 pt-2">
                                     <button class="btn btn-info text-white action-btn btn-resumen" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-edad="<%= b.getEdadAnios() %>" data-peso="<%= b.getPesoKg() %>" data-partos="<%= b.getNumeroPartos() %>" data-proposito="<%= b.getProposito() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalResumen" title="Vista Rápida"><i class="bi bi-eye-fill"></i></button>
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
@@ -422,7 +352,7 @@
                         </div>
                     </div>
                     <% }} else { %>
-                        <div class="col-12 text-center py-5"><div class="text-muted"><i class="bi bi-inbox fs-1 d-block mb-3 text-secondary opacity-50"></i><h5 class="fw-bold">No hay animales registrados</h5></div></div>
+                        <div class="col-12 text-center py-5 text-muted"><i class="bi bi-droplet fs-1 d-block mb-3 opacity-50"></i>Hato lechero vacío.</div>
                     <% } %>
                 </div>
             </div>
@@ -431,7 +361,7 @@
         <div class="tab-pane fade" id="produccion">
             <div class="view-list table-responsive table-custom-wrapper shadow-sm">
                 <table class="table align-middle mb-0">
-                    <thead class="text-success text-center" style="background-color: rgba(47, 133, 90, 0.05); border-bottom: 2px solid rgba(47, 133, 90, 0.2);">
+                    <thead class="text-success text-center">
                         <tr>
                             <th>Foto</th>
                             <th>Arete</th>
@@ -447,9 +377,9 @@
                         <tr>
                             <td>
                                 <% if(b.getImageUrl() != null && !b.getImageUrl().trim().isEmpty() && !b.getImageUrl().equals("null")) { %>
-                                    <img src="<%= request.getContextPath() %>/<%= b.getImageUrl() %>" alt="Foto" class="cow-thumbnail border border-2 border-success">
+                                    <img src="<%= request.getContextPath() %>/<%= b.getImageUrl() %>" alt="Foto" class="cow-thumbnail">
                                 <% } else { %>
-                                    <div class="cow-placeholder mx-auto border border-2 border-success text-success"><i class="bi bi-camera"></i></div>
+                                    <div class="cow-placeholder mx-auto text-success"><i class="bi bi-camera"></i></div>
                                 <% } %>
                             </td>
                             <td class="fw-bold fs-5 text-success"><%= b.getNumeroArete() %></td>
@@ -458,12 +388,12 @@
                                 <span class="badge bg-light text-secondary border mt-1"><%= b.getEdadAnios() %> años</span>
                             </td>
                             <td>
-                                <div class="bg-success-subtle text-success fw-bold rounded-3 py-1 px-3 d-inline-block">
+                                <div class="bg-success text-white border border-dark fw-bold rounded-pill py-1 px-3 d-inline-block">
                                     <i class="bi bi-droplet-half"></i> <%= b.getLitrosDiariosPromedio() %> L
                                 </div>
                             </td>
                             <td>
-                                <span class="badge <%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "bg-success" : "bg-warning text-dark" %> rounded-pill px-3 py-2">
+                                <span class="badge <%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "bg-success" : "bg-danger" %> border border-dark rounded-pill px-3 py-2">
                                     <%= b.getEstadoSalud() %>
                                 </span>
                             </td>
@@ -489,7 +419,7 @@
                     <% if(listaProd != null && !listaProd.isEmpty()) {
                         for(Bovino b : listaProd) { %>
                     <div class="col">
-                        <div class="card h-100 bovino-card border-0" style="border-top: 5px solid var(--brand-main) !important;">
+                        <div class="card h-100 bovino-card border-0">
                             <div class="card-img-wrapper" style="height: 180px;">
                                 <% if(b.getImageUrl() != null && !b.getImageUrl().trim().isEmpty() && !b.getImageUrl().equals("null")) { %>
                                     <img src="<%= request.getContextPath() %>/<%= b.getImageUrl() %>" alt="Foto">
@@ -500,8 +430,8 @@
                             <div class="card-body p-4">
                                 <h5 class="fw-bold text-success text-center mb-1"><%= b.getNumeroArete() %></h5>
                                 <p class="text-center text-muted small mb-3"><%= b.getRaza() %></p>
-                                <div class="bg-success-subtle text-success text-center fw-bold rounded-4 py-2 mb-3">
-                                    <i class="bi bi-droplet-half"></i> <%= b.getLitrosDiariosPromedio() %> L / día
+                                <div class="bg-success text-dark text-center fw-bold rounded-pill border border-dark py-2 mb-3">
+                                    <i class="bi bi-droplet-half text-dark"></i> <%= b.getLitrosDiariosPromedio() %> L / día
                                 </div>
                                 <div class="d-flex gap-2 justify-content-center flex-wrap mt-3 pt-2">
                                     <button class="btn btn-info text-white action-btn btn-resumen" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-edad="<%= b.getEdadAnios() %>" data-peso="<%= b.getPesoKg() %>" data-partos="<%= b.getNumeroPartos() %>" data-proposito="<%= b.getProposito() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalResumen" title="Vista Rápida"><i class="bi bi-eye-fill"></i></button>
@@ -523,7 +453,7 @@
         <div class="tab-pane fade" id="crias">
             <div class="view-list table-responsive table-custom-wrapper shadow-sm">
                 <table class="table align-middle mb-0">
-                    <thead class="text-info-emphasis text-center" style="background-color: rgba(13, 202, 240, 0.05); border-bottom: 2px solid rgba(13, 202, 240, 0.2);">
+                    <thead class="text-center">
                         <tr>
                             <th>Foto</th>
                             <th>Arete</th>
@@ -539,9 +469,9 @@
                         <tr>
                             <td>
                                 <% if(b.getImageUrl() != null && !b.getImageUrl().trim().isEmpty() && !b.getImageUrl().equals("null")) { %>
-                                    <img src="<%= request.getContextPath() %>/<%= b.getImageUrl() %>" alt="Foto" class="cow-thumbnail border border-2 border-info">
+                                    <img src="<%= request.getContextPath() %>/<%= b.getImageUrl() %>" alt="Foto" class="cow-thumbnail">
                                 <% } else { %>
-                                    <div class="cow-placeholder mx-auto border border-2 border-info text-info"><i class="bi bi-camera"></i></div>
+                                    <div class="cow-placeholder mx-auto text-info"><i class="bi bi-camera"></i></div>
                                 <% } %>
                             </td>
                             <td class="fw-bold fs-5 text-dark"><%= b.getNumeroArete() %></td>
@@ -551,7 +481,7 @@
                             </td>
                             <td><strong class="fs-6 text-dark"><%= b.getPesoKg() %></strong></td>
                             <td>
-                                <span class="badge <%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "bg-success" : "bg-danger" %> px-3 py-2 rounded-pill">
+                                <span class="badge <%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "bg-success" : "bg-danger" %> px-3 py-2 rounded-pill border border-dark">
                                     <i class="bi <%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "bi-heart-fill" : "bi-bandaid-fill" %>"></i> <%= b.getEstadoSalud() %>
                                 </span>
                             </td>
@@ -582,7 +512,7 @@
                     <% if(!listaCrias.isEmpty()) {
                         for(Bovino b : listaCrias) { %>
                     <div class="col">
-                        <div class="card h-100 bovino-card border-0" style="border-top: 5px solid #0dcaf0 !important;">
+                        <div class="card h-100 bovino-card border-0">
                             <div class="card-img-wrapper" style="height: 180px;">
                                 <% if(b.getImageUrl() != null && !b.getImageUrl().trim().isEmpty() && !b.getImageUrl().equals("null")) { %>
                                     <img src="<%= request.getContextPath() %>/<%= b.getImageUrl() %>" alt="Foto">
@@ -594,7 +524,7 @@
                                 <h5 class="fw-bold text-dark text-center mb-1"><%= b.getNumeroArete() %></h5>
                                 <p class="text-center text-muted small mb-3"><%= b.getRaza() %></p>
                                 
-                                <div class="d-flex justify-content-around mb-3 p-2 rounded-4" style="background: rgba(0,0,0,0.03);">
+                                <div class="d-flex justify-content-around mb-3 p-2 rounded-4" style="background: var(--ivory); border: 1px solid var(--border-subtle);">
                                     <div class="text-center w-50 border-end border-light">
                                         <small class="text-muted d-block" style="font-size: 11px; font-weight:700;">PESO</small>
                                         <strong class="text-dark"><%= b.getPesoKg() %> kg</strong>
@@ -630,7 +560,7 @@
         <div class="tab-pane fade" id="ventas">
             <div class="view-list table-responsive table-custom-wrapper shadow-sm">
                 <table class="table align-middle mb-0">
-                    <thead class="text-dark text-center" style="background-color: rgba(255, 193, 7, 0.1); border-bottom: 2px solid rgba(255, 193, 7, 0.4);">
+                    <thead class="text-center">
                         <tr>
                             <th>Foto</th>
                             <th>Arete</th>
@@ -646,9 +576,9 @@
                         <tr>
                             <td>
                                 <% if(b.getImageUrl() != null && !b.getImageUrl().trim().isEmpty() && !b.getImageUrl().equals("null")) { %>
-                                    <img src="<%= request.getContextPath() %>/<%= b.getImageUrl() %>" alt="Foto" class="cow-thumbnail border border-2 border-warning">
+                                    <img src="<%= request.getContextPath() %>/<%= b.getImageUrl() %>" alt="Foto" class="cow-thumbnail">
                                 <% } else { %>
-                                    <div class="cow-placeholder mx-auto border border-2 border-warning text-warning"><i class="bi bi-camera"></i></div>
+                                    <div class="cow-placeholder mx-auto text-warning"><i class="bi bi-camera"></i></div>
                                 <% } %>
                             </td>
                             <td class="fw-bold fs-5 text-dark"><%= b.getNumeroArete() %></td>
@@ -658,7 +588,7 @@
                             </td>
                             <td><strong class="fs-6 text-dark"><%= b.getPesoKg() %></strong></td>
                             <td>
-                                <div class="bg-success text-white fw-bold rounded-pill py-1 px-3 d-inline-block shadow-sm">
+                                <div class="bg-success text-white fw-bold rounded-pill py-1 px-3 d-inline-block shadow-sm border border-dark">
                                     $<%= String.format("%,.2f", b.getPrecioEstimado()) %>
                                 </div>
                             </td>
@@ -686,7 +616,7 @@
                     <% if(listaVenta != null && !listaVenta.isEmpty()) {
                         for(Bovino b : listaVenta) { %>
                     <div class="col">
-                        <div class="card h-100 bovino-card border-0" style="border-top: 5px solid #ffc107 !important;">
+                        <div class="card h-100 bovino-card border-0">
                             <div class="card-img-wrapper" style="height: 180px;">
                                 <% if(b.getImageUrl() != null && !b.getImageUrl().trim().isEmpty() && !b.getImageUrl().equals("null")) { %>
                                     <img src="<%= request.getContextPath() %>/<%= b.getImageUrl() %>" alt="Foto">
@@ -731,12 +661,12 @@
             
             <div class="modal-body py-4 px-4">
                 <div class="text-center mb-4 position-relative">
-                    <img id="resFoto" src="" class="rounded-4 mb-3 border border-3 border-success shadow d-none" style="width: 150px; height: 150px; object-fit: cover;">
-                    <div id="resFotoPlaceholder" class="rounded-4 bg-light border border-3 border-secondary shadow-sm mx-auto mb-3 align-items-center justify-content-center" style="width: 150px; height: 150px; font-size: 60px;"><i class="bi bi-camera"></i></div>
+                    <img id="resFoto" src="" class="rounded-4 mb-3 border border-3 shadow d-none" style="width: 150px; height: 150px; object-fit: cover; border-color: var(--border-subtle) !important;">
+                    <div id="resFotoPlaceholder" class="rounded-4 bg-light border border-3 shadow-sm mx-auto mb-3 align-items-center justify-content-center" style="width: 150px; height: 150px; font-size: 60px; border-color: var(--border-subtle) !important;"><i class="bi bi-camera"></i></div>
                     
                     <h3 class="fw-bold text-dark mb-2" id="resArete"></h3>
                     <h6 class="text-muted fw-semibold mb-2" id="resRaza"></h6>
-                    <span id="resSalud" class="badge fs-6 rounded-pill px-4 py-2 shadow-sm"></span>
+                    <span id="resSalud" class="badge fs-6 rounded-pill px-4 py-2 shadow-sm border border-dark"></span>
                 </div>
                 
                 <div class="row g-3 text-start bg-white p-3 rounded-4 shadow-sm border border-light">
@@ -770,9 +700,9 @@
                     </div>
                 </div>
 
-                <div class="mt-4 text-center bg-success-subtle rounded-4 p-3 border border-success-subtle">
-                    <p class="mb-1 text-success text-uppercase fw-bold" style="letter-spacing: 1px; font-size: 12px;">Producción Promedio</p>
-                    <h2 class="text-success fw-bold mb-0"><i class="bi bi-droplet-half"></i> <span id="resLeche"></span> <small class="fs-5 opacity-75">L/día</small></h2>
+                <div class="mt-4 text-center rounded-4 p-3 border border-dark" style="background-color: var(--sage);">
+                    <p class="mb-1 text-dark text-uppercase fw-bold" style="letter-spacing: 1px; font-size: 12px;">Producción Promedio</p>
+                    <h2 class="text-dark fw-bold mb-0"><i class="bi bi-droplet-half"></i> <span id="resLeche"></span> <small class="fs-5 opacity-75">L/día</small></h2>
                 </div>
             </div>
             
@@ -796,7 +726,7 @@
                 <div class="modal-body px-4 py-4">
                     
                     <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center bg-white p-3 rounded-4 shadow-sm border border-light">
+                        <div class="modal-section-card d-flex justify-content-between align-items-center shadow-sm">
                             <div class="d-flex align-items-center">
                                 <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
                                     <i class="bi bi-brightness-alt-high-fill fs-5" style="margin: 0; padding: 0;"></i>
@@ -900,7 +830,7 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0 pb-4 px-4 d-flex justify-content-between">
-                    <button type="button" class="btn btn-light fw-bold px-4 rounded-pill shadow-sm" data-bs-dismiss="modal" style="background: rgba(255,255,255,0.6); color: #555;">Cancelar</button>
+                    <button type="button" class="btn btn-outline-brand fw-bold px-4 rounded-pill shadow-sm" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-success fw-bold px-5 rounded-pill shadow-sm"><i class="bi bi-save-fill me-2"></i> Guardar Registro</button>
                 </div>
             </form>
@@ -926,7 +856,7 @@
                         <div class="col-12 text-center mb-2">
                             <label class="form-label text-muted fw-bold small text-uppercase w-100 text-start ps-1"><i class="bi bi-image-fill text-edit fs-5 me-1"></i> Cambiar Foto</label>
                             <img id="previewEdit" src="" class="d-none rounded-4 shadow-sm mb-3" style="width: 130px; height: 130px; object-fit: cover; border: 3px solid #fff; margin: 0 auto;">
-                            <input type="file" name="imageFile" class="form-control border-edit shadow-sm" accept="image/*" onchange="previewImage(this, 'previewEdit')">
+                            <input type="file" name="imageFile" class="form-control shadow-sm" accept="image/*" onchange="previewImage(this, 'previewEdit')">
                         </div>
                     </div>
                     
@@ -934,7 +864,7 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label text-edit fw-bold small text-uppercase ps-1">Número de Arete</label>
-                                <input type="text" name="numeroArete" id="editArete" class="form-control border-edit shadow-sm" required>
+                                <input type="text" name="numeroArete" id="editArete" class="form-control shadow-sm" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-muted fw-bold small text-uppercase ps-1">Raza</label>
@@ -1003,7 +933,7 @@
                 </div>
                 
                 <div class="modal-footer border-0 pt-0 pb-4 px-4 d-flex justify-content-between">
-                    <button type="button" class="btn btn-light fw-bold px-4 rounded-pill shadow-sm" data-bs-dismiss="modal" style="background: rgba(255,255,255,0.6); color: #555;">Cancelar</button>
+                    <button type="button" class="btn btn-outline-brand fw-bold px-4 rounded-pill shadow-sm" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-edit fw-bold px-5 rounded-pill shadow-sm"><i class="bi bi-arrow-repeat me-2"></i> Actualizar Cambios</button>
                 </div>
             </form>
@@ -1033,11 +963,11 @@
         if (genero === 'Macho' || isRecienNacido) {
             inputPartos.value = 0;
             inputPartos.readOnly = true;
-            inputPartos.style.backgroundColor = "rgba(0,0,0,0.05)";
+            inputPartos.style.backgroundColor = "var(--ivory)";
             
             inputLitros.value = 0;
             inputLitros.readOnly = true;
-            inputLitros.style.backgroundColor = "rgba(0,0,0,0.05)";
+            inputLitros.style.backgroundColor = "var(--ivory)";
         } else {
             inputPartos.readOnly = false;
             inputPartos.style.backgroundColor = "";
@@ -1081,11 +1011,11 @@
         if (genero === 'Macho') {
             inputPartos.value = 0;
             inputPartos.readOnly = true;
-            inputPartos.style.backgroundColor = "rgba(0,0,0,0.05)";
+            inputPartos.style.backgroundColor = "var(--ivory)";
             
             inputLitros.value = 0;
             inputLitros.readOnly = true;
-            inputLitros.style.backgroundColor = "rgba(0,0,0,0.05)";
+            inputLitros.style.backgroundColor = "var(--ivory)";
             
             Array.from(selectProposito.options).forEach(opt => {
                 opt.disabled = (opt.value === 'Leche' || opt.value === 'Doble Propósito');
@@ -1117,7 +1047,7 @@
         
         if (toggle.checked) {
             input.readOnly = true;
-            input.style.backgroundColor = "rgba(0,0,0,0.05)"; 
+            input.style.backgroundColor = "var(--ivory)"; 
             
             const aretesData = document.getElementById('existingAretesData').value;
             const existingAretes = aretesData.split(',').filter(a => a !== '');
@@ -1196,7 +1126,7 @@
             let saludBadge = document.getElementById('resSalud');
             saludBadge.innerText = this.dataset.salud;
             if (this.dataset.salud === "Sano" || this.dataset.salud === "Sana") {
-                saludBadge.className = "badge bg-success fs-6 rounded-pill px-4 py-2 shadow-sm";
+                saludBadge.className = "badge bg-success fs-6 rounded-pill px-4 py-2 shadow-sm border border-dark";
             } else {
                 saludBadge.className = "badge bg-danger fs-6 rounded-pill px-4 py-2 shadow-sm";
             }

@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Finca La Rosa</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
@@ -19,51 +19,60 @@
 
     <style>
         :root {
-            --brand-main: #1C7345;
-            --brand-hover: #165c37;
-            --brand-accent: #00A859;
-            --brand-light: #eaf6ee;
+            /* PALETA FINCA LA ROSA (DARK MOSS GREEN & EARTH TONES) */
+            --bg-page: #F3F5E7 !important;       /* IVORY */
+            --bg-card: #FFFFFF !important;
+            
+            --brand-primary: #464704 !important; /* DARK MOSS GREEN */
+            --brand-accent: #B7A78C !important;  /* KHAKI */
+            --brand-info: #9CA889 !important;    /* SAGE */
+            --brand-dark: #423926 !important;    /* DRAB DARK BROWN */
+            
+            --text-main: #423926 !important;
+            --text-subtle: #7A7463 !important;
+            --border-subtle: #E2E4D5 !important;
         }
 
-        body { font-family: 'Nunito', sans-serif; background-color: #f4f7f6; color: #2b3445; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-page) !important; color: var(--text-main); }
         
-        .dash-card { background: #ffffff; border-radius: 12px; border: none; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); padding: 24px; height: 100%; transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .dash-card:hover { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06); }
-        .card-stock { background: linear-gradient(135deg, var(--brand-main), var(--brand-accent)); color: white; border-radius: 24px; box-shadow: 0 12px 30px rgba(28, 115, 69, 0.25); height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 25px; position: relative; overflow: hidden; }
-        .card-stock .watermark { position: absolute; right: -20px; bottom: -20px; font-size: 8rem; opacity: 0.1; transform: rotate(-15deg); pointer-events: none; }
-        .card-title { font-size: 0.95rem; font-weight: 700; color: #555; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .dash-card { background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-subtle); box-shadow: 0 10px 15px -3px rgba(66, 57, 38, 0.05); padding: 24px; height: 100%; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .dash-card:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(66, 57, 38, 0.1); border-color: var(--brand-accent); }
+        
+        .card-title { font-size: 0.95rem; font-weight: 800; color: var(--brand-dark); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px;}
 
-        .progress { background-color: #e9ecef; border-radius: 50px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
-        .progress-bar { font-weight: 700; font-size: 10px; line-height: 12px; transition: width 1s ease-in-out; }
+        /* MINICARDS SUPERIORES BLINDADAS A LA PALETA */
+        .mini-stat-card { border-radius: 16px; padding: 20px; border: 1px solid var(--border-subtle); position: relative; overflow: hidden; background-color: var(--bg-card); }
+        .mini-stat-card.green { border-left: 5px solid var(--brand-primary); }
+        .mini-stat-card.yellow { border-left: 5px solid var(--brand-accent); }
+        .mini-stat-card.purple { border-left: 5px solid var(--brand-info); }
+        .mini-stat-card.red { border-left: 5px solid #dc3545; }
 
-        .mini-stat-card { border-radius: 12px; padding: 20px; border: none; position: relative; overflow: hidden; }
-        .mini-stat-card.green { background-color: #eaf6ee; border-left: 4px solid #1C7345; }
-        .mini-stat-card.yellow { background-color: #fff3cd; border-left: 4px solid #ffc107; }
-        .mini-stat-card.orange { background-color: #ffe5d0; border-left: 4px solid #fd7e14; }
-        .mini-stat-card.purple { background-color: #f1ebff; border-left: 4px solid #6f42c1; }
-        .mini-stat-card.red { background-color: #ffe3e3; border-left: 4px solid #dc3545; }
-
-        .mini-stat-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #666; margin-bottom: 5px; }
-        .mini-stat-value { font-size: 1.8rem; font-weight: 800; color: #2b3445; margin-bottom: 0; }
-        .mini-stat-trend { font-size: 0.85rem; font-weight: 700; }
+        .mini-stat-title { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--text-subtle); margin-bottom: 5px; }
+        .mini-stat-value { font-size: 1.8rem; font-weight: 800; color: var(--brand-primary); margin-bottom: 0; }
+        .mini-stat-trend { font-size: 0.85rem; font-weight: 700; color: var(--brand-info); }
 
         .timeline { list-style: none; padding: 0; margin: 0; position: relative; }
-        .timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 15px; width: 2px; background: #e9ecef; }
+        .timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 15px; width: 2px; background: var(--border-subtle); }
         .timeline-item { position: relative; padding-left: 45px; margin-bottom: 25px; }
         .timeline-item:last-child { margin-bottom: 0; }
-        .timeline-icon { position: absolute; left: 0; top: 0; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; z-index: 1; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .timeline-icon { position: absolute; left: 0; top: 0; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; z-index: 1; box-shadow: 0 4px 10px rgba(66,57,38,0.1); }
         
-        .bg-timeline-default { background-color: #6f42c1; } 
-        .bg-timeline-vacuna { background-color: #0dcaf0; }   
-        .bg-timeline-enfermedad { background-color: #fd7e14; } 
-        .bg-timeline-parto { background-color: #198754; }    
+        .bg-timeline-default { background-color: var(--brand-dark); } 
+        .bg-timeline-vacuna { background-color: var(--brand-info); }   
+        .bg-timeline-enfermedad { background-color: #dc3545; } 
+        .bg-timeline-parto { background-color: var(--brand-primary); }    
 
-        .timeline-time { font-size: 0.75rem; color: #999; font-weight: 600; margin-bottom: 4px; display: block; }
-        .timeline-content { font-size: 0.9rem; color: #444; font-weight: 600; }
+        .timeline-time { font-size: 0.75rem; color: var(--text-subtle); font-weight: 700; margin-bottom: 4px; display: block; }
+        .timeline-content { font-size: 0.9rem; color: var(--text-main); font-weight: 600; }
 
-        .table-clean th { border-top: none; font-size: 0.75rem; text-transform: uppercase; color: #888; font-weight: 700; border-bottom: 2px solid #f1f1f1; padding-bottom: 15px; }
-        .table-clean td { font-size: 0.9rem; font-weight: 600; color: #444; vertical-align: middle; border-bottom: 1px solid #f8f9fa; padding: 12px 5px; }
-        .badge-status { padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .table-clean th { border-top: none; font-size: 0.75rem; text-transform: uppercase; color: var(--text-subtle); font-weight: 800; border-bottom: 2px solid var(--border-subtle); padding-bottom: 15px; }
+        .table-clean td { font-size: 0.9rem; font-weight: 600; color: var(--text-main); vertical-align: middle; border-bottom: 1px solid var(--border-subtle); padding: 12px 5px; }
+        
+        /* BOTONES */
+        .btn-brand { background-color: var(--brand-primary) !important; color: white !important; font-weight: 700; border-radius: 12px; border: 2px solid var(--brand-primary) !important; }
+        .btn-brand:hover { background-color: var(--brand-dark) !important; border-color: var(--brand-dark) !important; transform: translateY(-1px); }
+        .btn-outline-brand { color: var(--brand-primary) !important; border: 2px solid var(--brand-primary) !important; font-weight: 700; border-radius: 12px; background: transparent; }
+        .btn-outline-brand:hover { background-color: var(--brand-primary) !important; color: white !important; }
     </style>
 </head>
 <body>
@@ -78,12 +87,12 @@
 
 <div class="container-fluid px-4 py-4">
     
-    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom" style="border-color: var(--border-subtle) !important;">
         <div>
-            <h3 class="fw-bolder text-dark mb-0">Dashboard General</h3>
-            <span class="text-muted" style="font-size: 0.9rem;">Analíticas en tiempo real de Finca La Rosa</span>
+            <h3 class="fw-bolder mb-0" style="color: var(--brand-dark);">Dashboard General</h3>
+            <span style="font-size: 0.9rem; color: var(--text-subtle);">Analíticas en tiempo real de Finca La Rosa</span>
         </div>
-        <a href="produccion" class="btn btn-success fw-bold px-4 rounded-pill shadow-sm" style="background-color: #1C7345; border: none;">
+        <a href="produccion" class="btn btn-brand px-4 shadow-sm">
             <i class="bi bi-droplet-half me-2"></i> Ir a Ordeño
         </a>
     </div>
@@ -94,8 +103,8 @@
             <div class="mini-stat-card green">
                 <div class="mini-stat-title">Producción de Hoy</div>
                 <div class="d-flex justify-content-between align-items-end">
-                    <div class="mini-stat-value"><%= request.getAttribute("produccionHoy") %> <span class="fs-6 fw-normal text-muted">L</span></div>
-                    <div class="mini-stat-trend" style="color: #1C7345;"><i class="bi bi-check-circle-fill"></i> Leche Apta</div>
+                    <div class="mini-stat-value"><%= request.getAttribute("produccionHoy") %> <span class="fs-6 fw-normal" style="color: var(--text-subtle);">L</span></div>
+                    <div class="mini-stat-trend" style="color: var(--brand-primary);"><i class="bi bi-check-circle-fill"></i> Leche Apta</div>
                 </div>
             </div>
         </div>
@@ -114,8 +123,8 @@
             <div class="mini-stat-card yellow">
                 <div class="mini-stat-title">Tanques Disponibles</div>
                 <div class="d-flex justify-content-between align-items-end">
-                    <div class="mini-stat-value"><%= request.getAttribute("stockLeche") %> <span class="fs-6 fw-normal text-muted">L</span></div>
-                    <div class="mini-stat-trend text-warning"><i class="bi bi-moisture"></i> Total Físico</div>
+                    <div class="mini-stat-value"><%= request.getAttribute("stockLeche") %> <span class="fs-6 fw-normal" style="color: var(--text-subtle);">L</span></div>
+                    <div class="mini-stat-trend" style="color: var(--brand-accent);"><i class="bi bi-moisture"></i> Total Físico</div>
                 </div>
             </div>
         </div>
@@ -124,8 +133,8 @@
             <div class="mini-stat-card purple">
                 <div class="mini-stat-title">Productos en Fábrica</div>
                 <div class="d-flex justify-content-between align-items-end">
-                    <div class="mini-stat-value"><%= request.getAttribute("lotesQueso") %> <span class="fs-6 fw-normal text-muted">Stock</span></div>
-                    <div class="mini-stat-trend" style="color: #6f42c1;"><i class="bi bi-basket-fill"></i> Catálogo</div>
+                    <div class="mini-stat-value"><%= request.getAttribute("lotesQueso") %> <span class="fs-6 fw-normal" style="color: var(--text-subtle);">Stock</span></div>
+                    <div class="mini-stat-trend" style="color: var(--brand-info);"><i class="bi bi-basket-fill"></i> Catálogo</div>
                 </div>
             </div>
         </div>
@@ -135,7 +144,7 @@
         <div class="col-lg-8">
             <div class="dash-card">
                 <div class="card-title">
-                    <span style="color: #1C7345;"><i class="bi bi-graph-up me-2"></i> Tendencia de Producción (Últimos 7 días activos)</span>
+                    <span><i class="bi bi-graph-up me-2" style="color: var(--brand-primary);"></i> Tendencia de Producción (Últimos 7 días activos)</span>
                 </div>
                 <div style="height: 300px;">
                     <canvas id="lineChart"></canvas>
@@ -146,23 +155,23 @@
         <div class="col-lg-4">
             <div class="dash-card">
                 <div class="card-title">
-                    <span><i class="bi bi-pie-chart-fill text-warning me-2"></i> Distribución del Hato (<%= request.getAttribute("totalBovinos") %> Cabezas)</span>
+                    <span><i class="bi bi-pie-chart-fill me-2" style="color: var(--brand-accent);"></i> Distribución del Hato (<%= request.getAttribute("totalBovinos") %> Cabezas)</span>
                 </div>
                 <div style="height: 250px; display: flex; justify-content: center; align-items: center;">
                     <canvas id="doughnutChart"></canvas>
                 </div>
-                <div class="mt-4 d-flex justify-content-around text-center border-top pt-3">
+                <div class="mt-4 d-flex justify-content-around text-center border-top pt-3" style="border-color: var(--border-subtle) !important;">
                     <div>
-                        <h4 class="fw-bolder text-dark mb-0"><%= request.getAttribute("porcProduccion") %>%</h4>
-                        <span class="text-muted" style="font-size: 0.75rem;">Producción</span>
+                        <h4 class="fw-bolder mb-0" style="color: var(--brand-primary);"><%= request.getAttribute("porcProduccion") %>%</h4>
+                        <span style="font-size: 0.75rem; color: var(--text-subtle); font-weight: 700;">Producción</span>
                     </div>
                     <div>
-                        <h4 class="fw-bolder text-dark mb-0"><%= request.getAttribute("porcCrias") %>%</h4>
-                        <span class="text-muted" style="font-size: 0.75rem;">Crías</span>
+                        <h4 class="fw-bolder mb-0" style="color: var(--brand-accent);"><%= request.getAttribute("porcCrias") %>%</h4>
+                        <span style="font-size: 0.75rem; color: var(--text-subtle); font-weight: 700;">Crías</span>
                     </div>
                     <div>
-                        <h4 class="fw-bolder text-dark mb-0"><%= request.getAttribute("porcToros") %>%</h4>
-                        <span class="text-muted" style="font-size: 0.75rem;">Toros</span>
+                        <h4 class="fw-bolder mb-0" style="color: var(--brand-info);"><%= request.getAttribute("porcToros") %>%</h4>
+                        <span style="font-size: 0.75rem; color: var(--text-subtle); font-weight: 700;">Toros</span>
                     </div>
                 </div>
             </div>
@@ -201,13 +210,13 @@
                     <li class="timeline-item">
                         <div class="timeline-icon <%= bgClass %>"><i class="<%= icon %>"></i></div>
                         <span class="timeline-time"><%= act.getFechaEvento() %> | Vet: <%= act.getNombreVeterinario() != null ? act.getNombreVeterinario() : "Sin asignar" %></span>
-                        <div class="timeline-content"><strong class="text-dark">Bovino ID-<%= act.getIdBovino() %>:</strong> <%= act.getDescripcion() %></div>
+                        <div class="timeline-content"><strong style="color: var(--brand-dark);">ID-<%= act.getIdBovino() %>:</strong> <%= act.getDescripcion() %></div>
                     </li>
                     <% 
                             }
                         } else { 
                     %>
-                        <li class="text-muted small">No hay actividades recientes registradas en la base de datos.</li>
+                        <li class="text-muted small fw-bold">No hay actividades recientes registradas en la base de datos.</li>
                     <% } %>
                 </ul>
             </div>
@@ -216,8 +225,8 @@
         <div class="col-lg-8">
             <div class="dash-card">
                 <div class="card-title mb-4">
-                    <span><i class="bi bi-table text-success me-2"></i> Últimos Lotes de Fábrica</span>
-                    <a href="lacteos" class="btn btn-sm btn-light border fw-bold"><i class="bi bi-eye"></i> Ver Todos</a>
+                    <span><i class="bi bi-table me-2" style="color: var(--brand-info);"></i> Últimos Lotes de Fábrica</span>
+                    <a href="lacteos" class="btn btn-sm btn-outline-brand"><i class="bi bi-eye"></i> Ver Todos</a>
                 </div>
                 
                 <div class="table-responsive">
@@ -238,22 +247,22 @@
                                     int limitLotes = Math.min(lotes.size(), 6); 
                                     for(int i = 0; i < limitLotes; i++) {
                                         LoteProduccion lote = lotes.get(i);
-                                        String badgeClass = "text-warning bg-warning border-warning";
-                                        if("Finalizado".equalsIgnoreCase(lote.getEstado())) badgeClass = "text-success bg-success border-success";
-                                        else if("Cancelado".equalsIgnoreCase(lote.getEstado())) badgeClass = "text-danger bg-danger border-danger";
+                                        String badgeColor = "#B7A78C"; // KHAKI
+                                        if("Finalizado".equalsIgnoreCase(lote.getEstado())) badgeColor = "#464704"; // MOSS GREEN
+                                        else if("Cancelado".equalsIgnoreCase(lote.getEstado())) badgeColor = "#dc3545"; // RED
                             %>
                             <tr>
-                                <td><strong class="text-dark">#LOT-<%= String.format("%03d", lote.getIdLote()) %></strong></td>
+                                <td><strong style="color: var(--brand-dark);">#LOT-<%= String.format("%03d", lote.getIdLote()) %></strong></td>
                                 <td><%= lote.getFechaInicio() %></td>
-                                <td><i class="bi bi-droplet-fill text-info me-1"></i> <%= lote.getLitrosLecheUsados() %> L</td>
+                                <td><i class="bi bi-droplet-fill me-1" style="color: var(--brand-info);"></i> <%= lote.getLitrosLecheUsados() %> L</td>
                                 <td><%= lote.getCantidad() %> Unidades</td>
-                                <td><span class="badge badge-status <%= badgeClass %> bg-opacity-10 border"><%= lote.getEstado() %></span></td>
+                                <td><span class="badge text-white" style="background-color: <%= badgeColor %>; padding: 6px 12px; border-radius: 6px;"><%= lote.getEstado() %></span></td>
                             </tr>
                             <% 
                                     }
                                 } else { 
                             %>
-                                <tr><td colspan="5" class="text-center text-muted py-4">No hay producción en fábrica actualmente.</td></tr>
+                                <tr><td colspan="5" class="text-center py-4" style="color: var(--text-subtle); font-weight: 700;">No hay producción en fábrica actualmente.</td></tr>
                             <% } %>
                         </tbody>
                     </table>
@@ -266,9 +275,6 @@
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 
-    // =========================================================
-    // LECTURA DE DATOS OCULTOS DEL SERVLET
-    // =========================================================
     const rawLabels = document.getElementById('dashLabels').value;
     const labelsArr = rawLabels.split(',').map(s => s.replace(/'/g, '').trim());
     
@@ -280,12 +286,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const valToros = Number(document.getElementById('dashToros').value);
 
     // =========================================================
-    // RENDERIZADO DE GRÁFICOS JAVASCRIPT
+    // GRÁFICOS: PALETA DE COLORES RÚSTICA APLICADA
     // =========================================================
     const ctxLine = document.getElementById('lineChart').getContext('2d');
     let gradientGreen = ctxLine.createLinearGradient(0, 0, 0, 300);
-    gradientGreen.addColorStop(0, 'rgba(28, 115, 69, 0.4)');
-    gradientGreen.addColorStop(1, 'rgba(28, 115, 69, 0.0)');
+    gradientGreen.addColorStop(0, 'rgba(70, 71, 4, 0.4)'); /* Dark Moss Green Transparent */
+    gradientGreen.addColorStop(1, 'rgba(70, 71, 4, 0.0)');
 
     new Chart(ctxLine, {
         type: 'line',
@@ -294,13 +300,13 @@ document.addEventListener("DOMContentLoaded", function() {
             datasets: [{
                 label: 'Litros Diarios',
                 data: datosArr, 
-                borderColor: '#1C7345',
+                borderColor: '#464704', /* Dark Moss Green */
                 backgroundColor: gradientGreen,
                 borderWidth: 3,
                 tension: 0.4, 
                 fill: true,
                 pointBackgroundColor: '#ffffff',
-                pointBorderColor: '#1C7345',
+                pointBorderColor: '#464704',
                 pointBorderWidth: 2,
                 pointRadius: 4
             }]
@@ -310,7 +316,7 @@ document.addEventListener("DOMContentLoaded", function() {
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-                y: { beginAtZero: true, grid: { borderDash: [5, 5], color: '#f1f1f1' }, border: { display: false } },
+                y: { beginAtZero: true, grid: { borderDash: [5, 5], color: '#E2E4D5' }, border: { display: false } },
                 x: { grid: { display: false }, border: { display: false } }
             }
         }
@@ -323,7 +329,7 @@ document.addEventListener("DOMContentLoaded", function() {
             labels: ['Producción', 'Crías', 'Toros'],
             datasets: [{
                 data: [valProd, valCrias, valToros], 
-                backgroundColor: ['#1C7345', '#ffc107', '#fd7e14'],
+                backgroundColor: ['#464704', '#B7A78C', '#9CA889'], /* Moss Green, Khaki, Sage */
                 borderWidth: 0,
                 hoverOffset: 5
             }]
