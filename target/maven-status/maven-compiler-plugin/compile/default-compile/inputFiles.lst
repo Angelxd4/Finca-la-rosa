@@ -2,6 +2,7 @@ c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\s
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\controllers\DashboardServlet.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\controllers\EmpleadoServlet.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\controllers\ImageServlet.java
+c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\controllers\KanbanServlet.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\controllers\LacteosServlet.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\controllers\LoginServlet.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\controllers\LogoutServlet.java
@@ -11,6 +12,7 @@ c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\s
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\dao\LoteDAO.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\dao\ProduccionDAO.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\dao\ProductoLacteoDAO.java
+c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\dao\TareaDAO.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\dao\UsuarioDAO.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\models\Bovino.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\models\DetalleOrdeno.java
@@ -19,6 +21,7 @@ c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\s
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\models\Ordeno.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\models\OtpToken.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\models\ProductoLacteo.java
+c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\models\Tarea.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\models\Usuario.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\utils\DbConnection.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\utils\EmailService.java

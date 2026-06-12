@@ -130,13 +130,18 @@
         <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: var(--moss); opacity: 0.6; letter-spacing: 1px;">Gestión Animal</div>
         <a href="inventario-ganado" class="sidebar-link nav-auto-active"><i class="bi bi-clipboard2-data-fill"></i> Inventario Bovino</a>
         
+        <% if (!"2".equals(rNav) && !"Veterinario".equalsIgnoreCase(rNav)) { %>
         <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: var(--moss); opacity: 0.6; letter-spacing: 1px;">Lechería y Fábrica</div>
         <a href="produccion" class="sidebar-link nav-auto-active"><i class="bi bi-droplet-half"></i> Producción / Ordeño</a>
         <a href="lacteos" class="sidebar-link nav-auto-active"><i class="bi bi-shop"></i> Fábrica de Lácteos</a>
+        <% } %>
         
         <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: var(--moss); opacity: 0.6; letter-spacing: 1px;">Administración</div>
         <a href="kanban" class="sidebar-link nav-auto-active"><i class="bi bi-kanban"></i> Tablero de Tareas</a>
+        
+        <% if (!"2".equals(rNav) && !"Veterinario".equalsIgnoreCase(rNav)) { %>
         <a href="empleados" class="sidebar-link nav-auto-active"><i class="bi bi-people-fill"></i> Personal</a>
+        <% } %>
     </nav>
 
     <div class="sidebar-footer">
@@ -154,7 +159,6 @@
             
             <div class="user-info">
                 <span class="user-name" title="<%= usuarioActual.getFullName() %>"><%= usuarioActual.getFullName() %></span>
-                
                 <span class="user-role"><%= navRolTexto %></span>
             </div>
             <a href="logout" class="btn-logout-side" title="Cerrar Sesión"><i class="bi bi-box-arrow-right"></i></a>

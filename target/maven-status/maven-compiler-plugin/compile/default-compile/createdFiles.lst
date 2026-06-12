@@ -1,5 +1,6 @@
 com\finca\models\DetalleOrdeno.class
 com\finca\utils\DbConnection.class
+com\finca\dao\TareaDAO.class
 com\finca\models\Usuario.class
 com\finca\models\Bovino.class
 com\finca\utils\EmailService$1.class
@@ -14,6 +15,8 @@ com\finca\controllers\ProduccionServlet.class
 com\finca\controllers\DashboardServlet.class
 com\finca\models\HistorialClinico.class
 com\finca\controllers\PerfilBovinoServlet.class
+com\finca\models\Tarea.class
+com\finca\controllers\KanbanServlet.class
 com\finca\utils\EmailService.class
 com\finca\models\LoteProduccion.class
 com\finca\dao\ProductoLacteoDAO.class
