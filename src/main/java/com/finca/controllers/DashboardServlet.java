@@ -40,6 +40,28 @@ public class DashboardServlet extends HttpServlet {
             return;
         }
 
+        // =======================================================
+        // TRADUCTOR DE ROL Y NOMBRE (De Número a Texto)
+        // =======================================================
+        String nombreCorto = "Usuario";
+        if (usuarioLogueado.getFullName() != null && !usuarioLogueado.getFullName().isEmpty()) {
+            nombreCorto = usuarioLogueado.getFullName().split(" ")[0]; // Solo el primer nombre
+        }
+        
+        String r = usuarioLogueado.getRol() != null ? usuarioLogueado.getRol() : "";
+        String rolTexto = "Desconocido";
+        if(r.equals("1") || r.equalsIgnoreCase("Administrador")) rolTexto = "Administrador";
+        else if(r.equals("2") || r.equalsIgnoreCase("Veterinario")) rolTexto = "Veterinario";
+        else if(r.equals("3") || r.equalsIgnoreCase("Operario")) rolTexto = "Operario (Vaquero)";
+        else if(r.equals("4") || r.equalsIgnoreCase("Vendedor")) rolTexto = "Vendedor";
+        else if(r.equals("5") || r.equalsIgnoreCase("Cliente")) rolTexto = "Cliente";
+        else rolTexto = r;
+
+        // Enviamos el nombre y el rol traducido a la vista
+        request.setAttribute("nombreCorto", nombreCorto);
+        request.setAttribute("rolTexto", rolTexto);
+
+
         try {
             BovinoDAO bovinoDAO = new BovinoDAO();
             ProduccionDAO produccionDAO = new ProduccionDAO();
@@ -94,7 +116,6 @@ public class DashboardServlet extends HttpServlet {
             // =======================================================
             List<Ordeno> historial = produccionDAO.obtenerHistorial("todo");
             
-            // Agrupar producción por día (Últimos 7 días de actividad)
             Map<String, Double> produccionPorDia = new LinkedHashMap<>();
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
             
@@ -103,7 +124,6 @@ public class DashboardServlet extends HttpServlet {
                 produccionPorDia.put(dia, produccionPorDia.getOrDefault(dia, 0.0) + o.getTotalLitros());
             }
 
-            // Invertir para mostrar de más antiguo a más reciente
             List<String> diasList = produccionPorDia.keySet().stream().collect(Collectors.toList());
             Collections.reverse(diasList);
             
@@ -112,7 +132,7 @@ public class DashboardServlet extends HttpServlet {
             int contador = 0;
             
             for (String dia : diasList) {
-                if (contador >= 7) break; // Solo los últimos 7 días
+                if (contador >= 7) break; 
                 
                 if (contador > 0) {
                     labels.append(", ");
@@ -129,7 +149,7 @@ public class DashboardServlet extends HttpServlet {
             }
 
             // =======================================================
-            // ACTIVIDADES RECIENTES Y LOTES (Timeline y Tabla)
+            // ACTIVIDADES RECIENTES Y LOTES
             // =======================================================
             List<HistorialClinico> actividades = bovinoDAO.obtenerHistorialGeneral();
             request.setAttribute("actividadesRecientes", actividades);
@@ -141,9 +161,9 @@ public class DashboardServlet extends HttpServlet {
             // ENVIAR VARIABLES A LA VISTA
             // =======================================================
             request.setAttribute("totalBovinos", totalBovinos);
-            request.setAttribute("stockLeche", totalStockTanques); // Suma de ambos tanques
-            request.setAttribute("produccionHoy", totalProduccionHoy); // Nueva métrica
-            request.setAttribute("descarteHoy", descarteHoy); // Nueva métrica
+            request.setAttribute("stockLeche", totalStockTanques); 
+            request.setAttribute("produccionHoy", totalProduccionHoy); 
+            request.setAttribute("descarteHoy", descarteHoy); 
             request.setAttribute("atencionesMedicas", atencionesMedicas);
             request.setAttribute("lotesQueso", (int) lotesQueso);
             

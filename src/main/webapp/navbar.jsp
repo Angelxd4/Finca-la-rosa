@@ -8,6 +8,23 @@
         response.sendRedirect("login");
         return; 
     }
+
+    // =========================================================
+    // TRADUCTOR DE ROL Y LÓGICA DE FOTO PARA EL NAVBAR
+    // =========================================================
+    String navRolTexto = "Desconocido";
+    String rNav = usuarioActual.getRol() != null ? usuarioActual.getRol() : "";
+    
+    if(rNav.equals("1") || rNav.equalsIgnoreCase("Administrador")) navRolTexto = "Administrador";
+    else if(rNav.equals("2") || rNav.equalsIgnoreCase("Veterinario")) navRolTexto = "Veterinario";
+    else if(rNav.equals("3") || rNav.equalsIgnoreCase("Operario")) navRolTexto = "Operario (Vaquero)";
+    else if(rNav.equals("4") || rNav.equalsIgnoreCase("Vendedor")) navRolTexto = "Vendedor";
+    else if(rNav.equals("5") || rNav.equalsIgnoreCase("Cliente")) navRolTexto = "Cliente";
+    else navRolTexto = rNav;
+
+    String navInicial = usuarioActual.getFullName() != null && !usuarioActual.getFullName().isEmpty() 
+                        ? usuarioActual.getFullName().substring(0, 1).toUpperCase() 
+                        : "U";
 %>
 
 <style>
@@ -65,7 +82,11 @@
     .sidebar-footer { padding-top: 15px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 10px; }
     .live-clock { background: var(--ivory); color: var(--moss); padding: 10px 15px; border-radius: 14px; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--border-subtle); }
     .user-profile { display: flex; align-items: center; gap: 12px; padding: 10px; background: white; border-radius: 16px; border: 1px solid var(--border-subtle); }
-    .user-avatar { background: var(--khaki); color: var(--drab); width: 38px; height: 38px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; font-weight: bold; }
+    
+    /* Agregado overflow:hidden para que la imagen de perfil encaje perfecta */
+    .user-avatar { background: var(--khaki); color: var(--drab); width: 38px; height: 38px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; font-weight: bold; overflow: hidden; }
+    .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    
     .user-info { flex: 1; overflow: hidden; }
     .user-name { font-weight: 800; font-size: 0.85rem; color: var(--moss); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
     .user-role { font-size: 0.7rem; color: var(--drab); font-weight: 700; }
@@ -121,10 +142,20 @@
     <div class="sidebar-footer">
         <div class="live-clock" title="Hora actual de la Finca"><i class="bi bi-clock-history"></i> <span id="systemClock">00:00:00 AM</span></div>
         <div class="user-profile">
-            <div class="user-avatar"><%= usuarioActual.getFullName().substring(0, 1).toUpperCase() %></div>
+            <a href="perfil" style="text-decoration: none;">
+                <div class="user-avatar" title="Ir a mi perfil">
+                    <% if(usuarioActual.getProfilePicture() != null && !usuarioActual.getProfilePicture().isEmpty()) { %>
+                        <img src="uploads/<%= usuarioActual.getProfilePicture() %>" alt="Foto Perfil">
+                    <% } else { %>
+                        <%= navInicial %>
+                    <% } %>
+                </div>
+            </a>
+            
             <div class="user-info">
                 <span class="user-name" title="<%= usuarioActual.getFullName() %>"><%= usuarioActual.getFullName() %></span>
-                <span class="user-role"><%= usuarioActual.getRol() %></span>
+                
+                <span class="user-role"><%= navRolTexto %></span>
             </div>
             <a href="logout" class="btn-logout-side" title="Cerrar Sesión"><i class="bi bi-box-arrow-right"></i></a>
         </div>
