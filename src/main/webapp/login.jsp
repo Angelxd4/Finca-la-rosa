@@ -6,161 +6,250 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión | Finca La Rosa</title>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         :root {
-            /* PALETA FINCA LA ROSA (DARK MOSS GREEN & EARTH TONES) */
-            --moss: #464704;       /* Dark Moss Green */
-            --sage: #9CA889;       /* Sage */
-            --khaki: #B7A78C;      /* Khaki */
-            --drab: #423926;       /* Drab Dark Brown */
-            --ivory: #F3F5E7;      /* Ivory */
-            --border-subtle: #E2E4D5;
+            /* Paleta Institucional Finca La Rosa */
+            --moss: #464704;
+            --sage: #9CA889;
+            --khaki: #B7A78C;
+            --drab: #423926;
+            --ivory: #F3F5E7;
+            --blanco-puro: #FFFFFF;
+            --texto-suave: #7F8C8D;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         body {
-            background: linear-gradient(135deg, var(--ivory), var(--sage));
+            background: var(--ivory);
             display: flex; align-items: center; justify-content: center; flex-direction: column;
-            height: 100vh; overflow: hidden;
+            min-height: 100vh; overflow: hidden;
         }
 
+        /* ================= ANIMACIONES ================= */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes cardScale { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes pulseAlert { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* ================= CONTENEDOR PRINCIPAL ================= */
         .container {
-            background-color: #fff; border-radius: 32px; border: 1px solid var(--border-subtle);
-            box-shadow: 0 25px 50px rgba(66, 57, 38, 0.2); position: relative; overflow: hidden;
-            width: 850px; max-width: 95%; min-height: 520px;
+            background-color: var(--blanco-puro);
+            border-radius: 40px; 
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 60px rgba(70, 71, 4, 0.15);
+            position: relative; overflow: hidden;
+            width: 1000px; max-width: 95%; height: 650px;
+            animation: cardScale 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
-        .container p { font-size: 14px; line-height: 22px; letter-spacing: 0.3px; margin: 15px 0 25px; color: var(--ivory); font-weight: 500; }
-        .container span { font-size: 13px; color: var(--drab); font-weight: 600; margin-bottom: 15px; opacity: 0.8; }
-        .container a { color: var(--drab); font-size: 13px; text-decoration: none; margin: 15px 0 10px; font-weight: 700; transition: color 0.3s; cursor: pointer; }
-        .container a:hover { color: var(--moss); }
-
-        .container button {
-            background-color: var(--moss); color: #fff; font-size: 13px; padding: 14px 50px; border: none;
-            border-radius: 14px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
-            margin-top: 10px; cursor: pointer; box-shadow: 0 8px 20px rgba(70, 71, 4, 0.25); transition: all 0.3s ease;
-        }
-        .container button:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(66, 57, 38, 0.35); background-color: var(--drab); }
-        .container button.hidden { background-color: transparent; border: 2px solid var(--ivory); color: var(--ivory); box-shadow: none; }
-        .container button.hidden:hover { background-color: rgba(243, 245, 231, 0.2); transform: translateY(-2px); }
-
-        .container form { background-color: #fff; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0 50px; height: 100%; text-align: center; }
-
-        .container input {
-            background-color: var(--ivory); border: 1px solid var(--border-subtle); margin: 8px 0; padding: 14px 20px;
-            font-size: 14px; border-radius: 14px; width: 100%; outline: none; text-align: center; font-weight: 600; color: var(--drab); transition: all 0.3s ease;
-        }
-        .container input::placeholder { color: var(--sage); font-weight: 600; opacity: 1; }
-        .container input:focus { border-color: var(--moss); background-color: #fff; box-shadow: 0 0 0 4px rgba(70, 71, 4, 0.15); }
-
-        .password-container { position: relative; width: 100%; margin: 8px 0; }
-        .container .password-container input { margin: 0; padding-right: 45px; }
-        .toggle-password { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--sage); font-size: 16px; transition: color 0.3s ease; }
-        .toggle-password:hover { color: var(--moss); }
-
-        .brand-emblem {
-            background-color: var(--ivory); color: var(--moss); width: 55px; height: 55px; border-radius: 16px;
-            display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 15px; box-shadow: 0 6px 15px rgba(70, 71, 4, 0.15);
-        }
-        .toggle-panel .brand-emblem { background-color: rgba(243, 245, 231, 0.2); color: var(--ivory); box-shadow: none; }
-
+        /* ================= FORMULARIOS ================= */
         .form-container { position: absolute; top: 0; height: 100%; transition: all 0.6s ease-in-out; }
         .sign-in { left: 0; width: 50%; z-index: 2; }
-        .container.active .sign-in { transform: translateX(100%); }
         .sign-up { left: 0; width: 50%; opacity: 0; z-index: 1; }
+        
+        .container.active .sign-in { transform: translateX(100%); }
         .container.active .sign-up { transform: translateX(100%); opacity: 1; z-index: 5; animation: move 0.6s; }
-
         @keyframes move { 0%, 49.99% { opacity: 0; z-index: 1; } 50%, 100% { opacity: 1; z-index: 5; } }
 
-        .toggle-container {
-            position: absolute; top: 0; left: 50%; width: 50%; height: 100%; overflow: hidden;
-            transition: all 0.6s ease-in-out; border-radius: 150px 0 0 100px; z-index: 1000;
+        form {
+            background-color: var(--blanco-puro); display: flex; align-items: center; justify-content: center;
+            flex-direction: column; padding: 0 60px; height: 100%; text-align: center;
         }
-        .container.active .toggle-container { transform: translateX(-100%); border-radius: 0 150px 100px 0; }
 
-        .toggle { background: linear-gradient(135deg, var(--sage), var(--moss)); color: var(--ivory); position: relative; left: -100%; width: 200%; height: 100%; transform: translateX(0); transition: all 0.6s ease-in-out; }
+        .brand-emblem {
+            background-color: var(--ivory); color: var(--moss); width: 68px; height: 68px; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+            box-shadow: 0 6px 15px rgba(70, 71, 4, 0.1);
+        }
+
+        h1 { color: var(--drab); font-weight: 800; margin-bottom: 5px; font-size: 2.2rem; letter-spacing: -0.5px; }
+        span.subtitle { font-size: 14px; color: var(--texto-suave); font-weight: 500; margin-bottom: 30px; }
+
+        /* ================= INPUTS ================= */
+        .input-group { width: 100%; position: relative; margin-bottom: 15px; }
+        input {
+            width: 100%; padding: 18px 25px; font-size: 15px; border-radius: 18px;
+            border: 2px solid rgba(156, 168, 137, 0.2); background: #F8F9F3;
+            color: var(--drab); font-weight: 600; text-align: center; transition: all 0.3s;
+        }
+        input::placeholder { color: var(--sage); opacity: 0.8; font-weight: 500; }
+        input:focus { border-color: var(--moss); background: var(--blanco-puro); outline: none; box-shadow: 0 0 0 5px rgba(70, 71, 4, 0.1); }
+        .toggle-password { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--sage); transition: 0.3s; }
+        .toggle-password:hover { color: var(--moss); }
+
+        /* ================= BOTONES ================= */
+        button {
+            background: var(--moss); color: var(--blanco-puro); border-radius: 18px; padding: 18px; font-weight: 700;
+            border: none; width: 100%; margin-top: 15px; letter-spacing: 1px; font-size: 14px; cursor: pointer;
+            transition: all 0.3s; box-shadow: 0 10px 25px rgba(70, 71, 4, 0.25); text-transform: uppercase;
+        }
+        button:hover:not(:disabled) { background: var(--drab); transform: translateY(-3px); box-shadow: 0 15px 30px rgba(66, 57, 38, 0.35); }
+        button:disabled { background: var(--sage); cursor: not-allowed; box-shadow: none; transform: none; }
+
+        .btn-ghost { background: transparent; border: 2px solid var(--ivory); color: var(--ivory); box-shadow: none; }
+        .btn-ghost:hover { background: rgba(243, 245, 231, 0.15); box-shadow: none; }
+
+        /* ================= PANEL DESLIZANTE ================= */
+        .toggle-container { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; overflow: hidden; transition: all 0.6s ease-in-out; border-radius: 150px 0 0 150px; z-index: 1000; }
+        .container.active .toggle-container { transform: translateX(-100%); border-radius: 0 150px 150px 0; }
+        .toggle { background: linear-gradient(135deg, var(--moss) 0%, var(--sage) 100%); color: var(--ivory); position: relative; left: -100%; width: 200%; height: 100%; transform: translateX(0); transition: all 0.6s ease-in-out; }
         .container.active .toggle { transform: translateX(50%); }
-
-        .toggle-panel { position: absolute; width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0 45px; text-align: center; top: 0; transform: translateX(0); transition: all 0.6s ease-in-out; }
+        .toggle-panel { position: absolute; width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0 50px; text-align: center; top: 0; transform: translateX(0); transition: all 0.6s ease-in-out; }
         .toggle-left { transform: translateX(-200%); }
         .container.active .toggle-left { transform: translateX(0); }
         .toggle-right { right: 0; transform: translateX(0); }
         .container.active .toggle-right { transform: translateX(200%); }
+        .toggle-panel h2 { font-size: 38px; font-weight: 800; color: var(--blanco-puro); margin-bottom: 15px; }
+        .toggle-panel p { font-size: 16px; line-height: 1.6; font-weight: 500; margin-bottom: 30px; opacity: 0.9; }
+        .toggle-panel .brand-emblem { background: rgba(255,255,255,0.15); color: var(--ivory); box-shadow: none; border: 1px solid rgba(255,255,255,0.2); }
 
-        h1 { color: var(--moss); font-weight: 800; margin-bottom: 5px; letter-spacing: -0.5px; font-size: 2rem; }
-        .toggle h1 { color: var(--ivory); }
+        /* ================= DISEÑO MEJORADO DE SWEETALERT (VENTANAS OTP) ================= */
+        div:where(.swal2-container) div:where(.swal2-popup) {
+            border-radius: 35px !important;
+            padding: 2.5em 2em !important;
+            box-shadow: 0 25px 60px rgba(70,71,4,0.2) !important;
+            background: var(--blanco-puro) !important;
+        }
+        
+        .swal-custom-header { margin-bottom: 15px; }
+        .swal-custom-icon {
+            background: var(--ivory); color: var(--moss); width: 65px; height: 65px;
+            border-radius: 20px; display: flex; justify-content: center; align-items: center;
+            margin: 0 auto 15px; box-shadow: 0 6px 15px rgba(70, 71, 4, 0.1);
+        }
+        .swal-custom-title { color: var(--drab); font-weight: 800; font-size: 1.6rem; margin: 0; }
+        .swal-custom-text { color: var(--texto-suave); font-size: 0.95rem; line-height: 1.5; margin-top: 10px; }
+        .swal-custom-email { color: var(--moss); font-weight: 700; display: block; margin-top: 5px; }
 
-        div:where(.swal2-container) div:where(.swal2-popup) { border-radius: 24px; font-family: 'Inter', sans-serif; box-shadow: 0 25px 50px rgba(66,57,38,0.2); border: 1px solid var(--border-subtle); }
-        div:where(.swal2-container) button:where(.swal2-styled) { border-radius: 14px; font-weight: 700; padding: 10px 30px; }
+        /* Etiqueta del temporizador OTP */
+        .otp-timer-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(156, 168, 137, 0.15); color: var(--moss);
+            padding: 8px 18px; border-radius: 50px; font-weight: 700; font-size: 14px;
+            margin-top: 15px; border: 1px solid rgba(156, 168, 137, 0.3);
+            transition: all 0.3s ease;
+        }
+        .otp-timer-badge.danger {
+            background: rgba(220, 53, 69, 0.1); color: #dc3545; border-color: rgba(220, 53, 69, 0.3);
+            animation: pulseAlert 1s infinite;
+        }
+
+        div:where(.swal2-container) button:where(.swal2-styled) {
+            border-radius: 16px !important; font-weight: 700 !important;
+            text-transform: uppercase; letter-spacing: 1px; padding: 14px 35px !important; transition: all 0.3s ease !important;
+        }
+        
+        .swal2-input.otp-input {
+            border-radius: 20px !important; text-align: center !important; font-size: 2.5rem !important;
+            font-weight: 800 !important; letter-spacing: 15px !important; color: var(--moss) !important;
+            border: 2px solid rgba(156, 168, 137, 0.3) !important; background: #F8F9F3 !important;
+            margin: 1em auto 0 !important; max-width: 80% !important; transition: all 0.3s !important;
+        }
+        .swal2-input.otp-input:focus { border-color: var(--moss) !important; box-shadow: 0 0 0 5px rgba(70, 71, 4, 0.1) !important; }
+
+        @media (max-width: 850px) {
+            .container { height: 100vh; max-width: 100%; border-radius: 0; }
+            .toggle-container { display: none; }
+            .form-container { width: 100%; }
+            .sign-up { display: none; }
+        }
     </style>
 </head>
 
 <body>
 
-    <% if(request.getParameter("error") != null) { %>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Acceso Denegado',
-                    text: 'El correo electrónico o la contraseña son incorrectos. Por favor, verifica tus datos.',
-                    confirmButtonColor: '#464704',
-                    confirmButtonText: 'Reintentar'
-                });
-            });
-        </script>
-    <% } %>
-
     <div class="container" id="container">
         
         <div class="form-container sign-up">
             <form action="registro" method="POST">
-                <div class="brand-emblem"><i class="fa-solid fa-seedling"></i></div>
-                <h1>Crear Cuenta</h1>
-                <span>Usa el correo autorizado por la administración</span>
-                <input type="text" name="nombre" placeholder="Nombre Completo" required>
-                <input type="email" name="email" placeholder="Correo Electrónico" required>
-                <div class="password-container">
+                <div class="brand-emblem" style="animation: fadeInUp 0.6s;">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 16v6" />
+                        <path d="M12 20a4 4 0 0 1-3-3" />
+                        <path d="M12 18a4 4 0 0 0 3-3" />
+                        <path d="M12 16c-4.5 0-7-3.5-7-7 0-3 3-5 7-5s7 2 7 5c0 3.5-2.5 7-7 7z" />
+                        <path d="M12 4c-2 2-2 5 0 7s4 2 5 1" />
+                        <path d="M12 11c-1.5-1-1.5-3 0-4" />
+                    </svg>
+                </div>
+                <h1 style="animation: fadeInUp 0.6s 0.1s backwards;">Crear Cuenta</h1>
+                <span class="subtitle" style="animation: fadeInUp 0.6s 0.2s backwards;">Uso exclusivo de la administración</span>
+                
+                <div class="input-group" style="animation: fadeInUp 0.6s 0.3s backwards;">
+                    <input type="text" name="nombre" placeholder="Nombre Completo" required>
+                </div>
+                <div class="input-group" style="animation: fadeInUp 0.6s 0.4s backwards;">
+                    <input type="email" name="email" placeholder="Correo Electrónico" required>
+                </div>
+                <div class="input-group" style="animation: fadeInUp 0.6s 0.5s backwards;">
                     <input type="password" name="password" id="pass_signup" placeholder="Contraseña" required>
                     <i class="fa-solid fa-eye toggle-password" onclick="togglePasswordVisibility('pass_signup', this)"></i>
                 </div>
-                <button type="button" onclick="mostrarAlertaRegistro()">Registrarse</button>
+                <button type="button" style="animation: fadeInUp 0.6s 0.6s backwards;" onclick="mostrarAlertaRegistro()">Solicitar Acceso</button>
             </form>
         </div>
         
         <div class="form-container sign-in">
-            <form action="login" method="POST">
-                <div class="brand-emblem"><i class="fa-solid fa-droplet"></i></div>
-                <h1>Finca La Rosa</h1>
-                <span>Módulo de Gestión Ganadera y Lácteos</span>
-                <input type="email" name="email" placeholder="Correo Electrónico" required>
-                <div class="password-container">
-                    <input type="password" name="password" id="pass_signin" placeholder="Contraseña" required>
-                    <i class="fa-solid fa-eye toggle-password" onclick="togglePasswordVisibility('pass_signin', this)"></i>
+            <form id="loginForm" onsubmit="return iniciarLogin2FA(event)">
+                <div class="brand-emblem" style="animation: fadeInUp 0.6s;">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 16v6" />
+                        <path d="M12 20a4 4 0 0 1-3-3" />
+                        <path d="M12 18a4 4 0 0 0 3-3" />
+                        <path d="M12 16c-4.5 0-7-3.5-7-7 0-3 3-5 7-5s7 2 7 5c0 3.5-2.5 7-7 7z" />
+                        <path d="M12 4c-2 2-2 5 0 7s4 2 5 1" />
+                        <path d="M12 11c-1.5-1-1.5-3 0-4" />
+                    </svg>
                 </div>
-                <a onclick="iniciarRecuperacionOTP()">¿Olvidaste tu contraseña?</a>
-                <button type="submit">INGRESAR</button>
+                <h1 style="animation: fadeInUp 0.6s 0.1s backwards;">Finca La Rosa</h1>
+                <span class="subtitle" style="animation: fadeInUp 0.6s 0.2s backwards;">Módulo de Gestión Ganadera y Lácteos</span>
+                
+                <div class="input-group" style="animation: fadeInUp 0.6s 0.3s backwards;">
+                    <input type="email" name="email" id="email" placeholder="Correo Electrónico" required>
+                </div>
+                <div class="input-group" style="animation: fadeInUp 0.6s 0.4s backwards;">
+                    <input type="password" name="password" id="password" placeholder="Contraseña" required>
+                    <i class="fa-solid fa-eye toggle-password" onclick="togglePasswordVisibility('password', this)"></i>
+                </div>
+                <button type="submit" style="animation: fadeInUp 0.6s 0.5s backwards;">INGRESAR</button>
             </form>
         </div>
         
         <div class="toggle-container">
             <div class="toggle">
                 <div class="toggle-panel toggle-left">
-                    <div class="brand-emblem"><i class="fa-solid fa-cow"></i></div>
-                    <h1>¡Bienvenido!</h1>
-                    <p>Si ya posees un usuario asignado en la finca, inicia sesión para continuar con los registros.</p>
-                    <button class="hidden" id="login">Volver</button>
+                    <div class="brand-emblem">
+                        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 16v6" />
+                            <path d="M12 20a4 4 0 0 1-3-3" />
+                            <path d="M12 18a4 4 0 0 0 3-3" />
+                            <path d="M12 16c-4.5 0-7-3.5-7-7 0-3 3-5 7-5s7 2 7 5c0 3.5-2.5 7-7 7z" />
+                            <path d="M12 4c-2 2-2 5 0 7s4 2 5 1" />
+                            <path d="M12 11c-1.5-1-1.5-3 0-4" />
+                        </svg>
+                    </div>
+                    <h2>¡Bienvenido!</h2>
+                    <p>Si ya posees un usuario asignado en la finca, inicia sesión para continuar con tus registros.</p>
+                    <button class="btn-ghost" id="login" style="max-width: 250px;">Volver al Login</button>
                 </div>
                 <div class="toggle-panel toggle-right">
-                    <div class="brand-emblem"><i class="fa-solid fa-shield-halved"></i></div>
-                    <h1>Portal Interno</h1>
+                    <div class="brand-emblem">
+                        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 16v6" />
+                            <path d="M12 20a4 4 0 0 1-3-3" />
+                            <path d="M12 18a4 4 0 0 0 3-3" />
+                            <path d="M12 16c-4.5 0-7-3.5-7-7 0-3 3-5 7-5s7 2 7 5c0 3.5-2.5 7-7 7z" />
+                            <path d="M12 4c-2 2-2 5 0 7s4 2 5 1" />
+                            <path d="M12 11c-1.5-1-1.5-3 0-4" />
+                        </svg>
+                    </div>
+                    <h2>Portal Interno</h2>
                     <p>¿Eres un nuevo operario o veterinario de la finca? Consulta las opciones de registro del sistema.</p>
-                    <button class="hidden" id="register">Solicitar</button>
+                    <button class="btn-ghost" id="register" style="max-width: 250px;">Registrarse</button>
                 </div>
             </div>
         </div>
@@ -168,8 +257,8 @@
 
     <script>
         const container = document.getElementById('container');
-        document.getElementById('register').addEventListener('click', () => { container.classList.add("active"); });
-        document.getElementById('login').addEventListener('click', () => { container.classList.remove("active"); });
+        document.getElementById('register').addEventListener('click', () => container.classList.add("active"));
+        document.getElementById('login').addEventListener('click', () => container.classList.remove("active"));
 
         function togglePasswordVisibility(inputId, iconElement) {
             const passwordInput = document.getElementById(inputId);
@@ -191,109 +280,150 @@
             });
         }
 
-        // =========================================================
-        // FLUJO DE RECUPERACIÓN DE CONTRASEÑA (OTP)
-        // =========================================================
-        async function iniciarRecuperacionOTP() {
-            const { value: email } = await Swal.fire({
-                title: 'Recuperar Contraseña',
-                input: 'email',
-                inputLabel: 'Ingresa tu correo institucional de la finca',
-                inputPlaceholder: 'juan@fincalarosa.com',
+        async function iniciarLogin2FA(event) {
+            event.preventDefault();
+            
+            const btn = event.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = 'PROCESANDO...';
+            btn.disabled = true;
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            let formData = new URLSearchParams();
+            formData.append('action', 'verify_credentials');
+            formData.append('email', email);
+            formData.append('password', password);
+
+            try {
+                let response = await fetch('login', { method: 'POST', body: formData });
+                let data = await response.json();
+
+                btn.innerText = originalText;
+                btn.disabled = false;
+
+                if (data.success) {
+                    pedirCodigoDeVerificacion(data.idUsuario, data.email);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Acceso Denegado',
+                        text: data.message,
+                        confirmButtonColor: '#464704',
+                        confirmButtonText: 'Reintentar'
+                    });
+                }
+            } catch (e) {
+                btn.innerText = originalText;
+                btn.disabled = false;
+                Swal.fire('Error', 'No se pudo comunicar con el servidor.', 'error');
+            }
+        }
+
+        let otpTimerInterval;
+
+        async function pedirCodigoDeVerificacion(idUsuario, email) {
+            
+            // HTML Personalizado para la cabecera del SweetAlert
+            const customHtml = `
+                <div class="swal-custom-header">
+                    <div class="swal-custom-icon">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 16v6" />
+                            <path d="M12 20a4 4 0 0 1-3-3" />
+                            <path d="M12 18a4 4 0 0 0 3-3" />
+                            <path d="M12 16c-4.5 0-7-3.5-7-7 0-3 3-5 7-5s7 2 7 5c0 3.5-2.5 7-7 7z" />
+                            <path d="M12 4c-2 2-2 5 0 7s4 2 5 1" />
+                            <path d="M12 11c-1.5-1-1.5-3 0-4" />
+                        </svg>
+                    </div>
+                    <h2 class="swal-custom-title">Protección de Seguridad</h2>
+                    <p class="swal-custom-text">Ingresa el código de 6 dígitos que acabamos de enviar a: <span class="swal-custom-email">` + email + `</span></p>
+                    <div class="otp-timer-badge" id="otpTimerBadge">
+                        <i class="fa-regular fa-clock"></i> <span id="otpTimerText">15:00</span>
+                    </div>
+                </div>
+            `;
+
+            const { value: otp } = await Swal.fire({
+                html: customHtml,
+                input: 'text',
+                inputPlaceholder: '000000',
+                inputAttributes: { 
+                    maxlength: 6,
+                    pattern: '[0-9]*',
+                    inputmode: 'numeric'
+                },
+                customClass: { input: 'otp-input' },
                 showCancelButton: true,
                 confirmButtonColor: '#464704',
-                confirmButtonText: 'Enviar Código',
+                cancelButtonColor: '#9CA889',
+                confirmButtonText: 'Validar y Entrar',
                 cancelButtonText: 'Cancelar',
-                validationMessage: 'Por favor ingresa un correo válido.'
+                allowOutsideClick: false,
+                didOpen: () => {
+                    // Lógica del Cronómetro de 15 Minutos (900 Segundos)
+                    let timeLeft = 900; 
+                    const timerText = document.getElementById('otpTimerText');
+                    const timerBadge = document.getElementById('otpTimerBadge');
+                    
+                    otpTimerInterval = setInterval(() => {
+                        timeLeft--;
+                        let minutes = Math.floor(timeLeft / 60);
+                        let seconds = timeLeft % 60;
+                        
+                        timerText.textContent = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+                        // Efecto de peligro cuando queda menos de 1 minuto
+                        if (timeLeft <= 60 && !timerBadge.classList.contains('danger')) {
+                            timerBadge.classList.add('danger');
+                        }
+
+                        // Si el tiempo expira, bloqueamos todo
+                        if (timeLeft <= 0) {
+                            clearInterval(otpTimerInterval);
+                            timerText.textContent = "Expirado";
+                            Swal.disableInput();
+                            Swal.disableButtons();
+                        }
+                    }, 1000);
+
+                    // Filtro para solo permitir números en el campo OTP
+                    const inputEl = Swal.getInput();
+                    inputEl.addEventListener('input', function() {
+                        this.value = this.value.replace(/[^0-9]/g, '');
+                    });
+                },
+                willClose: () => {
+                    clearInterval(otpTimerInterval); // Limpiar memoria al cerrar
+                }
             });
 
-            if (email) {
-                Swal.fire({ title: 'Generando código...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-                
+            if (otp) {
                 let formData = new URLSearchParams();
-                formData.append('action', 'request_otp');
+                formData.append('action', 'login_with_otp');
+                formData.append('idUsuario', idUsuario);
                 formData.append('email', email);
+                formData.append('otp', otp);
 
                 try {
                     let response = await fetch('login', { method: 'POST', body: formData });
                     let data = await response.json();
 
                     if (data.success) {
-                        // Simulamos que el operario revisó su correo electrónico
-                        await Swal.fire({
-                            icon: 'info',
-                            title: 'Bandeja de Entrada 📧',
-                            html: `Para efectos de esta prueba, simularemos la llegada del correo.<br><br>Tu código de seguridad temporal es: <strong style="font-size: 24px; color: #464704; display: block; margin-top: 10px;">${data.dev_otp}</strong>`,
-                            confirmButtonColor: '#464704',
-                            confirmButtonText: 'Ya copié mi código'
-                        });
-
-                        pedirCodigoDeVerificacion(data.idUsuario);
+                        window.location.href = 'dashboard';
                     } else {
-                        Swal.fire('Atención', data.message, 'warning');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Código Incorrecto',
+                            text: data.message,
+                            confirmButtonColor: '#464704',
+                            confirmButtonText: 'Intentar de nuevo'
+                        }).then(() => pedirCodigoDeVerificacion(idUsuario, email));
                     }
                 } catch (e) {
-                    Swal.fire('Error', 'No se pudo comunicar con el servidor.', 'error');
-                }
-            }
-        }
-
-        async function pedirCodigoDeVerificacion(idUsuario) {
-            const { value: otp } = await Swal.fire({
-                title: 'Verificación de Identidad',
-                input: 'text',
-                inputLabel: 'Ingresa el código de 6 dígitos que te enviamos',
-                inputPlaceholder: '123456',
-                inputAttributes: { maxlength: 6 },
-                showCancelButton: true,
-                confirmButtonColor: '#464704',
-                confirmButtonText: 'Validar'
-            });
-
-            if (otp) {
-                Swal.fire({ title: 'Verificando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-                
-                let formData = new URLSearchParams();
-                formData.append('action', 'verify_otp');
-                formData.append('idUsuario', idUsuario);
-                formData.append('otp', otp);
-
-                let response = await fetch('login', { method: 'POST', body: formData });
-                let data = await response.json();
-
-                if (data.success) {
-                    pedirNuevaClave(idUsuario);
-                } else {
-                    Swal.fire('Código Incorrecto', data.message, 'error').then(() => pedirCodigoDeVerificacion(idUsuario));
-                }
-            }
-        }
-
-        async function pedirNuevaClave(idUsuario) {
-            const { value: newPassword } = await Swal.fire({
-                title: 'Seguridad Verificada',
-                input: 'password',
-                inputLabel: 'Por favor, digita tu nueva clave de acceso',
-                showCancelButton: true,
-                confirmButtonColor: '#464704',
-                confirmButtonText: 'Guardar Contraseña'
-            });
-
-            if (newPassword) {
-                Swal.fire({ title: 'Actualizando sistema...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-                
-                let formData = new URLSearchParams();
-                formData.append('action', 'reset_password');
-                formData.append('idUsuario', idUsuario);
-                formData.append('newPassword', newPassword);
-
-                let response = await fetch('login', { method: 'POST', body: formData });
-                let data = await response.json();
-
-                if (data.success) {
-                    Swal.fire('¡Contraseña Actualizada!', 'Tu clave ha sido cambiada en la base de datos exitosamente. Ya puedes iniciar sesión.', 'success');
-                } else {
-                    Swal.fire('Error', data.message, 'error');
+                    Swal.fire('Error', 'No se pudo verificar el código.', 'error');
                 }
             }
         }

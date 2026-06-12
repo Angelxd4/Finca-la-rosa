@@ -10,34 +10,43 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-// IMPORTANTE: Esta ruta es la que el HTML usará para pedir la foto.
 @WebServlet("/uploads/*")
 public class ImageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String filename = request.getPathInfo();
+        
+        // Evita que busquen la carpeta vacía
         if (filename == null || filename.equals("/")) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         
-        filename = filename.substring(1);
+        filename = filename.substring(1); // Quitar el slash inicial "/"
         
-        // RUTA DONDE ESTÁN GUARDADAS TUS FOTOS (La que usamos en BovinoServlet)
-        String uploadPath = "C:\\Users\\angel\\OneDrive\\Desktop\\Ejercicios Java\\Finca la rosa\\gestion-ganadera\\src\\main\\webapp\\uploads";
+        // =================================================================
+        // CORRECCIÓN: RUTA DINÁMICA ABSOLUTA
+        // Esto garantiza que busque en la misma carpeta donde EmpleadoServlet
+        // y PerfilServlet guardan las fotografías.
+        // =================================================================
+        String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
         File file = new File(uploadPath, filename);
         
         if (file.exists()) {
             // DETECTA EL TIPO DE ARCHIVO (png, jpg)
             String mimeType = getServletContext().getMimeType(file.getName());
-            if (mimeType == null) mimeType = "application/octet-stream";
+            if (mimeType == null) {
+                mimeType = "application/octet-stream";
+            }
             
+            // Envía la imagen al HTML
             response.setContentType(mimeType);
             response.setContentLength((int) file.length());
             Files.copy(file.toPath(), response.getOutputStream());
         } else {
-            System.err.println("IMAGEN NO ENCONTRADA: " + file.getAbsolutePath());
+            // Si la foto no existe, imprime la ruta exacta donde la buscó para ayudar a depurar
+            System.err.println("IMAGEN NO ENCONTRADA EN: " + file.getAbsolutePath());
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }

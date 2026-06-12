@@ -6,6 +6,7 @@ import java.util.Random;
 
 import com.finca.dao.UsuarioDAO;
 import com.finca.models.Usuario;
+import com.google.gson.JsonObject; // Importación clave para blindar el JSON
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,86 +28,146 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        
-        // ======================================================
-        // FLUJO AJAX: RECUPERACIÓN DE CONTRASEÑA OTP
-        // ======================================================
-        if ("request_otp".equals(action)) {
-            handleRequestOtp(request, response);
-            return;
-        } else if ("verify_otp".equals(action)) {
-            handleVerifyOtp(request, response);
-            return;
-        } else if ("reset_password".equals(action)) {
-            handleResetPassword(request, response);
-            return;
-        }
+        if (action == null) action = "";
 
-        // ======================================================
-        // FLUJO NORMAL: INICIO DE SESIÓN
-        // ======================================================
+        response.setContentType("application/json; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
+        if ("verify_credentials".equals(action)) {
+            handleVerifyCredentials(request, response, out);
+        } else if ("login_with_otp".equals(action)) {
+            handleLoginWithOtp(request, response, out);
+        } else if ("request_otp".equals(action)) {
+            handleRequestOtp(request, response, out);
+        } else if ("verify_otp".equals(action)) {
+            handleVerifyOtp(request, response, out);
+        } else if ("reset_password".equals(action)) {
+            handleResetPassword(request, response, out);
+        } else {
+            JsonObject json = new JsonObject();
+            json.addProperty("success", false);
+            json.addProperty("message", "Acción no reconocida por el servidor.");
+            out.print(json.toString());
+        }
+        out.flush();
+    }
+
+    private void handleVerifyCredentials(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         
-        Usuario usuario = usuarioDAO.validarLogin(email, password);
-        if (usuario != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("usuarioLogueado", usuario);
-            response.sendRedirect("dashboard");
-        } else {
-            response.sendRedirect("login?error=1");
-        }
-    }
-
-    private void handleVerifyOtp(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-        int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
-        String otp = request.getParameter("otp");
+        Usuario u = usuarioDAO.validarLogin(email, password);
+        JsonObject json = new JsonObject();
         
-        if (usuarioDAO.validarTokenOTP(idUsuario, otp)) {
-            out.print("{\"success\": true}");
-        } else {
-            out.print("{\"success\": false, \"message\": \"El código es incorrecto o ya ha expirado.\"}");
-        }
-        out.flush();
-    }
-
-    private void handleResetPassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-        int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
-        String newPassword = request.getParameter("newPassword");
-        
-        if (usuarioDAO.actualizarPassword(idUsuario, newPassword)) {
-            out.print("{\"success\": true}");
-        } else {
-            out.print("{\"success\": false, \"message\": \"Error al guardar la nueva contraseña en el sistema.\"}");
-        }
-        out.flush();
-    }
-
-    // Se mantiene únicamente la versión correcta que envía el email real
-    private void handleRequestOtp(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-        String email = request.getParameter("email");
-        
-        Usuario u = usuarioDAO.obtenerPorEmail(email);
         if (u != null) {
             String otp = String.format("%06d", new Random().nextInt(999999));
             usuarioDAO.guardarTokenOTP(u.getId(), otp);
             
             try {
-                // AQUÍ SE ENVÍA EL CORREO REAL
                 com.finca.utils.EmailService.enviarCodigoOTP(email, otp);
-                out.print("{\"success\": true, \"idUsuario\": " + u.getId() + "}");
-            } catch (Exception e) {
-                out.print("{\"success\": false, \"message\": \"Error al enviar el correo: " + e.getMessage() + "\"}");
+                json.addProperty("success", true);
+                json.addProperty("idUsuario", u.getId());
+                json.addProperty("email", email);
+            } catch (Throwable e) {
+                e.printStackTrace(); 
+                json.addProperty("success", false);
+                json.addProperty("message", "Falla enviando correo: " + e.toString());
             }
         } else {
-            out.print("{\"success\": false, \"message\": \"El correo no existe.\"}");
+            json.addProperty("success", false);
+            json.addProperty("message", "El correo electrónico o la contraseña son incorrectos.");
         }
-        out.flush();
+        out.print(json.toString());
+    }
+
+    private void handleLoginWithOtp(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {
+        JsonObject json = new JsonObject();
+        try {
+            int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
+            String email = request.getParameter("email");
+            String otp = request.getParameter("otp");
+            
+            if (usuarioDAO.validarTokenOTP(idUsuario, otp)) {
+                Usuario u = usuarioDAO.obtenerPorEmail(email);
+                if (u != null) {
+                    HttpSession session = request.getSession();
+                    session.setAttribute("usuarioLogueado", u);
+                    json.addProperty("success", true);
+                } else {
+                    json.addProperty("success", false);
+                    json.addProperty("message", "Error al cargar la información del usuario.");
+                }
+            } else {
+                json.addProperty("success", false);
+                json.addProperty("message", "El código de seguridad es incorrecto o ya ha expirado.");
+            }
+        } catch (NumberFormatException e) {
+            json.addProperty("success", false);
+            json.addProperty("message", "Datos inválidos enviados al servidor.");
+        }
+        out.print(json.toString());
+    }
+
+    private void handleRequestOtp(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {
+        String email = request.getParameter("email");
+        Usuario u = usuarioDAO.obtenerPorEmail(email);
+        JsonObject json = new JsonObject();
+        
+        if (u != null) {
+            String otp = String.format("%06d", new Random().nextInt(999999));
+            usuarioDAO.guardarTokenOTP(u.getId(), otp);
+            
+            try {
+                com.finca.utils.EmailService.enviarCodigoOTP(email, otp);
+                json.addProperty("success", true);
+                json.addProperty("idUsuario", u.getId());
+            } catch (Throwable e) {
+                e.printStackTrace();
+                json.addProperty("success", false);
+                json.addProperty("message", "Falla de correo: " + e.toString());
+            }
+        } else {
+            json.addProperty("success", false);
+            json.addProperty("message", "El correo no existe en nuestro sistema.");
+        }
+        out.print(json.toString());
+    }
+
+    private void handleVerifyOtp(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {
+        JsonObject json = new JsonObject();
+        try {
+            int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
+            String otp = request.getParameter("otp");
+            
+            if (usuarioDAO.validarTokenOTP(idUsuario, otp)) {
+                json.addProperty("success", true);
+            } else {
+                json.addProperty("success", false);
+                json.addProperty("message", "El código es incorrecto o ya ha expirado.");
+            }
+        } catch (NumberFormatException e) {
+            json.addProperty("success", false);
+            json.addProperty("message", "ID de usuario inválido.");
+        }
+        out.print(json.toString());
+    }
+
+    private void handleResetPassword(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {
+        JsonObject json = new JsonObject();
+        try {
+            int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
+            String newPassword = request.getParameter("newPassword");
+            
+            if (usuarioDAO.actualizarPassword(idUsuario, newPassword)) {
+                json.addProperty("success", true);
+            } else {
+                json.addProperty("success", false);
+                json.addProperty("message", "Error al guardar la nueva contraseña en el sistema.");
+            }
+        } catch (NumberFormatException e) {
+            json.addProperty("success", false);
+            json.addProperty("message", "ID de usuario inválido.");
+        }
+        out.print(json.toString());
     }
 }

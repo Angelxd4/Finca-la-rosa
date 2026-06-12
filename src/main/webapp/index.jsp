@@ -12,11 +12,13 @@
 
     <style>
         :root {
-            --brand-main: #1C7345;
-            --brand-hover: #165c37;
-            --brand-accent: #00A859;
-            --brand-light: #eaf6ee;
-            --text-dark: #1d1d1f;
+            /* Paleta Oficial Finca La Rosa */
+            --moss: #464704;
+            --sage: #9CA889;
+            --khaki: #B7A78C;
+            --drab: #423926;
+            --ivory: #F3F5E7;
+            --text-dark: #2b3445;
         }
 
         body {
@@ -30,7 +32,7 @@
         .navbar-public {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(70, 71, 4, 0.08);
             padding: 15px 0;
             position: fixed;
             top: 0;
@@ -40,28 +42,29 @@
 
         .navbar-brand {
             font-weight: 800;
-            color: var(--brand-main) !important;
+            color: var(--drab) !important;
             font-size: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
+        /* Contenedor del nuevo logo */
         .brand-icon {
-            background: linear-gradient(135deg, var(--brand-main), var(--brand-accent));
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            background: var(--ivory);
+            color: var(--moss);
+            width: 45px;
+            height: 45px;
+            border-radius: 14px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(70, 71, 4, 0.15);
         }
 
         .btn-login-outline {
-            border: 2px solid var(--brand-main);
-            color: var(--brand-main);
+            border: 2px solid var(--moss);
+            color: var(--moss);
             font-weight: 700;
             padding: 8px 25px;
             border-radius: 50px;
@@ -72,15 +75,15 @@
         }
 
         .btn-login-outline:hover {
-            background: var(--brand-main);
+            background: var(--moss);
             color: white;
-            box-shadow: 0 5px 15px rgba(28, 115, 69, 0.2);
+            box-shadow: 0 5px 15px rgba(70, 71, 4, 0.25);
         }
 
         /* --- SECCIÓN HERO (PORTADA) --- */
         .hero-section {
             padding: 160px 0 100px;
-            background: linear-gradient(135deg, #f0f7f3 0%, #ffffff 100%);
+            background: linear-gradient(135deg, var(--ivory) 0%, #ffffff 100%);
             position: relative;
             overflow: hidden;
         }
@@ -91,7 +94,7 @@
             right: -100px;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, rgba(0, 168, 89, 0.08) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(156, 168, 137, 0.15) 0%, transparent 70%);
             border-radius: 50%;
             z-index: 0;
         }
@@ -102,7 +105,7 @@
             left: -150px;
             width: 600px;
             height: 600px;
-            background: radial-gradient(circle, rgba(28, 115, 69, 0.05) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(70, 71, 4, 0.08) 0%, transparent 70%);
             border-radius: 50%;
             z-index: 0;
         }
@@ -113,8 +116,8 @@
         }
 
         .hero-badge {
-            background: var(--brand-light);
-            color: var(--brand-main);
+            background: rgba(156, 168, 137, 0.2);
+            color: var(--moss);
             padding: 8px 20px;
             border-radius: 50px;
             font-weight: 700;
@@ -122,6 +125,7 @@
             display: inline-block;
             margin-bottom: 20px;
             letter-spacing: 1px;
+            border: 1px solid rgba(156, 168, 137, 0.4);
         }
 
         .hero-title {
@@ -129,12 +133,15 @@
             font-weight: 800;
             line-height: 1.1;
             margin-bottom: 20px;
-            color: #1a1a1a;
+            color: var(--drab);
             letter-spacing: -1px;
         }
 
         .hero-title span {
-            color: var(--brand-main);
+            color: var(--moss);
+            background: linear-gradient(120deg, var(--moss), var(--sage));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero-text {
@@ -146,7 +153,7 @@
         }
 
         .btn-primary-custom {
-            background: var(--brand-main);
+            background: var(--moss);
             color: white;
             padding: 15px 40px;
             border-radius: 50px;
@@ -156,7 +163,7 @@
             letter-spacing: 1px;
             border: none;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(28, 115, 69, 0.3);
+            box-shadow: 0 10px 25px rgba(70, 71, 4, 0.3);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
@@ -164,10 +171,10 @@
         }
 
         .btn-primary-custom:hover {
-            background: var(--brand-hover);
+            background: var(--drab);
             transform: translateY(-3px);
             color: white;
-            box-shadow: 0 15px 35px rgba(28, 115, 69, 0.4);
+            box-shadow: 0 15px 35px rgba(66, 57, 38, 0.4);
         }
 
         /* --- TARJETAS DE CARACTERÍSTICAS --- */
@@ -184,21 +191,36 @@
             border-radius: 24px;
             padding: 40px 30px;
             height: 100%;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--moss);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
         }
 
         .feature-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(28, 115, 69, 0.08);
-            border-color: #eaf6ee;
+            box-shadow: 0 20px 40px rgba(70, 71, 4, 0.1);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
         }
 
         .feature-icon {
             width: 60px;
             height: 60px;
-            background: var(--brand-light);
-            color: var(--brand-main);
+            background: var(--ivory);
+            color: var(--moss);
             border-radius: 16px;
             display: flex;
             justify-content: center;
@@ -209,15 +231,16 @@
         }
 
         .feature-card:hover .feature-icon {
-            background: var(--brand-main);
+            background: var(--moss);
             color: white;
+            transform: rotate(5deg) scale(1.1);
         }
 
         .feature-title {
             font-weight: 800;
             font-size: 1.25rem;
             margin-bottom: 15px;
-            color: #2b3445;
+            color: var(--drab);
         }
 
         .feature-text {
@@ -229,8 +252,8 @@
 
         /* --- FOOTER --- */
         .footer {
-            background: #1a201d;
-            color: #8c9c93;
+            background: var(--drab);
+            color: var(--khaki);
             padding: 40px 0;
             text-align: center;
         }
@@ -240,6 +263,10 @@
             font-weight: 800;
             font-size: 1.2rem;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
     </style>
 </head>
@@ -249,7 +276,14 @@
         <div class="container d-flex justify-content-between align-items-center">
             <a href="index.jsp" class="navbar-brand text-decoration-none">
                 <div class="brand-icon">
-                    <i class="bi bi-moisture"></i>
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 16v6" />
+                        <path d="M12 20a4 4 0 0 1-3-3" />
+                        <path d="M12 18a4 4 0 0 0 3-3" />
+                        <path d="M12 16c-4.5 0-7-3.5-7-7 0-3 3-5 7-5s7 2 7 5c0 3.5-2.5 7-7 7z" />
+                        <path d="M12 4c-2 2-2 5 0 7s4 2 5 1" />
+                        <path d="M12 11c-1.5-1-1.5-3 0-4" />
+                    </svg>
                 </div>
                 La Rosa
             </a>
@@ -278,13 +312,13 @@
                 </div>
                 <div class="col-lg-5">
                     <div class="position-relative d-flex justify-content-center">
-                        <div style="width: 350px; height: 450px; background: linear-gradient(135deg, #1C7345, #00A859); border-radius: 40px; transform: rotate(5deg); position: absolute; z-index: 1; opacity: 0.1;"></div>
-                        <div style="width: 350px; height: 450px; background: white; border-radius: 40px; z-index: 2; box-shadow: 0 20px 50px rgba(0,0,0,0.1); padding: 30px; display: flex; flex-direction: column; gap: 20px;">
-                            <div style="width: 50%; height: 15px; background: #eaf6ee; border-radius: 10px;"></div>
-                            <div style="width: 100%; height: 120px; background: #f8f9fa; border-radius: 20px; border: 1px dashed #dee2e6;"></div>
+                        <div style="width: 350px; height: 450px; background: linear-gradient(135deg, var(--moss), var(--sage)); border-radius: 40px; transform: rotate(5deg); position: absolute; z-index: 1; opacity: 0.25;"></div>
+                        <div style="width: 350px; height: 450px; background: white; border-radius: 40px; z-index: 2; box-shadow: 0 25px 60px rgba(66, 57, 38, 0.15); padding: 30px; display: flex; flex-direction: column; gap: 20px;">
+                            <div style="width: 50%; height: 15px; background: var(--ivory); border-radius: 10px;"></div>
+                            <div style="width: 100%; height: 120px; background: #f8f9fa; border-radius: 20px; border: 1.5px dashed var(--sage);"></div>
                             <div class="d-flex gap-3">
-                                <div style="flex: 1; height: 80px; background: #eaf6ee; border-radius: 15px;"></div>
-                                <div style="flex: 1; height: 80px; background: #eaf6ee; border-radius: 15px;"></div>
+                                <div style="flex: 1; height: 80px; background: var(--ivory); border-radius: 15px;"></div>
+                                <div style="flex: 1; height: 80px; background: var(--ivory); border-radius: 15px;"></div>
                             </div>
                             <div style="width: 80%; height: 15px; background: #f8f9fa; border-radius: 10px; margin-top: auto;"></div>
                         </div>
@@ -297,16 +331,14 @@
     <section class="features-section">
         <div class="container">
             <div class="text-center mb-5 pb-3">
-                <h2 class="fw-bolder" style="color: #1a1a1a;">Módulos del Sistema</h2>
+                <h2 class="fw-bolder" style="color: var(--drab);">Módulos del Sistema</h2>
                 <p class="text-muted">Herramientas profesionales para el desarrollo del agro.</p>
             </div>
             
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
                     <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="bi bi-clipboard2-data-fill"></i>
-                        </div>
+                        <div class="feature-icon"><i class="bi bi-clipboard2-data-fill"></i></div>
                         <h3 class="feature-title">Inventario Bovino</h3>
                         <p class="feature-text">Control exacto del hato ganadero, clasificando animales por producción, venta y crías con validaciones biológicas.</p>
                     </div>
@@ -314,9 +346,7 @@
 
                 <div class="col-lg-3 col-md-6">
                     <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="bi bi-shield-plus"></i>
-                        </div>
+                        <div class="feature-icon"><i class="bi bi-shield-plus"></i></div>
                         <h3 class="feature-title">Bioseguridad</h3>
                         <p class="feature-text">Registro clínico de tratamientos y alertas asíncronas para apartar la leche de descarte del tanque comercial.</p>
                     </div>
@@ -324,9 +354,7 @@
 
                 <div class="col-lg-3 col-md-6">
                     <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="bi bi-droplet-half"></i>
-                        </div>
+                        <div class="feature-icon"><i class="bi bi-droplet-half"></i></div>
                         <h3 class="feature-title">Ordeño y Lácteos</h3>
                         <p class="feature-text">Cálculo de eficiencia de ordeño en tiempo real y módulo de fábrica para transformar leche cruda en productos.</p>
                     </div>
@@ -334,11 +362,9 @@
 
                 <div class="col-lg-3 col-md-6">
                     <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="bi bi-kanban"></i>
-                        </div>
-                        <h3 class="feature-title">Tablero de Tareas</h3>
-                        <p class="feature-text">Gestión ágil (Kanban) para asignar responsabilidades a operarios y veterinarios mediante sistema Drag & Drop.</p>
+                        <div class="feature-icon"><i class="bi bi-kanban"></i></div>
+                        <h3 class="feature-title">Tablero Kanban</h3>
+                        <p class="feature-text">Gestión ágil para asignar responsabilidades a operarios y veterinarios mediante sistema interactivo Drag & Drop.</p>
                     </div>
                 </div>
             </div>
@@ -348,7 +374,15 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-brand">
-                <i class="bi bi-moisture me-2" style="color: var(--brand-accent);"></i>Finca La Rosa
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 16v6" />
+                    <path d="M12 20a4 4 0 0 1-3-3" />
+                    <path d="M12 18a4 4 0 0 0 3-3" />
+                    <path d="M12 16c-4.5 0-7-3.5-7-7 0-3 3-5 7-5s7 2 7 5c0 3.5-2.5 7-7 7z" />
+                    <path d="M12 4c-2 2-2 5 0 7s4 2 5 1" />
+                    <path d="M12 11c-1.5-1-1.5-3 0-4" />
+                </svg>
+                Finca La Rosa
             </div>
             <p class="mb-0" style="font-size: 0.85rem;">
                 Desarrollo de Software ADSO &copy; 2026. Todos los derechos reservados.
