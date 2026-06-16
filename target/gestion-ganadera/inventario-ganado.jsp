@@ -1,6 +1,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.finca.models.Bovino" %>
+<%@ page import="com.finca.models.Usuario" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="es">
@@ -16,11 +17,11 @@
     <style>
         :root {
             /* PALETA FINCA LA ROSA REASIGNADA PARA MÁXIMA VISIBILIDAD */
-            --sage: #9CA889 !important;       /* Verde claro visible */
-            --moss: #464704 !important;       /* Verde oscuro contraste */
-            --khaki: #B7A78C !important;      /* Tono arena */
-            --drab: #423926 !important;       /* Café oscuro */
-            --ivory: #F3F5E7 !important;      /* Fondo hueso */
+            --sage: #9CA889 !important; /* Verde claro visible */
+            --moss: #464704 !important; /* Verde oscuro contraste */
+            --khaki: #B7A78C !important; /* Tono arena */
+            --drab: #423926 !important; /* Café oscuro */
+            --ivory: #F3F5E7 !important; /* Fondo hueso */
             
             --glass-bg: rgba(243, 245, 231, 0.85);
             --glass-border: rgba(156, 168, 137, 0.4);
@@ -29,7 +30,7 @@
         }
 
         body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--ivory) !important; 
             color: var(--drab) !important; 
             min-height: 100vh;
@@ -131,6 +132,11 @@
 <jsp:include page="navbar.jsp" />
 
 <%
+    // 🔒 EVALUACIÓN DE ROL PARA OCULTAR BOTONES DE VENTA/ELIMINAR
+    Usuario usr = (Usuario) session.getAttribute("usuarioLogueado");
+    String rolActual = (usr != null && usr.getRol() != null) ? usr.getRol() : "";
+    boolean esVeterinario = rolActual.equals("2") || rolActual.equalsIgnoreCase("Veterinario");
+
     List<Bovino> listaProd = (List<Bovino>) request.getAttribute("listaProduccion");
     List<Bovino> listaVenta = (List<Bovino>) request.getAttribute("listaVenta");
     List<Bovino> listaCriasData = (List<Bovino>) request.getAttribute("listaCrias");
@@ -183,9 +189,11 @@
                 </button>
             </div>
 
+            <% if(!esVeterinario) { %>
             <button class="btn btn-success btn-lg shadow-sm rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalBovino">
                 <i class="bi bi-plus-circle-fill me-1"></i> Registrar
             </button>
+            <% } %>
         </div>
     </div>
 
@@ -238,7 +246,11 @@
                     </thead>
                     <tbody class="text-center table-hover">
                         <% if(listaTodos != null && !listaTodos.isEmpty()) {
-                            for(Bovino b : listaTodos) { %>
+                            for(Bovino b : listaTodos) { 
+                                boolean isSano = "Sano".equalsIgnoreCase(b.getEstadoSalud()) || "Sana".equalsIgnoreCase(b.getEstadoSalud());
+                                String bgSalud = isSano ? "bg-success" : "bg-danger";
+                                String iconSalud = isSano ? "bi-heart-fill" : "bi-bandaid-fill";
+                        %>
                         <tr>
                             <td>
                                 <% if(b.getImageUrl() != null && !b.getImageUrl().trim().isEmpty() && !b.getImageUrl().equals("null")) { %>
@@ -263,8 +275,8 @@
                                 </span>
                             </td>
                             <td>
-                                <span class="badge <%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "bg-success" : "bg-danger" %> px-3 py-2 rounded-pill border border-dark">
-                                    <i class="bi <%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "bi-heart-fill" : "bi-bandaid-fill" %>"></i> <%= b.getEstadoSalud() %>
+                                <span class="badge <%= bgSalud %> px-3 py-2 rounded-pill border border-dark">
+                                    <i class="bi <%= iconSalud %>"></i> <%= b.getEstadoSalud() %>
                                 </span>
                             </td>
                             <td>
@@ -273,17 +285,19 @@
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
                                     
-                                    <% if(b.getClasificacion().equals("Producción")) { %>
-                                        <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta" onclick="return confirm('¿Mover a lote de venta?');"><i class="bi bi-tag-fill"></i></button></form>
-                                    <% } else if(b.getClasificacion().equals("Venta") && b.getGenero().equals("Hembra")) { %>
-                                        <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="Regresar a Producción" onclick="return confirm('¿Regresar a producción?');"><i class="bi bi-droplet-fill"></i></button></form>
-                                    <% } else if(b.getClasificacion().equals("Cría")) { %>
-                                        <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta" onclick="return confirm('¿Mover a lote de venta?');"><i class="bi bi-tag-fill"></i></button></form>
-                                        <% if(b.getGenero().equals("Hembra")) { %>
-                                            <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="Pasar a Producción" onclick="return confirm('¿Pasar a hato lechero?');"><i class="bi bi-droplet-fill"></i></button></form>
+                                    <% if(!esVeterinario) { %>
+                                        <% if(b.getClasificacion().equals("Producción")) { %>
+                                            <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta" onclick="return confirm('¿Mover a lote de venta?');"><i class="bi bi-tag-fill"></i></button></form>
+                                        <% } else if(b.getClasificacion().equals("Venta") && b.getGenero().equals("Hembra")) { %>
+                                            <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="Regresar a Producción" onclick="return confirm('¿Regresar a producción?');"><i class="bi bi-droplet-fill"></i></button></form>
+                                        <% } else if(b.getClasificacion().equals("Cría")) { %>
+                                            <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta" onclick="return confirm('¿Mover a lote de venta?');"><i class="bi bi-tag-fill"></i></button></form>
+                                            <% if(b.getGenero().equals("Hembra")) { %>
+                                                <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="Pasar a Producción" onclick="return confirm('¿Pasar a hato lechero?');"><i class="bi bi-droplet-fill"></i></button></form>
+                                            <% } %>
                                         <% } %>
+                                        <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><button type="submit" class="btn btn-danger action-btn" title="Eliminar" onclick="return confirm('¿Eliminar definitivamente?');"><i class="bi bi-trash3-fill"></i></button></form>
                                     <% } %>
-                                    <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><button type="submit" class="btn btn-danger action-btn" title="Eliminar" onclick="return confirm('¿Eliminar definitivamente?');"><i class="bi bi-trash3-fill"></i></button></form>
                                 </div>
                             </td>
                         </tr>
@@ -297,7 +311,10 @@
             <div class="view-grid d-none">
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
                     <% if(listaTodos != null && !listaTodos.isEmpty()) {
-                        for(Bovino b : listaTodos) { %>
+                        for(Bovino b : listaTodos) { 
+                            boolean isSano = "Sano".equalsIgnoreCase(b.getEstadoSalud()) || "Sana".equalsIgnoreCase(b.getEstadoSalud());
+                            String textSalud = isSano ? "text-success" : "text-danger";
+                    %>
                     <div class="col">
                         <div class="card h-100 bovino-card border-0">
                             <div class="card-img-wrapper">
@@ -327,7 +344,7 @@
                                     </div>
                                     <div class="text-center w-50">
                                         <small class="text-muted d-block" style="font-size: 11px; font-weight:700;">SALUD</small>
-                                        <strong class="<%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "text-success" : "text-danger" %>"><%= b.getEstadoSalud() %></strong>
+                                        <strong class="<%= textSalud %>"><%= b.getEstadoSalud() %></strong>
                                     </div>
                                 </div>
                                 
@@ -336,17 +353,19 @@
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
                                     
-                                    <% if(b.getClasificacion().equals("Producción")) { %>
-                                        <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta" onclick="return confirm('¿Mover a lote de venta?');"><i class="bi bi-tag-fill"></i></button></form>
-                                    <% } else if(b.getClasificacion().equals("Venta") && b.getGenero().equals("Hembra")) { %>
-                                        <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="Regresar a Producción" onclick="return confirm('¿Regresar a producción?');"><i class="bi bi-droplet-fill"></i></button></form>
-                                    <% } else if(b.getClasificacion().equals("Cría")) { %>
-                                        <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta" onclick="return confirm('¿Mover a lote de venta?');"><i class="bi bi-tag-fill"></i></button></form>
-                                        <% if(b.getGenero().equals("Hembra")) { %>
-                                            <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="Pasar a Producción" onclick="return confirm('¿Pasar a hato lechero?');"><i class="bi bi-droplet-fill"></i></button></form>
+                                    <% if(!esVeterinario) { %>
+                                        <% if(b.getClasificacion().equals("Producción")) { %>
+                                            <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta" onclick="return confirm('¿Mover a lote de venta?');"><i class="bi bi-tag-fill"></i></button></form>
+                                        <% } else if(b.getClasificacion().equals("Venta") && b.getGenero().equals("Hembra")) { %>
+                                            <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="Regresar a Producción" onclick="return confirm('¿Regresar a producción?');"><i class="bi bi-droplet-fill"></i></button></form>
+                                        <% } else if(b.getClasificacion().equals("Cría")) { %>
+                                            <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta" onclick="return confirm('¿Mover a lote de venta?');"><i class="bi bi-tag-fill"></i></button></form>
+                                            <% if(b.getGenero().equals("Hembra")) { %>
+                                                <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="Pasar a Producción" onclick="return confirm('¿Pasar a hato lechero?');"><i class="bi bi-droplet-fill"></i></button></form>
+                                            <% } %>
                                         <% } %>
+                                        <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><button type="submit" class="btn btn-danger action-btn" title="Eliminar" onclick="return confirm('¿Eliminar definitivamente?');"><i class="bi bi-trash3-fill"></i></button></form>
                                     <% } %>
-                                    <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><button type="submit" class="btn btn-danger action-btn" title="Eliminar" onclick="return confirm('¿Eliminar definitivamente?');"><i class="bi bi-trash3-fill"></i></button></form>
                                 </div>
                             </div>
                         </div>
@@ -373,7 +392,10 @@
                     </thead>
                     <tbody class="text-center table-hover">
                         <% if(listaProd != null && !listaProd.isEmpty()) {
-                            for(Bovino b : listaProd) { %>
+                            for(Bovino b : listaProd) { 
+                                boolean isSano = "Sano".equalsIgnoreCase(b.getEstadoSalud()) || "Sana".equalsIgnoreCase(b.getEstadoSalud());
+                                String bgSalud = isSano ? "bg-success" : "bg-danger";
+                        %>
                         <tr>
                             <td>
                                 <% if(b.getImageUrl() != null && !b.getImageUrl().trim().isEmpty() && !b.getImageUrl().equals("null")) { %>
@@ -393,7 +415,7 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="badge <%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "bg-success" : "bg-danger" %> border border-dark rounded-pill px-3 py-2">
+                                <span class="badge <%= bgSalud %> border border-dark rounded-pill px-3 py-2">
                                     <%= b.getEstadoSalud() %>
                                 </span>
                             </td>
@@ -402,8 +424,11 @@
                                     <button class="btn btn-info text-white action-btn btn-resumen" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-edad="<%= b.getEdadAnios() %>" data-peso="<%= b.getPesoKg() %>" data-partos="<%= b.getNumeroPartos() %>" data-proposito="<%= b.getProposito() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalResumen" title="Vista Rápida"><i class="bi bi-eye-fill"></i></button>
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
+                                    
+                                    <% if(!esVeterinario) { %>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Vender"><i class="bi bi-tag-fill"></i></button></form>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><button type="submit" class="btn btn-danger action-btn" title="Eliminar" onclick="return confirm('¿Eliminar definitivamente?');"><i class="bi bi-trash3-fill"></i></button></form>
+                                    <% } %>
                                 </div>
                             </td>
                         </tr>
@@ -417,7 +442,10 @@
             <div class="view-grid d-none mt-3">
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
                     <% if(listaProd != null && !listaProd.isEmpty()) {
-                        for(Bovino b : listaProd) { %>
+                        for(Bovino b : listaProd) { 
+                            boolean isSano = "Sano".equalsIgnoreCase(b.getEstadoSalud()) || "Sana".equalsIgnoreCase(b.getEstadoSalud());
+                            String textSalud = isSano ? "text-success" : "text-danger";
+                    %>
                     <div class="col">
                         <div class="card h-100 bovino-card border-0">
                             <div class="card-img-wrapper" style="height: 180px;">
@@ -431,14 +459,17 @@
                                 <h5 class="fw-bold text-success text-center mb-1"><%= b.getNumeroArete() %></h5>
                                 <p class="text-center text-muted small mb-3"><%= b.getRaza() %></p>
                                 <div class="bg-success text-dark text-center fw-bold rounded-pill border border-dark py-2 mb-3">
-                                    <i class="bi bi-droplet-half text-dark"></i> <%= b.getLitrosDiariosPromedio() %> L / día
+                                     <i class="bi bi-droplet-half text-dark"></i> <%= b.getLitrosDiariosPromedio() %> L / día
                                 </div>
                                 <div class="d-flex gap-2 justify-content-center flex-wrap mt-3 pt-2">
                                     <button class="btn btn-info text-white action-btn btn-resumen" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-edad="<%= b.getEdadAnios() %>" data-peso="<%= b.getPesoKg() %>" data-partos="<%= b.getNumeroPartos() %>" data-proposito="<%= b.getProposito() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalResumen" title="Vista Rápida"><i class="bi bi-eye-fill"></i></button>
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
+                                    
+                                    <% if(!esVeterinario) { %>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Vender"><i class="bi bi-tag-fill"></i></button></form>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><button type="submit" class="btn btn-danger action-btn" title="Eliminar" onclick="return confirm('¿Eliminar definitivamente?');"><i class="bi bi-trash3-fill"></i></button></form>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
@@ -465,7 +496,11 @@
                     </thead>
                     <tbody class="text-center table-hover">
                         <% if(!listaCrias.isEmpty()) {
-                            for(Bovino b : listaCrias) { %>
+                            for(Bovino b : listaCrias) { 
+                                boolean isSano = "Sano".equalsIgnoreCase(b.getEstadoSalud()) || "Sana".equalsIgnoreCase(b.getEstadoSalud());
+                                String bgSalud = isSano ? "bg-success" : "bg-danger";
+                                String iconSalud = isSano ? "bi-heart-fill" : "bi-bandaid-fill";
+                        %>
                         <tr>
                             <td>
                                 <% if(b.getImageUrl() != null && !b.getImageUrl().trim().isEmpty() && !b.getImageUrl().equals("null")) { %>
@@ -481,8 +516,8 @@
                             </td>
                             <td><strong class="fs-6 text-dark"><%= b.getPesoKg() %></strong></td>
                             <td>
-                                <span class="badge <%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "bg-success" : "bg-danger" %> px-3 py-2 rounded-pill border border-dark">
-                                    <i class="bi <%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "bi-heart-fill" : "bi-bandaid-fill" %>"></i> <%= b.getEstadoSalud() %>
+                                <span class="badge <%= bgSalud %> px-3 py-2 rounded-pill border border-dark">
+                                    <i class="bi <%= iconSalud %>"></i> <%= b.getEstadoSalud() %>
                                 </span>
                             </td>
                             <td>
@@ -491,12 +526,13 @@
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
                                     
+                                    <% if(!esVeterinario) { %>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta"><i class="bi bi-tag-fill"></i></button></form>
                                     <% if(b.getGenero().equals("Hembra")) { %>
                                         <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="Pasar a Producción"><i class="bi bi-droplet-fill"></i></button></form>
                                     <% } %>
-                                    
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><button type="submit" class="btn btn-danger action-btn" title="Eliminar" onclick="return confirm('¿Eliminar definitivamente?');"><i class="bi bi-trash3-fill"></i></button></form>
+                                    <% } %>
                                 </div>
                             </td>
                         </tr>
@@ -510,7 +546,10 @@
             <div class="view-grid d-none mt-3">
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
                     <% if(!listaCrias.isEmpty()) {
-                        for(Bovino b : listaCrias) { %>
+                        for(Bovino b : listaCrias) { 
+                            boolean isSano = "Sano".equalsIgnoreCase(b.getEstadoSalud()) || "Sana".equalsIgnoreCase(b.getEstadoSalud());
+                            String textSalud = isSano ? "text-success" : "text-danger";
+                    %>
                     <div class="col">
                         <div class="card h-100 bovino-card border-0">
                             <div class="card-img-wrapper" style="height: 180px;">
@@ -531,7 +570,7 @@
                                     </div>
                                     <div class="text-center w-50">
                                         <small class="text-muted d-block" style="font-size: 11px; font-weight:700;">SALUD</small>
-                                        <strong class="<%= b.getEstadoSalud().equals("Sano") || b.getEstadoSalud().equals("Sana") ? "text-success" : "text-danger" %>"><%= b.getEstadoSalud() %></strong>
+                                        <strong class="<%= textSalud %>"><%= b.getEstadoSalud() %></strong>
                                     </div>
                                 </div>
                                 
@@ -540,12 +579,13 @@
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
                                     
+                                    <% if(!esVeterinario) { %>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta"><i class="bi bi-tag-fill"></i></button></form>
                                     <% if(b.getGenero().equals("Hembra")) { %>
                                         <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="Pasar a Producción"><i class="bi bi-droplet-fill"></i></button></form>
                                     <% } %>
-                                    
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><button type="submit" class="btn btn-danger action-btn" title="Eliminar" onclick="return confirm('¿Eliminar definitivamente?');"><i class="bi bi-trash3-fill"></i></button></form>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
@@ -597,10 +637,13 @@
                                     <button class="btn btn-info text-white action-btn btn-resumen" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-edad="<%= b.getEdadAnios() %>" data-peso="<%= b.getPesoKg() %>" data-partos="<%= b.getNumeroPartos() %>" data-proposito="<%= b.getProposito() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalResumen" title="Vista Rápida"><i class="bi bi-eye-fill"></i></button>
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
+                                    
+                                    <% if(!esVeterinario) { %>
                                     <% if(b.getGenero().equals("Hembra")) { %>
                                         <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="A Producción"><i class="bi bi-droplet-fill"></i></button></form>
                                     <% } %>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><button type="submit" class="btn btn-danger action-btn" title="Eliminar" onclick="return confirm('¿Eliminar definitivamente?');"><i class="bi bi-trash3-fill"></i></button></form>
+                                    <% } %>
                                 </div>
                             </td>
                         </tr>
@@ -634,10 +677,13 @@
                                     <button class="btn btn-info text-white action-btn btn-resumen" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-edad="<%= b.getEdadAnios() %>" data-peso="<%= b.getPesoKg() %>" data-partos="<%= b.getNumeroPartos() %>" data-proposito="<%= b.getProposito() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalResumen" title="Vista Rápida"><i class="bi bi-eye-fill"></i></button>
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
+                                    
+                                    <% if(!esVeterinario) { %>
                                     <% if(b.getGenero().equals("Hembra")) { %>
                                         <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="A Producción"><i class="bi bi-droplet-fill"></i></button></form>
                                     <% } %>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><button type="submit" class="btn btn-danger action-btn" title="Eliminar" onclick="return confirm('¿Eliminar definitivamente?');"><i class="bi bi-trash3-fill"></i></button></form>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
@@ -957,7 +1003,7 @@
         if (isRecienNacido) {
             inputFecha.value = new Date().toISOString().split('T')[0];
         } else if (inputFecha.value === new Date().toISOString().split('T')[0]) {
-            inputFecha.value = ""; 
+            inputFecha.value = "";
         }
 
         if (genero === 'Macho' || isRecienNacido) {
@@ -971,7 +1017,6 @@
         } else {
             inputPartos.readOnly = false;
             inputPartos.style.backgroundColor = "";
-            
             inputLitros.readOnly = false;
             inputLitros.style.backgroundColor = "";
         }
@@ -985,7 +1030,6 @@
             Array.from(selectClasificacion.options).forEach(opt => {
                 opt.disabled = (opt.value === 'Producción'); 
             });
-            
             if (isRecienNacido) {
                 selectClasificacion.value = 'Cría';
             } else if (selectClasificacion.value === 'Producción') {
@@ -1016,7 +1060,7 @@
             inputLitros.value = 0;
             inputLitros.readOnly = true;
             inputLitros.style.backgroundColor = "var(--ivory)";
-            
+
             Array.from(selectProposito.options).forEach(opt => {
                 opt.disabled = (opt.value === 'Leche' || opt.value === 'Doble Propósito');
             });
@@ -1060,7 +1104,7 @@
                     if (num > maxNum) maxNum = num;
                 }
             });
-            
+
             let nextNum = maxNum + 1;
             input.value = "V-" + nextNum.toString().padStart(3, '0');
         } else {
@@ -1136,7 +1180,7 @@
             let contextPath = document.getElementById('appContextPath').value;
             
             if(this.dataset.foto && this.dataset.foto !== "null" && this.dataset.foto.trim() !== "") { 
-                img.src = contextPath + "/" + this.dataset.foto; 
+                img.src = contextPath + "/" + this.dataset.foto;
                 img.classList.remove('d-none');
                 placeholder.classList.add('d-none');
                 placeholder.classList.remove('d-flex');

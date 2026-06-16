@@ -61,6 +61,16 @@ public class LoginServlet extends HttpServlet {
         
         if (u != null) {
             String otp = String.format("%06d", new Random().nextInt(999999));
+            
+            // ========================================================
+            // IMPRESIÓN DEL CÓDIGO OTP EN LA CONSOLA (INICIO DE SESIÓN)
+            // ========================================================
+            System.out.println("\n=========================================");
+            System.out.println("🔑 CÓDIGO OTP PARA INICIO DE SESIÓN");
+            System.out.println("👤 Usuario ID: " + u.getId() + " (" + email + ")");
+            System.out.println("🔢 CÓDIGO OTP: " + otp);
+            System.out.println("=========================================\n");
+            
             usuarioDAO.guardarTokenOTP(u.getId(), otp);
             
             try {
@@ -115,6 +125,16 @@ public class LoginServlet extends HttpServlet {
         
         if (u != null) {
             String otp = String.format("%06d", new Random().nextInt(999999));
+            
+            // ========================================================
+            // IMPRESIÓN DEL CÓDIGO OTP EN LA CONSOLA (RECUPERAR CLAVE)
+            // ========================================================
+            System.out.println("\n=========================================");
+            System.out.println("🔑 CÓDIGO OTP PARA RECUPERAR CONTRASEÑA");
+            System.out.println("👤 Usuario ID: " + u.getId() + " (" + email + ")");
+            System.out.println("🔢 CÓDIGO OTP: " + otp);
+            System.out.println("=========================================\n");
+
             usuarioDAO.guardarTokenOTP(u.getId(), otp);
             
             try {

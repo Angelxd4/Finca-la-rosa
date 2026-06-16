@@ -10,6 +10,7 @@ import java.sql.Date;
 
 import com.finca.dao.BovinoDAO;
 import com.finca.models.Bovino;
+import com.finca.models.Usuario;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -42,9 +43,28 @@ public class BovinoServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+        
+        if (usuarioLogueado == null) {
+            response.sendRedirect("login");
+            return;
+        }
+
+        String rol = usuarioLogueado.getRol() != null ? usuarioLogueado.getRol() : "";
+        boolean esVeterinario = rol.equals("2") || rol.equalsIgnoreCase("Veterinario");
+
         String action = request.getParameter("action");
         
         try {
+            // 🔒 BLINDAJE DE SEGURIDAD: El Veterinario no puede vender ni eliminar
+            if (esVeterinario) {
+                if ("delete".equals(action) || ("mover".equals(action) && "Venta".equals(request.getParameter("destino")))) {
+                    response.sendRedirect("inventario-ganado?error=No tienes permisos para vender o dar de baja animales.");
+                    return;
+                }
+            }
+
             if ("mover".equals(action)) {
                 bovinoDAO.cambiarClasificacion(Integer.parseInt(request.getParameter("id")), request.getParameter("destino"));
                 response.sendRedirect("inventario-ganado?msg=movido");

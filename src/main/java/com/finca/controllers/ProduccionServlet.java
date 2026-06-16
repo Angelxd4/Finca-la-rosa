@@ -11,6 +11,7 @@ import com.finca.dao.UsuarioDAO;
 import com.finca.models.Bovino;
 import com.finca.models.DetalleOrdeno;
 import com.finca.models.Ordeno;
+import com.finca.models.Usuario;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -26,10 +27,33 @@ public class ProduccionServlet extends HttpServlet {
     private final UsuarioDAO usuarioDAO = new UsuarioDAO(); 
     private final BovinoDAO bovinoDAO = new BovinoDAO(); 
 
+    // 🔒 NUEVO: Método de Seguridad para restringir el acceso a la Lechería
+    private boolean verificarPermisoOperarioYAdmin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+        
+        if (usuarioLogueado == null) {
+            response.sendRedirect("login");
+            return false;
+        }
+        
+        String rol = usuarioLogueado.getRol() != null ? usuarioLogueado.getRol() : "";
+        // Solo permitimos el paso a Administrador (1) y Operario/Vaquero (3)
+        if (!rol.equals("1") && !rol.equalsIgnoreCase("Administrador") && 
+            !rol.equals("3") && !rol.equalsIgnoreCase("Operario")) {
+            
+            response.sendRedirect("dashboard?error=acceso_denegado");
+            return false;
+        }
+        return true;
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        if (session.getAttribute("usuarioLogueado") == null) { response.sendRedirect("login"); return; }
+        // 🔒 BLINDAJE DE SEGURIDAD (Si no es Admin u Operario, se detiene la ejecución)
+        if (!verificarPermisoOperarioYAdmin(request, response)) {
+            return;
+        }
 
         String filtro = request.getParameter("f");
         if (filtro == null) filtro = "dia";
@@ -54,7 +78,6 @@ public class ProduccionServlet extends HttpServlet {
             else request.setAttribute("successMessage", "¡Operación completada exitosamente!");
         }
         
-        // Mapeo de errores incluyendo el biológico
         if (request.getParameter("error") != null) {
             if ("duplicada".equals(request.getParameter("error"))) {
                 request.setAttribute("errorMessage", "ALTO BIOLÓGICO: Una o más vacas seleccionadas ya fueron ordeñadas en el turno actual. La operación fue bloqueada.");
@@ -68,8 +91,10 @@ public class ProduccionServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        if (session.getAttribute("usuarioLogueado") == null) { response.sendRedirect("login"); return; }
+        // 🔒 BLINDAJE DE SEGURIDAD PARA OPERACIONES DE ESCRITURA (Guardar/Vaciar tanques)
+        if (!verificarPermisoOperarioYAdmin(request, response)) {
+            return;
+        }
 
         String action = request.getParameter("action");
         String filtroRetorno = request.getParameter("filtroActual");
@@ -146,16 +171,13 @@ public class ProduccionServlet extends HttpServlet {
             return;
         }
 
-        // =========================================================================
-        // VALIDACIÓN BIOLÓGICA BACKEND: Bloquear si se intenta ordeñar dos veces
-        // =========================================================================
+        // VALIDACIÓN BIOLÓGICA BACKEND
         for (DetalleOrdeno det : detalles) {
             if (produccionDAO.fueOrdenadaEnTurno(det.getIdBovino(), sesionOrdeno.getFechaHora())) {
                 response.sendRedirect("produccion?f=" + filtroRetorno + "&error=duplicada");
                 return;
             }
         }
-        // =========================================================================
 
         sesionOrdeno.setObservaciones(observaciones);
         sesionOrdeno.setTotalLitros(totalLitros);

@@ -3,6 +3,15 @@
 <%@ page import="com.finca.models.Tarea" %>
 <%@ page import="com.finca.models.Usuario" %>
 
+<%
+    Usuario usuarioActual = (Usuario) session.getAttribute("usuarioLogueado");
+    if (usuarioActual == null) { response.sendRedirect("login"); return; }
+    
+    // Verificamos si es Admin o Veterinario para darle permisos de asignar
+    String r = usuarioActual.getRol() != null ? usuarioActual.getRol() : "3";
+    boolean tienePermisos = r.equals("1") || r.equalsIgnoreCase("Administrador") || r.equals("2") || r.equalsIgnoreCase("Veterinario");
+%>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -75,7 +84,7 @@
             <span class="fw-medium" style="font-size: 0.95rem; color: var(--text-subtle);">${subTitulo}</span>
         </div>
         
-        <% if ((Boolean) request.getAttribute("esAdmin")) { %>
+        <% if(tienePermisos) { %>
         <button class="btn btn-brand shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTarea">
             <i class="bi bi-plus-lg me-1"></i> Asignar Tarea
         </button>
@@ -83,10 +92,11 @@
     </div>
 
     <% if(request.getAttribute("successMessage") != null) { %>
-        <script> document.addEventListener("DOMContentLoaded", () => Swal.fire({ icon: 'success', title: 'Listo', text: '<%= request.getAttribute("successMessage") %>', confirmButtonColor: '#464704', timer: 2500, showConfirmButton: false })); </script>
+        <script> document.addEventListener("DOMContentLoaded", () => Swal.fire({ icon: 'success', title: 'Completado', text: '<%= request.getAttribute("successMessage") %>', confirmButtonColor: '#464704', timer: 3500, showConfirmButton: false })); </script>
     <% } %>
+
     <% if(request.getAttribute("errorMessage") != null) { %>
-        <script> document.addEventListener("DOMContentLoaded", () => Swal.fire({ icon: 'error', title: 'Bloqueado', text: '<%= request.getAttribute("errorMessage") %>', confirmButtonColor: '#dc3545' })); </script>
+        <script> document.addEventListener("DOMContentLoaded", () => Swal.fire({ icon: 'error', title: 'Acceso Denegado', text: '<%= request.getAttribute("errorMessage") %>', confirmButtonColor: '#dc3545' })); </script>
     <% } %>
 
     <div class="kanban-board">
@@ -106,7 +116,7 @@
             <div class="task-card" draggable="true" ondragstart="drag(event)" id="task-<%= t.getIdTarea() %>">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="task-title"><%= t.getTitulo() %></div>
-                    <% if (esAdmin) { %>
+                    <% if (tienePermisos) { %>
                     <form action="kanban" method="POST" class="d-inline" id="del-<%= t.getIdTarea() %>">
                         <input type="hidden" name="action" value="eliminar">
                         <input type="hidden" name="idTarea" value="<%= t.getIdTarea() %>">
@@ -142,7 +152,7 @@
             <div class="task-card" draggable="true" ondragstart="drag(event)" id="task-<%= t.getIdTarea() %>" style="border-left: 3px solid var(--brand-info);">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="task-title"><%= t.getTitulo() %></div>
-                    <% if (esAdmin) { %>
+                    <% if (tienePermisos) { %>
                     <form action="kanban" method="POST" class="d-inline" id="del-<%= t.getIdTarea() %>">
                         <input type="hidden" name="action" value="eliminar">
                         <input type="hidden" name="idTarea" value="<%= t.getIdTarea() %>">
@@ -178,7 +188,7 @@
             <div class="task-card" draggable="true" ondragstart="drag(event)" id="task-<%= t.getIdTarea() %>" style="opacity: 0.7; background: #fafafa;">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="task-title text-decoration-line-through"><%= t.getTitulo() %></div>
-                    <% if (esAdmin) { %>
+                    <% if (tienePermisos) { %>
                     <form action="kanban" method="POST" class="d-inline" id="del-<%= t.getIdTarea() %>">
                         <input type="hidden" name="action" value="eliminar">
                         <input type="hidden" name="idTarea" value="<%= t.getIdTarea() %>">
@@ -202,7 +212,7 @@
     </div>
 </div>
 
-<% if ((Boolean) request.getAttribute("esAdmin")) { %>
+<% if (tienePermisos) { %>
 <div class="modal fade" id="modalTarea" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">

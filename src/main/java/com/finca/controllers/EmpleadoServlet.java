@@ -25,11 +25,32 @@ public class EmpleadoServlet extends HttpServlet {
 
     private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
+    // Método auxiliar para validar si el usuario es Administrador
+    private boolean verificarPermisoAdmin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+        
+        // Si no hay sesión, se va al login
+        if (usuarioLogueado == null) {
+            response.sendRedirect("login");
+            return false;
+        }
+        
+        // Validar que el rol sea 1 o Administrador
+        String rol = usuarioLogueado.getRol() != null ? usuarioLogueado.getRol() : "";
+        if (!rol.equals("1") && !rol.equalsIgnoreCase("Administrador")) {
+            // Si intenta acceder sin permiso, lo enviamos al dashboard con un error o acceso denegado
+            response.sendRedirect("dashboard?error=acceso_denegado");
+            return false;
+        }
+        
+        return true;
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        if (session.getAttribute("usuarioLogueado") == null) {
-            response.sendRedirect("login");
+        // 🔒 BLINDAJE DE SEGURIDAD
+        if (!verificarPermisoAdmin(request, response)) {
             return;
         }
 
@@ -49,6 +70,11 @@ public class EmpleadoServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // 🔒 BLINDAJE DE SEGURIDAD PARA OPERACIONES DE ESCRITURA
+        if (!verificarPermisoAdmin(request, response)) {
+            return;
+        }
+
         String action = request.getParameter("action");
 
         if ("delete".equals(action)) {

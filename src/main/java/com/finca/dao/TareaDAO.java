@@ -30,7 +30,7 @@ public class TareaDAO {
         return lista;
     }
 
-    // 2. NUEVO: Para los Operarios (Trae SOLO sus tareas)
+    // 2. Para los Operarios y Veterinarios (Trae SOLO sus tareas)
     public List<Tarea> obtenerPorAsignado(int idEmpleado) {
         List<Tarea> lista = new ArrayList<>();
         String sql = "SELECT t.*, u.full_name, u.profile_picture " +
@@ -68,6 +68,7 @@ public class TareaDAO {
     }
 
     public boolean actualizarEstado(int idTarea, String nuevoEstado) {
+        // Asegúrate de que la columna en la BD sea id_tarea (si es 'id', cámbialo en esta query)
         String sql = "UPDATE tareas SET estado = ? WHERE id_tarea = ?";
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

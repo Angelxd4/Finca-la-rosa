@@ -18,21 +18,38 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/lacteos")
 public class LacteosServlet extends HttpServlet {
     
-    // Instanciamos AMBOS DAOs para la fábrica
     private final ProductoLacteoDAO lacteoDAO = new ProductoLacteoDAO();
     private final LoteDAO loteDAO = new LoteDAO();
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // SEGURIDAD: Verificamos que haya sesión
+    // 🔒 NUEVO: Método de Seguridad para la Fábrica
+    private boolean verificarPermisoOperarioYAdmin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+        
         if (usuarioLogueado == null) {
             response.sendRedirect("login");
+            return false;
+        }
+        
+        String rol = usuarioLogueado.getRol() != null ? usuarioLogueado.getRol() : "";
+        // Solo permitimos interactuar con la fábrica a Administrador (1) y Operario (3)
+        // (Si más adelante quieres que los Vendedores (4) vean esto, puedes agregarlo aquí)
+        if (!rol.equals("1") && !rol.equalsIgnoreCase("Administrador") && 
+            !rol.equals("3") && !rol.equalsIgnoreCase("Operario")) {
+            
+            response.sendRedirect("dashboard?error=acceso_denegado");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // 🔒 BLINDAJE DE SEGURIDAD (Evita que el Veterinario mire el catálogo comercial/lotes)
+        if (!verificarPermisoOperarioYAdmin(request, response)) {
             return;
         }
 
-        // Cargamos la data de ambos mundos (Catálogo y Lotes)
         request.setAttribute("lacteos", lacteoDAO.obtenerTodos());
         request.setAttribute("lotes", loteDAO.obtenerTodos());
         
@@ -41,11 +58,8 @@ public class LacteosServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // SEGURIDAD
-        HttpSession session = request.getSession();
-        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
-        if (usuarioLogueado == null) {
-            response.sendRedirect("login");
+        // 🔒 BLINDAJE DE SEGURIDAD (Bloquea creación de productos/lotes a roles ajenos)
+        if (!verificarPermisoOperarioYAdmin(request, response)) {
             return;
         }
 
@@ -108,7 +122,6 @@ public class LacteosServlet extends HttpServlet {
             request.setAttribute("errorMessage", "Error en los datos ingresados: " + e.getMessage());
         }
         
-        // Recargamos la vista manteniendo las alertas
         doGet(request, response);
     }
 }

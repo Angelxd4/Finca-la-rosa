@@ -20,13 +20,13 @@
     <style>
         :root {
             /* PALETA FINCA LA ROSA (DARK MOSS GREEN & EARTH TONES) */
-            --bg-page: #F3F5E7 !important;       /* IVORY */
+            --bg-page: #F3F5E7 !important; /* IVORY */
             --bg-card: #FFFFFF !important;
             
             --brand-primary: #464704 !important; /* DARK MOSS GREEN */
-            --brand-accent: #B7A78C !important;  /* KHAKI */
-            --brand-info: #9CA889 !important;    /* SAGE */
-            --brand-dark: #423926 !important;    /* DRAB DARK BROWN */
+            --brand-accent: #B7A78C !important; /* KHAKI */
+            --brand-info: #9CA889 !important; /* SAGE */
+            --brand-dark: #423926 !important; /* DRAB DARK BROWN */
             
             --text-main: #423926 !important;
             --text-subtle: #7A7463 !important;
@@ -79,6 +79,13 @@
 
 <jsp:include page="navbar.jsp" />
 
+<% 
+    // 🔒 LÓGICA DE DETECCIÓN DE ROL
+    String rolUsuarioDash = (String) request.getAttribute("rolTexto"); 
+    if (rolUsuarioDash == null) rolUsuarioDash = "";
+    boolean esVeterinario = rolUsuarioDash.equalsIgnoreCase("Veterinario") || "2".equals(rolUsuarioDash);
+%>
+
 <input type="hidden" id="dashLabels" value="<%= request.getAttribute("labelsGrafico") != null ? request.getAttribute("labelsGrafico") : "L,M,M" %>">
 <input type="hidden" id="dashDatos" value="<%= request.getAttribute("datosGrafico") != null ? request.getAttribute("datosGrafico") : "0,0,0" %>">
 <input type="hidden" id="dashProd" value="<%= request.getAttribute("porcProduccion") != null ? request.getAttribute("porcProduccion") : "0" %>">
@@ -92,13 +99,20 @@
             <h3 class="fw-bolder mb-0" style="color: var(--brand-dark);">Dashboard General</h3>
             <span style="font-size: 0.9rem; color: var(--text-subtle);">Analíticas en tiempo real de Finca La Rosa</span>
         </div>
-        <a href="produccion" class="btn btn-brand px-4 shadow-sm">
-            <i class="bi bi-droplet-half me-2"></i> Ir a Ordeño
-        </a>
+        
+        <% if (!esVeterinario) { %>
+            <a href="produccion" class="btn btn-brand px-4 shadow-sm">
+                <i class="bi bi-droplet-half me-2"></i> Ir a Ordeño
+            </a>
+        <% } else { %>
+            <a href="inventario-ganado" class="btn btn-brand px-4 shadow-sm">
+                <i class="bi bi-clipboard2-pulse me-2"></i> Ir a Fichas Clínicas
+            </a>
+        <% } %>
     </div>
 
+    <% if (!esVeterinario) { %>
     <div class="row g-4 mb-4">
-        
         <div class="col-lg-3 col-md-6">
             <div class="mini-stat-card green">
                 <div class="mini-stat-title">Producción de Hoy</div>
@@ -178,9 +192,74 @@
         </div>
     </div>
 
+    <% } else { %>
+    <div class="row g-4 mb-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="mini-stat-card green">
+                <div class="mini-stat-title">Total del Hato</div>
+                <div class="d-flex justify-content-between align-items-end">
+                    <div class="mini-stat-value"><%= request.getAttribute("totalBovinos") %> <span class="fs-6 fw-normal" style="color: var(--text-subtle);">Cabezas</span></div>
+                    <div class="mini-stat-trend" style="color: var(--brand-primary);"><i class="bi bi-check-circle-fill"></i> Activas</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="mini-stat-card yellow">
+                <div class="mini-stat-title">Atenciones Médicas</div>
+                <div class="d-flex justify-content-between align-items-end">
+                    <div class="mini-stat-value text-warning"><%= request.getAttribute("atencionesMedicas") %> <span class="fs-6 fw-normal text-warning opacity-50">Bovinos</span></div>
+                    <div class="mini-stat-trend text-warning"><i class="bi bi-heart-pulse"></i> Requieren Revisión</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="mini-stat-card purple">
+                <div class="mini-stat-title">Eventos Clínicos Recientes</div>
+                <div class="d-flex justify-content-between align-items-end">
+                    <% 
+                        List<HistorialClinico> statsEventos = (List<HistorialClinico>) request.getAttribute("actividadesRecientes");
+                        int cantEventos = (statsEventos != null) ? statsEventos.size() : 0;
+                    %>
+                    <div class="mini-stat-value"><%= cantEventos %> <span class="fs-6 fw-normal" style="color: var(--text-subtle);">Registros</span></div>
+                    <div class="mini-stat-trend" style="color: var(--brand-info);"><i class="bi bi-clipboard2-data"></i> Historial</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-12">
+            <div class="dash-card">
+                <div class="card-title">
+                    <span><i class="bi bi-pie-chart-fill me-2" style="color: var(--brand-accent);"></i> Distribución Clínica del Hato (<%= request.getAttribute("totalBovinos") %> Cabezas)</span>
+                </div>
+                <div style="height: 300px; display: flex; justify-content: center; align-items: center;">
+                    <canvas id="doughnutChartVet"></canvas>
+                </div>
+                <div class="mt-4 d-flex justify-content-around text-center border-top pt-3" style="border-color: var(--border-subtle) !important;">
+                    <div>
+                        <h4 class="fw-bolder mb-0" style="color: var(--brand-primary);"><%= request.getAttribute("porcProduccion") %>%</h4>
+                        <span style="font-size: 0.75rem; color: var(--text-subtle); font-weight: 700;">Producción (Sanas)</span>
+                    </div>
+                    <div>
+                        <h4 class="fw-bolder mb-0" style="color: var(--brand-accent);"><%= request.getAttribute("porcCrias") %>%</h4>
+                        <span style="font-size: 0.75rem; color: var(--text-subtle); font-weight: 700;">Crías (Seguimiento)</span>
+                    </div>
+                    <div>
+                        <h4 class="fw-bolder mb-0" style="color: var(--brand-info);"><%= request.getAttribute("porcToros") %>%</h4>
+                        <span style="font-size: 0.75rem; color: var(--text-subtle); font-weight: 700;">Toros Sementales</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
     <div class="row g-4">
         
-        <div class="col-lg-4">
+        <div class="<%= esVeterinario ? "col-lg-12" : "col-lg-4" %>">
             <div class="dash-card">
                 <div class="card-title">
                     <span><i class="bi bi-activity text-danger me-2"></i> Actividades Clínicas Recientes</span>
@@ -190,20 +269,20 @@
                     <% 
                         List<HistorialClinico> actividades = (List<HistorialClinico>) request.getAttribute("actividadesRecientes");
                         if (actividades != null && !actividades.isEmpty()) {
-                            int lim = Math.min(actividades.size(), 4); // Mostrar max 4
+                            // Al veterinario le mostramos más registros (8) porque tiene la pantalla completa para él
+                            int lim = Math.min(actividades.size(), esVeterinario ? 8 : 4); 
                             for(int j=0; j<lim; j++) {
                                 HistorialClinico act = actividades.get(j);
                                 String icon = "bi-clipboard2-pulse";
-                                String bgClass = "bg-timeline-default"; 
-                                
+                                String bgClass = "bg-timeline-default";
                                 if("Vacuna".equalsIgnoreCase(act.getTipoEvento())) { 
-                                    icon = "bi-shield-check"; 
+                                    icon = "bi-shield-check";
                                     bgClass = "bg-timeline-vacuna"; 
                                 } else if("Enfermedad".equalsIgnoreCase(act.getTipoEvento())) { 
-                                    icon = "bi-heart-pulse"; 
+                                    icon = "bi-heart-pulse";
                                     bgClass = "bg-timeline-enfermedad"; 
                                 } else if("Parto".equalsIgnoreCase(act.getTipoEvento())) { 
-                                    icon = "bi-stars"; 
+                                    icon = "bi-stars";
                                     bgClass = "bg-timeline-parto"; 
                                 }
                     %>
@@ -222,6 +301,7 @@
             </div>
         </div>
 
+        <% if (!esVeterinario) { %>
         <div class="col-lg-8">
             <div class="dash-card">
                 <div class="card-title mb-4">
@@ -244,7 +324,7 @@
                             <% 
                                 List<LoteProduccion> lotes = (List<LoteProduccion>) request.getAttribute("ultimosLotes");
                                 if (lotes != null && !lotes.isEmpty()) {
-                                    int limitLotes = Math.min(lotes.size(), 6); 
+                                    int limitLotes = Math.min(lotes.size(), 6);
                                     for(int i = 0; i < limitLotes; i++) {
                                         LoteProduccion lote = lotes.get(i);
                                         String badgeColor = "#B7A78C"; // KHAKI
@@ -269,6 +349,7 @@
                 </div>
             </div>
         </div>
+        <% } %>
     </div>
 </div>
 
@@ -286,62 +367,94 @@ document.addEventListener("DOMContentLoaded", function() {
     const valToros = Number(document.getElementById('dashToros').value);
 
     // =========================================================
-    // GRÁFICOS: PALETA DE COLORES RÚSTICA APLICADA
+    // LÓGICA JAVASCRIPT PROTEGIDA PARA EVITAR ERRORES EN CONSOLA
     // =========================================================
-    const ctxLine = document.getElementById('lineChart').getContext('2d');
-    let gradientGreen = ctxLine.createLinearGradient(0, 0, 0, 300);
-    gradientGreen.addColorStop(0, 'rgba(70, 71, 4, 0.4)'); /* Dark Moss Green Transparent */
-    gradientGreen.addColorStop(1, 'rgba(70, 71, 4, 0.0)');
-
-    new Chart(ctxLine, {
-        type: 'line',
-        data: {
-            labels: labelsArr, 
-            datasets: [{
-                label: 'Litros Diarios',
-                data: datosArr, 
-                borderColor: '#464704', /* Dark Moss Green */
-                backgroundColor: gradientGreen,
-                borderWidth: 3,
-                tension: 0.4, 
-                fill: true,
-                pointBackgroundColor: '#ffffff',
-                pointBorderColor: '#464704',
-                pointBorderWidth: 2,
-                pointRadius: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, grid: { borderDash: [5, 5], color: '#E2E4D5' }, border: { display: false } },
-                x: { grid: { display: false }, border: { display: false } }
+    
+    // 1. Gráfico de Líneas (Solo se renderiza si el HTML existe)
+    const canvasLine = document.getElementById('lineChart');
+    if (canvasLine) {
+        const ctxLine = canvasLine.getContext('2d');
+        let gradientGreen = ctxLine.createLinearGradient(0, 0, 0, 300);
+        gradientGreen.addColorStop(0, 'rgba(70, 71, 4, 0.4)');
+        gradientGreen.addColorStop(1, 'rgba(70, 71, 4, 0.0)');
+        
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: labelsArr, 
+                datasets: [{
+                    label: 'Litros Diarios',
+                    data: datosArr, 
+                    borderColor: '#464704',
+                    backgroundColor: gradientGreen,
+                    borderWidth: 3,
+                    tension: 0.4, 
+                    fill: true,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#464704',
+                    pointBorderWidth: 2,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { borderDash: [5, 5], color: '#E2E4D5' }, border: { display: false } },
+                    x: { grid: { display: false }, border: { display: false } }
+                }
             }
-        }
-    });
+        });
+    }
 
-    const ctxDoughnut = document.getElementById('doughnutChart').getContext('2d');
-    new Chart(ctxDoughnut, {
-        type: 'doughnut',
-        data: {
-            labels: ['Producción', 'Crías', 'Toros'],
-            datasets: [{
-                data: [valProd, valCrias, valToros], 
-                backgroundColor: ['#464704', '#B7A78C', '#9CA889'], /* Moss Green, Khaki, Sage */
-                borderWidth: 0,
-                hoverOffset: 5
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '75%', 
-            plugins: { legend: { display: false } }
-        }
-    });
+    // 2. Gráfico Doughnut Original (Para Admin/Operario)
+    const canvasDoughnut = document.getElementById('doughnutChart');
+    if (canvasDoughnut) {
+        const ctxDoughnut = canvasDoughnut.getContext('2d');
+        new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Producción', 'Crías', 'Toros'],
+                datasets: [{
+                    data: [valProd, valCrias, valToros], 
+                    backgroundColor: ['#464704', '#B7A78C', '#9CA889'],
+                    borderWidth: 0,
+                    hoverOffset: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%', 
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
 
+    // 3. Gráfico Doughnut Especial (Para Veterinario)
+    const canvasDoughnutVet = document.getElementById('doughnutChartVet');
+    if (canvasDoughnutVet) {
+        const ctxDoughnutVet = canvasDoughnutVet.getContext('2d');
+        new Chart(ctxDoughnutVet, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sanas', 'Crías (Seguimiento)', 'Toros'],
+                datasets: [{
+                    data: [valProd, valCrias, valToros], 
+                    backgroundColor: ['#464704', '#B7A78C', '#9CA889'],
+                    borderWidth: 0,
+                    hoverOffset: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%', 
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
 });
 </script>
 

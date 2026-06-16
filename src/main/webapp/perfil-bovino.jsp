@@ -301,7 +301,8 @@
                                
                                if(listaEmpleados != null && !listaEmpleados.isEmpty()) {
                                    for(Usuario emp : listaEmpleados) {
-                                       if(emp.getRol() != null && emp.getRol().equals("Veterinario")) {
+                                       // LÓGICA CORREGIDA: Detectar si el rol es "2" o "Veterinario"
+                                       if(emp.getRol() != null && (emp.getRol().equals("2") || emp.getRol().equalsIgnoreCase("Veterinario"))) {
                                            tieneVeterinarios = true;
                             %>
                                            <option value="<%= emp.getId() %>">🧑‍⚕️ <%= emp.getFullName() %></option>
