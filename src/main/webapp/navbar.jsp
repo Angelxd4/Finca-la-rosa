@@ -36,6 +36,7 @@
         --drab: #423926 !important;       /* Drab Dark Brown */
         --ivory: #F3F5E7 !important;      /* Ivory */
         --border-subtle: #E2E4D5 !important; /* Borde muy sutil para limpiar el diseño */
+        --text-subtle: #7A8068 !important; /* Texto sutil agregado */
         --sidebar-width: 270px;
     }
 
@@ -80,10 +81,19 @@
     .sidebar-link.active-page i { color: var(--moss); }
 
     .sidebar-footer { padding-top: 15px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 10px; }
-    .live-clock { background: var(--ivory); color: var(--moss); padding: 10px 15px; border-radius: 14px; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--border-subtle); }
-    .user-profile { display: flex; align-items: center; gap: 12px; padding: 10px; background: white; border-radius: 16px; border: 1px solid var(--border-subtle); }
     
-    /* Agregado overflow:hidden para que la imagen de perfil encaje perfecta */
+    /* ========================================= */
+    /* ESTILOS PARA WIDGET DE CLIMA Y FECHA */
+    /* ========================================= */
+    .weather-widget { background: var(--ivory); border-radius: 14px; padding: 12px; border: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 4px; }
+    .weather-location { font-size: 0.7rem; font-weight: 800; color: var(--sage); text-transform: uppercase; letter-spacing: 0.5px; }
+    .weather-date { font-size: 0.85rem; font-weight: 700; color: var(--drab); text-transform: capitalize; }
+    .weather-temp { font-size: 0.95rem; font-weight: 800; color: var(--moss); display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+    .weather-temp i { font-size: 1.2rem; }
+
+    .live-clock { background: #FFFFFF; color: var(--drab); padding: 8px 15px; border-radius: 12px; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px dashed var(--border-subtle); margin-top: -2px; }
+    
+    .user-profile { display: flex; align-items: center; gap: 12px; padding: 10px; background: white; border-radius: 16px; border: 1px solid var(--border-subtle); }
     .user-avatar { background: var(--khaki); color: var(--drab); width: 38px; height: 38px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; font-weight: bold; overflow: hidden; }
     .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
     
@@ -145,7 +155,17 @@
     </nav>
 
     <div class="sidebar-footer">
-        <div class="live-clock" title="Hora actual de la Finca"><i class="bi bi-clock-history"></i> <span id="systemClock">00:00:00 AM</span></div>
+        
+        <div class="weather-widget" title="Clima en vivo por nombre de municipio">
+            <div class="weather-location"><i class="bi bi-geo-alt-fill me-1"></i> Sta. Rosa de Viterbo, Boyacá</div>
+            <div class="weather-date" id="systemDate">Cargando fecha...</div>
+            <div class="weather-temp" id="systemWeather">
+                <i class="bi bi-hourglass-split"></i> <span style="font-size:0.8rem; color:var(--text-subtle);">Buscando estación...</span>
+            </div>
+        </div>
+
+        <div class="live-clock" title="Hora actual de la Finca (Colombia)"><i class="bi bi-clock"></i> <span id="systemClock">00:00:00 AM</span></div>
+        
         <div class="user-profile">
             <a href="perfil" style="text-decoration: none;">
                 <div class="user-avatar" title="Ir a mi perfil">
@@ -167,24 +187,86 @@
 </aside>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let currentPath = window.location.pathname;
-        let navLinks = document.querySelectorAll('.nav-auto-active');
-        navLinks.forEach(link => {
-            let linkHref = link.getAttribute('href');
-            if (linkHref && currentPath.includes(linkHref)) { link.classList.add('active-page'); }
-        });
+    // 1. LÓGICA DE NAVEGACIÓN ACTIVA
+    let currentPath = window.location.pathname;
+    let navLinks = document.querySelectorAll('.nav-auto-active');
+    navLinks.forEach(link => {
+        let linkHref = link.getAttribute('href');
+        if (linkHref && currentPath.includes(linkHref)) { link.classList.add('active-page'); }
+    });
 
-        function updateClock() {
-            const now = new Date();
-            let hours = now.getHours(); let minutes = now.getMinutes(); let seconds = now.getSeconds();
-            let ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12; hours = hours ? hours : 12; 
-            hours = hours < 10 ? '0' + hours : hours; minutes = minutes < 10 ? '0' + minutes : minutes; seconds = seconds < 10 ? '0' + seconds : seconds;
-            const timeString = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
-            document.getElementById('systemClock').textContent = timeString;
+    // 2. LÓGICA DE RELOJ Y FECHA FORZADA A HORA DE COLOMBIA
+    function updateDateTime() {
+        const now = new Date();
+        
+        const optionsTime = { timeZone: 'America/Bogota', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        const optionsDate = { timeZone: 'America/Bogota', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        
+        let clockEl = document.getElementById('systemClock');
+        if (clockEl) {
+            clockEl.textContent = now.toLocaleTimeString('es-CO', optionsTime).toUpperCase();
         }
-        updateClock(); setInterval(updateClock, 1000);
+
+        let dateEl = document.getElementById('systemDate');
+        if (dateEl) {
+            dateEl.textContent = now.toLocaleDateString('es-CO', optionsDate);
+        }
+    }
+    
+    // 3. NUEVA API DEL CLIMA (WTTR.IN - Búsqueda por Municipio en vez de satélite)
+    function fetchWeather() {
+        // Formato JSON (j1), pidiendo exactamente el municipio y el idioma en español
+        const url = 'https://wttr.in/Santa+Rosa+de+Viterbo,Boyaca,Colombia?format=j1&lang=es';
+        
+        fetch(url, { cache: 'no-store' })
+        .then(function(response) {
+            if (!response.ok) throw new Error("Estación meteorológica no respondió");
+            return response.json();
+        })
+        .then(function(data) {
+            if(data && data.current_condition && data.current_condition.length > 0) {
+                const current = data.current_condition[0];
+                
+                // Temperatura Real
+                const temp = current.temp_C;
+                
+                // Descripción en español (si falla, usa inglés)
+                let desc = current.lang_es ? current.lang_es[0].value : current.weatherDesc[0].value;
+                // Acortar la descripción si es muy larga para que no rompa el diseño
+                if (desc.length > 18) { desc = desc.substring(0, 15) + '...'; }
+
+                const code = current.weatherCode;
+                let icon = 'bi-cloud-sun';
+                
+                // Traductor de códigos de la API a íconos de Bootstrap
+                if (code === '113') { icon = 'bi-sun-fill text-warning'; }
+                else if (code === '116') { icon = 'bi-cloud-sun-fill text-warning'; }
+                else if (['119', '122'].includes(code)) { icon = 'bi-cloud-fill text-secondary'; }
+                else if (['143', '248', '260'].includes(code)) { icon = 'bi-cloud-fog2-fill text-secondary'; }
+                else if (['176', '263', '266', '293', '296', '299', '302', '305', '308', '311', '314', '353', '356', '359'].includes(code)) { icon = 'bi-cloud-rain-fill text-info'; }
+                else if (['386', '389', '392', '395'].includes(code)) { icon = 'bi-cloud-lightning-rain-fill text-danger'; }
+
+                let weatherEl = document.getElementById('systemWeather');
+                if (weatherEl) {
+                    weatherEl.innerHTML = '<i class="bi ' + icon + '"></i> <span>' + temp + '°C - ' + desc + '</span>';
+                }
+            }
+        })
+        .catch(function(error) {
+            console.error("⚠️ Error conectando con estación terrestre:", error);
+            let weatherEl = document.getElementById('systemWeather');
+            if (weatherEl) {
+                weatherEl.innerHTML = '<i class="bi bi-cloud-slash text-secondary"></i> <span style="font-size:0.8rem;">Sin conexión</span>';
+            }
+        });
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        
+        fetchWeather(); 
+        setInterval(fetchWeather, 1800000); // 30 mins
     });
 
     function toggleSidebar() {

@@ -31,9 +31,10 @@ public class KanbanServlet extends HttpServlet {
     // =========================================================
     // 🔴 CREDENCIALES DE TWILIO OFICIALES
     // =========================================================
-    private final String TWILIO_ACCOUNT_SID = "AQUI_VA_EL_SID"; 
-    private final String TWILIO_AUTH_TOKEN = "AQUI_VA_EL_TOKEN"; 
-    private final String TWILIO_NUMBER = "+14155238886";
+    private final String TWILIO_ACCOUNT_SID = "ACe422a16dcdf72ca2b32c2806d4e45120"; 
+    private final String TWILIO_AUTH_TOKEN = "cdf11019da7faba295f2c83a4908e65f"; 
+    private final String TWILIO_NUMBER = "+14155238886"; 
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
