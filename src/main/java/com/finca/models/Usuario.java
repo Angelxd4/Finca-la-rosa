@@ -1,6 +1,7 @@
 package com.finca.models;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Usuario {
     private int id;
@@ -8,31 +9,34 @@ public class Usuario {
     private String documentId;
     private String email;
     private String password;
-    private String rol; // Nivel de acceso al sistema (Admin, Operario, etc.)
+    private String rol;
     private String profilePicture;
-
-    // --- NUEVOS CAMPOS DE RECURSOS HUMANOS ---
+    private Timestamp createdAt;
     private Date fechaNacimiento;
     private String direccion;
     private String telefono;
     private String contactoEmergencia;
     private String eps;
     private String codigoEmpleado;
-    private String cargo; // Puesto de trabajo real en la finca
+    private String cargo;
     private Date fechaIngreso;
     private String tipoContrato;
     private double salarioBase;
     private String horario;
     private String departamento;
     private String jefeInmediato;
+    
+    // 🆕 Nuevos campos obligatorios para Carnetización y RRHH
+    private String estado;
+    private String qrCodigo;
+    private String tipoSangre;
+    private String arl;
 
-    public Usuario() {
-    }
+    public Usuario() {}
 
-    // ==========================================
+    // =========================================================
     // GETTERS Y SETTERS COMPLETOS
-    // ==========================================
-
+    // =========================================================
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -53,6 +57,9 @@ public class Usuario {
 
     public String getProfilePicture() { return profilePicture; }
     public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
+
+    public Timestamp getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
 
     public Date getFechaNacimiento() { return fechaNacimiento; }
     public void setFechaNacimiento(Date fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
@@ -92,4 +99,16 @@ public class Usuario {
 
     public String getJefeInmediato() { return jefeInmediato; }
     public void setJefeInmediato(String jefeInmediato) { this.jefeInmediato = jefeInmediato; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+
+    public String getQrCodigo() { return qrCodigo; }
+    public void setQrCodigo(String qrCodigo) { this.qrCodigo = qrCodigo; }
+
+    public String getTipoSangre() { return tipoSangre; }
+    public void setTipoSangre(String tipoSangre) { this.tipoSangre = tipoSangre; }
+
+    public String getArl() { return arl; }
+    public void setArl(String arl) { this.arl = arl; }
 }

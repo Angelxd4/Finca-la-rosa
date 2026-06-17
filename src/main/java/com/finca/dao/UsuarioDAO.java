@@ -12,7 +12,7 @@ import com.finca.utils.DbConnection;
 public class UsuarioDAO {
 
     // ==========================================
-    // 1. MÉTODOS CRUD CLÁSICOS (Los que faltaban)
+    // 1. MÉTODOS CRUD CLÁSICOS
     // ==========================================
 
     public List<Usuario> obtenerTodos() {
@@ -32,15 +32,19 @@ public class UsuarioDAO {
     }
 
     public boolean registrar(Usuario u) {
-        String sql = "INSERT INTO usuarios (full_name, document_id, email, password, rol) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO usuarios (full_name, document_id, email, password, rol, qr_codigo) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
              
+            // GENERAMOS EL QR AUTOMÁTICAMENTE
+            String tokenQr = "FINCA-LAROSA-DOC-" + u.getDocumentId();
+
             stmt.setString(1, u.getFullName());
             stmt.setString(2, u.getDocumentId());
             stmt.setString(3, u.getEmail());
             stmt.setString(4, u.getPassword());
             stmt.setString(5, u.getRol());
+            stmt.setString(6, tokenQr);
             
             return stmt.executeUpdate() > 0;
         } catch (Exception e) {
@@ -50,7 +54,6 @@ public class UsuarioDAO {
     }
 
     public boolean actualizar(Usuario u) {
-        // Este es el actualizar básico del panel de empleados (Admin)
         String sql = "UPDATE usuarios SET full_name=?, document_id=?, email=?, rol=? WHERE id=?";
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -182,7 +185,8 @@ public class UsuarioDAO {
                      "full_name = ?, document_id = ?, email = ?, profile_picture = ?, " +
                      "fecha_nacimiento = ?, direccion = ?, telefono = ?, contacto_emergencia = ?, " +
                      "eps = ?, codigo_empleado = ?, cargo = ?, fecha_ingreso = ?, " +
-                     "tipo_contrato = ?, salario_base = ?, horario = ?, departamento = ?, jefe_inmediato = ? " +
+                     "tipo_contrato = ?, salario_base = ?, horario = ?, departamento = ?, jefe_inmediato = ?, " +
+                     "estado = ?, tipo_sangre = ?, arl = ? " +
                      "WHERE id = ?";
 
         try (Connection conn = DbConnection.getConnection();
@@ -205,7 +209,13 @@ public class UsuarioDAO {
             stmt.setString(15, u.getHorario());
             stmt.setString(16, u.getDepartamento());
             stmt.setString(17, u.getJefeInmediato());
-            stmt.setInt(18, u.getId());
+            
+            // NUEVOS CAMPOS AGREGADOS (Índices 18, 19, 20)
+            stmt.setString(18, u.getEstado());
+            stmt.setString(19, u.getTipoSangre());
+            stmt.setString(20, u.getArl());
+            
+            stmt.setInt(21, u.getId());
             
             return stmt.executeUpdate() > 0;
             
@@ -245,6 +255,12 @@ public class UsuarioDAO {
         u.setHorario(rs.getString("horario"));
         u.setDepartamento(rs.getString("departamento"));
         u.setJefeInmediato(rs.getString("jefe_inmediato"));
+        
+        // NUEVOS CAMPOS (Estado, Sangre, QR, ARL)
+        u.setEstado(rs.getString("estado"));
+        u.setQrCodigo(rs.getString("qr_codigo"));
+        u.setTipoSangre(rs.getString("tipo_sangre"));
+        u.setArl(rs.getString("arl"));
         
         return u;
     }

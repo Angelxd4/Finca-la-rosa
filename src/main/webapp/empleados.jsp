@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         :root {
@@ -66,6 +68,7 @@
         .btn-view:hover { background-color: rgba(156, 168, 137, 0.15); color: var(--brand-primary); }
         .btn-edit:hover { background-color: rgba(183, 167, 140, 0.2); color: var(--brand-dark); }
         .btn-delete:hover { background-color: #fff0f0; color: #dc3545; }
+        .btn-qr:hover { background-color: rgba(70, 71, 4, 0.15); color: var(--brand-primary); }
 
         .btn-brand { background-color: var(--brand-primary) !important; color: #FFFFFF !important; font-weight: 600 !important; border-radius: 14px !important; border: none; padding: 12px 24px; font-size: 0.95rem; letter-spacing: 0.5px;}
         .btn-brand:hover { background-color: var(--brand-dark) !important; transform: scale(1.02); }
@@ -100,8 +103,8 @@
         .btn-upload { background: rgba(156, 168, 137, 0.15); color: var(--brand-primary); border-radius: 50px; padding: 8px 20px; font-weight: 600; font-size: 0.85rem; transition: 0.3s; cursor: pointer; }
         .file-upload-wrapper:hover .btn-upload { background: rgba(156, 168, 137, 0.25); }
 
-        /* ================= MODAL "VER FICHA" (DISEÑO INFO) ================= */
-        .profile-view-header { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px 0 10px 0; }
+        /* ================= MODAL "VER FICHA" ================= */
+        .profile-view-header { d-flex: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px 0 10px 0; }
         .profile-view-avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: var(--shadow-apple); margin-bottom: 15px; background: var(--brand-info); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 2.5rem; font-weight: bold; }
         .profile-view-name { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; letter-spacing: -0.5px; }
         .profile-view-role { font-size: 0.9rem; font-weight: 600; color: var(--brand-info); text-transform: uppercase; letter-spacing: 1px; }
@@ -115,6 +118,9 @@
 
         div:where(.swal2-container) div:where(.swal2-popup) { border-radius: 28px; box-shadow: var(--shadow-hover) !important;}
         div:where(.swal2-container) button:where(.swal2-styled) { border-radius: 12px; font-weight: 600; }
+        
+        /* Ajuste para el contenedor del QR interno */
+        #qrContenedor img { margin: 0 auto; }
     </style>
 </head>
 <body>
@@ -133,13 +139,6 @@
         </button>
     </div>
 
-    <% if(request.getAttribute("successMessage") != null) { %>
-        <script> document.addEventListener("DOMContentLoaded", () => Swal.fire({ icon: 'success', title: 'Completado', text: '<%= request.getAttribute("successMessage") %>', confirmButtonColor: '#464704', timer: 2500, showConfirmButton: false })); </script>
-    <% } %>
-    <% if(request.getAttribute("errorMessage") != null) { %>
-        <script> document.addEventListener("DOMContentLoaded", () => Swal.fire({ icon: 'error', title: 'Error', text: '<%= request.getAttribute("errorMessage") %>', confirmButtonColor: '#dc3545' })); </script>
-    <% } %>
-
     <div class="module-container table-responsive">
         <table class="table align-middle">
             <thead class="text-center">
@@ -147,7 +146,7 @@
                     <th class="text-start">Empleado</th>
                     <th>Documento</th>
                     <th>Cargo</th>
-                    <th>Acceso</th>
+                    <th>Acceso / Estado</th>
                     <th>Opciones</th>
                 </tr>
             </thead>
@@ -185,9 +184,20 @@
                     </td>
                     <td style="color: var(--text-main); font-weight: 500;"><%= u.getDocumentId() %></td>
                     <td style="color: var(--text-subtle);"><%= cargoReal %></td>
-                    <td><span class="<%= badgeClass %>"><%= rolTexto %></span></td>
+                    <td>
+                        <span class="<%= badgeClass %> d-block mb-1"><%= rolTexto %></span>
+                        <% if("Inactivo".equalsIgnoreCase(u.getEstado())) { %>
+                            <span class="badge bg-danger-subtle text-danger rounded-pill" style="font-size: 0.7rem;">Inactivo</span>
+                        <% } %>
+                    </td>
                     <td>
                         <div class="d-flex gap-1 justify-content-center">
+                            
+                            <button type="button" class="action-btn btn-qr" title="Descargar Gafete PDF"
+                                onclick="verCarnet('<%= u.getFullName() %>', '<%= u.getDocumentId() %>', '<%= cargoReal %>', '<%= u.getTipoSangre() != null ? u.getTipoSangre() : "O+" %>', '<%= u.getArl() != null ? u.getArl() : "Positiva" %>')">
+                                <i class="bi bi-qr-code-scan"></i>
+                            </button>
+
                             <button type="button" class="action-btn btn-view" title="Ver Perfil" 
                                 onclick='abrirModalVer(<%= String.format("{\"nombre\":\"%s\", \"doc\":\"%s\", \"email\":\"%s\", \"rolTexto\":\"%s\", \"cargo\":\"%s\", \"salario\":\"%s\", \"tel\":\"%s\", \"eps\":\"%s\", \"foto\":\"%s\", \"inicial\":\"%s\"}", 
                                     u.getFullName(), u.getDocumentId(), u.getEmail(), rolTexto, 
@@ -198,11 +208,14 @@
                             </button>
 
                             <button type="button" class="action-btn btn-edit" title="Editar Información" 
-                                onclick='abrirModalEditar(<%= String.format("{\"id\":%d, \"nombre\":\"%s\", \"doc\":\"%s\", \"email\":\"%s\", \"rol\":\"%s\", \"cargo\":\"%s\", \"salario\":\"%s\", \"tel\":\"%s\", \"eps\":\"%s\", \"foto\":\"%s\"}", 
+                                onclick='abrirModalEditar(<%= String.format("{\"id\":%d, \"nombre\":\"%s\", \"doc\":\"%s\", \"email\":\"%s\", \"rol\":\"%s\", \"cargo\":\"%s\", \"salario\":\"%s\", \"tel\":\"%s\", \"eps\":\"%s\", \"foto\":\"%s\", \"estado\":\"%s\", \"rh\":\"%s\", \"arl\":\"%s\"}", 
                                     u.getId(), u.getFullName(), u.getDocumentId(), u.getEmail(), r, 
                                     (u.getCargo()!=null?u.getCargo():""), (u.getSalarioBase()), 
                                     (u.getTelefono()!=null?u.getTelefono():""), (u.getEps()!=null?u.getEps():""),
-                                    (u.getProfilePicture()!=null?u.getProfilePicture():"")) %>)'>
+                                    (u.getProfilePicture()!=null?u.getProfilePicture():""),
+                                    (u.getEstado()!=null?u.getEstado():"Activo"),
+                                    (u.getTipoSangre()!=null?u.getTipoSangre():""),
+                                    (u.getArl()!=null?u.getArl():"")) %>)'>
                                 <i class="bi bi-pencil"></i>
                             </button>
 
@@ -235,8 +248,7 @@
             </div>
             <div class="modal-body pt-0">
                 <div class="profile-view-header">
-                    <div class="profile-view-avatar" id="viewAvatar">
-                        </div>
+                    <div class="profile-view-avatar" id="viewAvatar"></div>
                     <div class="profile-view-name" id="viewNombre">Nombre del Empleado</div>
                     <div class="profile-view-role" id="viewRol">ROLES</div>
                 </div>
@@ -345,12 +357,29 @@
                                 <input type="text" name="telefono" id="inpTel" class="form-control">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Entidad de Salud</label>
-                                <input type="text" name="eps" id="inpEps" class="form-control">
-                            </div>
-                            <div class="col-md-12">
                                 <label class="form-label">Salario Base ($)</label>
                                 <input type="number" name="salarioBase" id="inpSalario" class="form-control" step="0.01">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Entidad de Salud (EPS)</label>
+                                <input type="text" name="eps" id="inpEps" class="form-control" placeholder="Ej: Sanitas">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">ARL</label>
+                                <input type="text" name="arl" id="inpArl" class="form-control" placeholder="Ej: Sura">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Tipo Sangre (RH)</label>
+                                <input type="text" name="tipoSangre" id="inpRh" class="form-control" placeholder="Ej: O+">
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label">Estado del Empleado</label>
+                                <select name="estado" id="inpEstado" class="form-select">
+                                    <option value="Activo">Activo (Trabajando)</option>
+                                    <option value="Inactivo">Inactivo (Suspendido/Retirado)</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -365,9 +394,108 @@
     </div>
 </div>
 
+<div class="modal fade" id="carnetModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px; background-color: #FFFFFF; overflow: hidden; border: none;">
+            
+            <div id="carnetImprimible" style="width: 100%; max-width: 320px; margin: 0 auto; background-color: #FFFFFF; padding: 35px 20px; border: 6px solid #464704; border-radius: 20px; box-sizing: border-box; text-align: center; position: relative;">
+                
+                <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;">
+                    <div style="font-size: 24px; line-height: 1;">🌹</div>
+                    <h5 style="margin: 0; color: #464704; font-weight: 900; font-size: 1.35rem; letter-spacing: -0.5px;">Finca La Rosa</h5>
+                </div>
+                
+                <div style="background-color: #423926; color: #FFFFFF; font-size: 0.7rem; padding: 4px 15px; border-radius: 20px; display: inline-block; font-weight: bold; letter-spacing: 1px; margin-bottom: 25px;">
+                    CARNET DE INGRESO
+                </div>
+                
+                <div style="background-color: #FFFFFF; padding: 12px; border-radius: 15px; border: 2px solid #E2E4D5; width: 164px; height: 164px; margin: 0 auto 25px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center;">
+                    <div id="qrContenedor" style="display: inline-block;"></div>
+                </div>
+
+                <h5 id="carnetNombre" style="color: #423926; font-weight: 800; margin: 0 0 4px 0; font-size: 1.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</h5>
+                <p id="carnetCargo" style="color: #9CA889; font-weight: 800; font-size: 0.85rem; margin: 0 0 22px 0; text-transform: uppercase; letter-spacing: 0.5px;">-</p>
+                
+                <div style="border-top: 2px dashed #E2E4D5; padding-top: 15px; text-align: left; font-size: 0.85rem; color: #423926; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;">
+                    <div style="width: 46%;"><b>CC:</b> <span id="carnetDoc" style="font-weight: 500;"></span></div>
+                    <div style="width: 46%;"><b>RH:</b> <span id="carnetRh" style="font-weight: 500;"></span></div>
+                    <div style="width: 100%;"><b>ARL:</b> <span id="carnetArl" style="font-weight: 500;"></span></div>
+                </div>
+            </div>
+
+            <div class="p-3 bg-light border-top text-center">
+                <button class="btn btn-brand w-100 rounded-pill py-2 shadow-sm" onclick="descargarPDF()">
+                    <i class="bi bi-file-earmark-pdf-fill me-1"></i> Descargar PDF Gafete
+                </button>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
 <script>
     // ==========================================
-    // MODAL DE VISUALIZACIÓN LECTURA (NUEVO)
+    // LÓGICA DE CÓDIGO QR SEGURO Y PDF NÍTIDO
+    // ==========================================
+    function verCarnet(nombre, documento, cargo, rh, arl) {
+        document.getElementById('carnetNombre').textContent = nombre;
+        document.getElementById('carnetCargo').textContent = cargo || 'OPERARIO GANADERO';
+        document.getElementById('carnetDoc').textContent = documento;
+        document.getElementById('carnetRh').textContent = rh || 'O+';
+        document.getElementById('carnetArl').textContent = arl || 'Positiva';
+
+        var qrString = "FINCA-LAROSA-DOC-" + documento;
+        
+        // Limpiar códigos QR generados anteriormente
+        document.getElementById('qrContenedor').innerHTML = "";
+        
+        // Dibujamos el QR nativo localmente (A prueba de fallos y bloqueos CORS en el PDF)
+        new QRCode(document.getElementById("qrContenedor"), {
+            text: qrString,
+            width: 140,
+            height: 140,
+            colorDark : "#464704", 
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+        
+        var modal = new bootstrap.Modal(document.getElementById('carnetModal'));
+        modal.show();
+    }
+
+    function descargarPDF() {
+        const elemento = document.getElementById('carnetImprimible');
+        const nombreEmpleado = document.getElementById('carnetNombre').textContent.replace(/\s+/g, '_');
+        
+        const opciones = {
+            margin:       [4, 4, 4, 4], 
+            filename:     'Carnet_' + nombreEmpleado + '.pdf',
+            image:        { type: 'jpeg', quality: 1.0 },
+            html2canvas:  { 
+                scale: 4, // Calidad Ultra HD para escaneo perfecto del sensor de la cámara
+                useCORS: true, 
+                backgroundColor: '#ffffff' 
+            },
+            jsPDF:        { 
+                unit: 'mm', 
+                format: [92, 138], // Proporciones de Carnet Industrial holgadas
+                orientation: 'portrait' 
+            }
+        };
+
+        const btn = document.querySelector('.btn-brand i.bi-file-earmark-pdf-fill').parentElement;
+        const textoOriginal = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Generando Gafete...';
+        btn.disabled = true;
+
+        html2pdf().set(opciones).from(elemento).save().then(() => {
+            btn.innerHTML = textoOriginal;
+            btn.disabled = false;
+        });
+    }
+
+    // ==========================================
+    // MODAL DE VISUALIZACIÓN LECTURA
     // ==========================================
     function abrirModalVer(empleado) {
         document.getElementById('viewNombre').innerText = empleado.nombre;
@@ -378,11 +506,9 @@
         document.getElementById('viewTel').innerText = empleado.tel;
         document.getElementById('viewEps').innerText = empleado.eps;
         
-        // Formatear Salario
         let salarioVal = parseFloat(empleado.salario);
         document.getElementById('viewSalario').innerText = (!isNaN(salarioVal) && salarioVal > 0) ? "$" + salarioVal.toLocaleString('es-CO') : "No asignado";
 
-        // Renderizar Foto de Perfil o Inicial
         const avatarContainer = document.getElementById('viewAvatar');
         if (empleado.foto && empleado.foto.trim() !== '') {
             avatarContainer.innerHTML = '<img src="uploads/' + empleado.foto + '" alt="Avatar" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
@@ -444,8 +570,10 @@
         document.getElementById('defaultIcon').style.display = 'block';
         document.getElementById('uploadLabel').innerText = 'Subir Fotografía';
         
-        const fields = ['formId', 'inpOldPic', 'inpFoto', 'inpNombre', 'inpDoc', 'inpEmail', 'inpRol', 'inpCargo', 'inpSalario', 'inpTel', 'inpEps'];
+        const fields = ['formId', 'inpOldPic', 'inpFoto', 'inpNombre', 'inpDoc', 'inpEmail', 'inpRol', 'inpCargo', 'inpSalario', 'inpTel', 'inpEps', 'inpArl', 'inpRh'];
         fields.forEach(id => document.getElementById(id).value = '');
+
+        document.getElementById('inpEstado').value = 'Activo';
     }
 
     function abrirModalEditar(empleado) {
@@ -465,6 +593,10 @@
         document.getElementById('inpSalario').value = empleado.salario;
         document.getElementById('inpTel').value = empleado.tel;
         document.getElementById('inpEps').value = empleado.eps;
+        
+        document.getElementById('inpArl').value = empleado.arl;
+        document.getElementById('inpRh').value = empleado.rh;
+        document.getElementById('inpEstado').value = empleado.estado;
         
         if (empleado.foto && empleado.foto.trim() !== '') {
             document.getElementById('imgPreview').src = 'uploads/' + empleado.foto;

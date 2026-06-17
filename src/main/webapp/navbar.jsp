@@ -3,10 +3,9 @@
 <%
     // 🔒 SEGURIDAD: Verificamos si el usuario realmente inició sesión
     Usuario usuarioActual = (Usuario) session.getAttribute("usuarioLogueado");
-    
     if (usuarioActual == null) {
         response.sendRedirect("login");
-        return; 
+        return;
     }
 
     // =========================================================
@@ -36,7 +35,7 @@
         --drab: #423926 !important;       /* Drab Dark Brown */
         --ivory: #F3F5E7 !important;      /* Ivory */
         --border-subtle: #E2E4D5 !important; /* Borde muy sutil para limpiar el diseño */
-        --text-subtle: #7A8068 !important; /* Texto sutil agregado */
+        --text-subtle: #7A8068 !important;   /* Texto sutil agregado */
         --sidebar-width: 270px;
     }
 
@@ -149,7 +148,11 @@
         <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: var(--moss); opacity: 0.6; letter-spacing: 1px;">Administración</div>
         <a href="kanban" class="sidebar-link nav-auto-active"><i class="bi bi-kanban"></i> Tablero de Tareas</a>
         
-        <% if (!"2".equals(rNav) && !"Veterinario".equalsIgnoreCase(rNav)) { %>
+        <%-- 🛡️ BLINDAJE ANTI-ESPACIOS: SOLAMENTE EL ADMINISTRADOR PUEDE VER EL BOTÓN DE PERSONAL --%>
+        <% 
+            String rolMenuSeguro = (rNav != null) ? rNav.trim().toLowerCase() : "";
+            if (rolMenuSeguro.equals("1") || rolMenuSeguro.contains("admin")) { 
+        %>
         <a href="empleados" class="sidebar-link nav-auto-active"><i class="bi bi-people-fill"></i> Personal</a>
         <% } %>
     </nav>
@@ -198,7 +201,6 @@
     // 2. LÓGICA DE RELOJ Y FECHA FORZADA A HORA DE COLOMBIA
     function updateDateTime() {
         const now = new Date();
-        
         const optionsTime = { timeZone: 'America/Bogota', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
         const optionsDate = { timeZone: 'America/Bogota', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         
@@ -215,9 +217,7 @@
     
     // 3. NUEVA API DEL CLIMA (WTTR.IN - Búsqueda por Municipio en vez de satélite)
     function fetchWeather() {
-        // Formato JSON (j1), pidiendo exactamente el municipio y el idioma en español
         const url = 'https://wttr.in/Santa+Rosa+de+Viterbo,Boyaca,Colombia?format=j1&lang=es';
-        
         fetch(url, { cache: 'no-store' })
         .then(function(response) {
             if (!response.ok) throw new Error("Estación meteorológica no respondió");
@@ -226,19 +226,14 @@
         .then(function(data) {
             if(data && data.current_condition && data.current_condition.length > 0) {
                 const current = data.current_condition[0];
-                
-                // Temperatura Real
                 const temp = current.temp_C;
                 
-                // Descripción en español (si falla, usa inglés)
                 let desc = current.lang_es ? current.lang_es[0].value : current.weatherDesc[0].value;
-                // Acortar la descripción si es muy larga para que no rompa el diseño
                 if (desc.length > 18) { desc = desc.substring(0, 15) + '...'; }
 
                 const code = current.weatherCode;
                 let icon = 'bi-cloud-sun';
                 
-                // Traductor de códigos de la API a íconos de Bootstrap
                 if (code === '113') { icon = 'bi-sun-fill text-warning'; }
                 else if (code === '116') { icon = 'bi-cloud-sun-fill text-warning'; }
                 else if (['119', '122'].includes(code)) { icon = 'bi-cloud-fill text-secondary'; }

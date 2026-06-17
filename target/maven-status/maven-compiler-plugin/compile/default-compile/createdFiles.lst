@@ -13,7 +13,9 @@ com\finca\controllers\BovinoServlet.class
 com\finca\dao\BovinoDAO.class
 com\finca\controllers\ProduccionServlet.class
 com\finca\controllers\DashboardServlet.class
+com\finca\controllers\PerfilServlet.class
 com\finca\models\HistorialClinico.class
+com\finca\controllers\AsistenciaServlet.class
 com\finca\controllers\PerfilBovinoServlet.class
 com\finca\models\Tarea.class
 com\finca\controllers\KanbanServlet.class

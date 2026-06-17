@@ -109,6 +109,13 @@ public class EmpleadoServlet extends HttpServlet {
         u.setDireccion(request.getParameter("direccion"));
         u.setHorario(request.getParameter("horario"));
 
+        // =====================================
+        // CAPTURA DE LOS NUEVOS CAMPOS
+        // =====================================
+        u.setArl(request.getParameter("arl"));
+        u.setTipoSangre(request.getParameter("tipoSangre"));
+        u.setEstado(request.getParameter("estado"));
+
         try {
             String fechaIngresoStr = request.getParameter("fechaIngreso");
             if (fechaIngresoStr != null && !fechaIngresoStr.isEmpty()) u.setFechaIngreso(Date.valueOf(fechaIngresoStr));
@@ -122,9 +129,6 @@ public class EmpleadoServlet extends HttpServlet {
             e.printStackTrace(); 
         }
 
-        // ==========================================
-        // LÓGICA DE DOBLE GUARDADO (DUAL SAVE)
-        // ==========================================
         String fileName = request.getParameter("oldProfilePicture"); 
         Part filePart = request.getPart("profilePicture");
 
