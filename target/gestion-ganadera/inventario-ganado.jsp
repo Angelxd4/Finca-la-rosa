@@ -14,6 +14,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
+    
     <style>
         :root {
             /* PALETA FINCA LA ROSA REASIGNADA PARA MÁXIMA VISIBILIDAD */
@@ -136,6 +140,7 @@
     Usuario usr = (Usuario) session.getAttribute("usuarioLogueado");
     String rolActual = (usr != null && usr.getRol() != null) ? usr.getRol() : "";
     boolean esVeterinario = rolActual.equals("2") || rolActual.equalsIgnoreCase("Veterinario");
+    boolean esOperario = rolActual.equals("3") || rolActual.equalsIgnoreCase("Operario");
 
     List<Bovino> listaProd = (List<Bovino>) request.getAttribute("listaProduccion");
     List<Bovino> listaVenta = (List<Bovino>) request.getAttribute("listaVenta");
@@ -162,6 +167,7 @@
 %>
 
 <input type="hidden" id="appContextPath" value="<%= request.getContextPath() %>">
+<input type="hidden" id="esOperario" value="<%= esOperario %>">
 <%
     StringBuilder aretesBuilder = new StringBuilder();
     if(listaTodos != null) {
@@ -189,7 +195,7 @@
                 </button>
             </div>
 
-            <% if(!esVeterinario) { %>
+            <% if(!esVeterinario && !esOperario) { %>
             <button class="btn btn-success btn-lg shadow-sm rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalBovino">
                 <i class="bi bi-plus-circle-fill me-1"></i> Registrar
             </button>
@@ -233,7 +239,7 @@
     <div class="tab-content glass-panel main-card">
         <div class="tab-pane fade show active" id="todos">
             <div class="view-list table-responsive table-custom-wrapper shadow-sm">
-                <table class="table align-middle">
+                <table class="table align-middle" id="tableTodos">
                     <thead class="text-center">
                         <tr>
                             <th>Foto</th>
@@ -285,7 +291,7 @@
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
                                     
-                                    <% if(!esVeterinario) { %>
+                                    <% if(!esVeterinario && !esOperario) { %>
                                         <% if(b.getClasificacion().equals("Producción")) { %>
                                             <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta" onclick="return confirm('¿Mover a lote de venta?');"><i class="bi bi-tag-fill"></i></button></form>
                                         <% } else if(b.getClasificacion().equals("Venta") && b.getGenero().equals("Hembra")) { %>
@@ -353,7 +359,7 @@
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
                                     
-                                    <% if(!esVeterinario) { %>
+                                    <% if(!esVeterinario && !esOperario) { %>
                                         <% if(b.getClasificacion().equals("Producción")) { %>
                                             <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta" onclick="return confirm('¿Mover a lote de venta?');"><i class="bi bi-tag-fill"></i></button></form>
                                         <% } else if(b.getClasificacion().equals("Venta") && b.getGenero().equals("Hembra")) { %>
@@ -379,7 +385,7 @@
 
         <div class="tab-pane fade" id="produccion">
             <div class="view-list table-responsive table-custom-wrapper shadow-sm">
-                <table class="table align-middle mb-0">
+                <table class="table align-middle mb-0" id="tableProduccion">
                     <thead class="text-success text-center">
                         <tr>
                             <th>Foto</th>
@@ -425,7 +431,7 @@
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
                                     
-                                    <% if(!esVeterinario) { %>
+                                    <% if(!esVeterinario && !esOperario) { %>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Vender"><i class="bi bi-tag-fill"></i></button></form>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><button type="submit" class="btn btn-danger action-btn" title="Eliminar" onclick="return confirm('¿Eliminar definitivamente?');"><i class="bi bi-trash3-fill"></i></button></form>
                                     <% } %>
@@ -466,7 +472,7 @@
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
                                     
-                                    <% if(!esVeterinario) { %>
+                                    <% if(!esVeterinario && !esOperario) { %>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Vender"><i class="bi bi-tag-fill"></i></button></form>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><button type="submit" class="btn btn-danger action-btn" title="Eliminar" onclick="return confirm('¿Eliminar definitivamente?');"><i class="bi bi-trash3-fill"></i></button></form>
                                     <% } %>
@@ -483,7 +489,7 @@
 
         <div class="tab-pane fade" id="crias">
             <div class="view-list table-responsive table-custom-wrapper shadow-sm">
-                <table class="table align-middle mb-0">
+                <table class="table align-middle mb-0" id="tableCrias">
                     <thead class="text-center">
                         <tr>
                             <th>Foto</th>
@@ -526,7 +532,7 @@
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
                                     
-                                    <% if(!esVeterinario) { %>
+                                    <% if(!esVeterinario && !esOperario) { %>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta"><i class="bi bi-tag-fill"></i></button></form>
                                     <% if(b.getGenero().equals("Hembra")) { %>
                                         <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="Pasar a Producción"><i class="bi bi-droplet-fill"></i></button></form>
@@ -579,7 +585,7 @@
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
                                     
-                                    <% if(!esVeterinario) { %>
+                                    <% if(!esVeterinario && !esOperario) { %>
                                     <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Venta"><button type="submit" class="btn btn-warning text-dark action-btn" title="Mover a Venta"><i class="bi bi-tag-fill"></i></button></form>
                                     <% if(b.getGenero().equals("Hembra")) { %>
                                         <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="Pasar a Producción"><i class="bi bi-droplet-fill"></i></button></form>
@@ -599,7 +605,7 @@
 
         <div class="tab-pane fade" id="ventas">
             <div class="view-list table-responsive table-custom-wrapper shadow-sm">
-                <table class="table align-middle mb-0">
+                <table class="table align-middle mb-0" id="tableVentas">
                     <thead class="text-center">
                         <tr>
                             <th>Foto</th>
@@ -638,7 +644,7 @@
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
                                     
-                                    <% if(!esVeterinario) { %>
+                                    <% if(!esVeterinario && !esOperario) { %>
                                     <% if(b.getGenero().equals("Hembra")) { %>
                                         <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="A Producción"><i class="bi bi-droplet-fill"></i></button></form>
                                     <% } %>
@@ -678,7 +684,7 @@
                                     <a href="perfil-bovino?id=<%= b.getIdBovino() %>" class="btn btn-success action-btn" title="Historial Médico"><i class="bi bi-journal-medical"></i></a>
                                     <button class="btn btn-edit action-btn btn-editar" data-id="<%= b.getIdBovino() %>" data-arete="<%= b.getNumeroArete() %>" data-raza="<%= b.getRaza() %>" data-fecha="<%= b.getFechaNacimiento() %>" data-genero="<%= b.getGenero() %>" data-peso="<%= b.getPesoKg() %>" data-clasificacion="<%= b.getClasificacion() %>" data-proposito="<%= b.getProposito() %>" data-salud="<%= b.getEstadoSalud() %>" data-leche="<%= b.getLitrosDiariosPromedio() %>" data-partos="<%= b.getNumeroPartos() %>" data-precio="<%= b.getPrecioEstimado() %>" data-foto="<%= b.getImageUrl() != null ? b.getImageUrl() : "" %>" data-bs-toggle="modal" data-bs-target="#modalEditarBovino" title="Editar"><i class="bi bi-pencil-fill"></i></button>
                                     
-                                    <% if(!esVeterinario) { %>
+                                    <% if(!esVeterinario && !esOperario) { %>
                                     <% if(b.getGenero().equals("Hembra")) { %>
                                         <form action="inventario-ganado" method="POST" class="d-inline"><input type="hidden" name="action" value="mover"><input type="hidden" name="id" value="<%= b.getIdBovino() %>"><input type="hidden" name="destino" value="Producción"><button type="submit" class="btn btn-success action-btn" title="A Producción"><i class="bi bi-droplet-fill"></i></button></form>
                                     <% } %>
@@ -988,6 +994,17 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery and DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 <script>
     // --- LÓGICA BIOLÓGICA INTELIGENTE (AÑADIR ANIMAL) ---
     function actualizarCamposLogicosAdd() {
@@ -1224,8 +1241,61 @@
             }
             
             actualizarCamposLogicosEdit();
+
+            // Lógica de solo lectura para Operarios
+            if (document.getElementById('esOperario').value === 'true') {
+                document.querySelectorAll('#modalEditarBovino input, #modalEditarBovino select').forEach(el => {
+                    if(el.id !== 'editSalud' && el.id !== 'editIdBovino' && el.name !== 'action' && el.type !== 'submit') {
+                        el.setAttribute('readonly', 'true');
+                        if(el.tagName === 'SELECT' || el.type === 'file') {
+                            el.style.pointerEvents = 'none';
+                            el.style.opacity = '0.6';
+                        }
+                    }
+                });
+            }
         });
     });
+
+    // =========================================
+    // INICIALIZACIÓN DE DATATABLES
+    // =========================================
+    $(document).ready(function() {
+        const dataTableConfig = {
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+            },
+            dom: '<"row mb-3"<"col-md-6"B><"col-md-6"f>>rt<"row"<"col-md-6"i><"col-md-6"p>>',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="bi bi-file-earmark-excel-fill"></i> Excel',
+                    className: 'btn btn-success btn-sm',
+                    exportOptions: { columns: ':not(:last-child)' }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="bi bi-file-earmark-pdf-fill"></i> PDF',
+                    className: 'btn btn-danger btn-sm',
+                    exportOptions: { columns: ':not(:last-child)' },
+                    orientation: 'landscape'
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="bi bi-printer-fill"></i> Imprimir',
+                    className: 'btn btn-secondary btn-sm',
+                    exportOptions: { columns: ':not(:last-child)' }
+                }
+            ],
+            pageLength: 10
+        };
+
+        $('#tableTodos').DataTable(dataTableConfig);
+        $('#tableProduccion').DataTable(dataTableConfig);
+        $('#tableCrias').DataTable(dataTableConfig);
+        $('#tableVentas').DataTable(dataTableConfig);
+    });
+
 </script>
 </body>
 </html>

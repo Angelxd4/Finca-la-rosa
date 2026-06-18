@@ -17,32 +17,23 @@ public class WhatsAppService {
 
     public static void enviarWhatsAppAutomatico(String telefono, String mensaje) {
         try {
+            // Asegurarse de que el número comience con el código de país
             if (!telefono.startsWith("+")) {
                 telefono = "+" + telefono;
             }
 
-            // Twilio rechaza \n o tabulaciones en variables de plantillas de WhatsApp
-            String cleanMensaje = mensaje.replaceAll("[\\n\\r\\t]+", " ").replaceAll("\\s{2,}", " ").trim();
-
-            java.util.Map<String, String> variables = new java.util.HashMap<>();
-            variables.put("1", "Finca La Rosa");
-            variables.put("2", cleanMensaje);
-            
-            String jsonVariables = new com.google.gson.Gson().toJson(variables);
-
-            // IMPORTANTE: Cuando se usa Content API, el body debe ser omitido o nulo.
+            // Enviamos un mensaje libre directo (Sin plantillas HX...)
+            // Nota: Para que esto funcione, el celular de prueba debe haberle enviado
+            // el código de "join [palabra]" al bot de Twilio en las últimas 24 horas.
             Message twilioMsg = Message.creator(
                 new PhoneNumber("whatsapp:" + telefono),
                 new PhoneNumber(TWILIO_NUMBER),
-                (String) null
-            )
-            .setContentSid("HXb5b62575e6e4ff6129ad7c8efe1f983e")
-            .setContentVariables(jsonVariables)
-            .create();
+                "🐄 *Finca La Rosa*\n\nTienes un nuevo aviso:\n" + mensaje
+            ).create();
 
-            System.out.println("✅ WhatsApp enviado por Twilio a: " + telefono + " | SID: " + twilioMsg.getSid());
+            System.out.println("✅ WhatsApp (Libre) enviado a: " + telefono + " | SID: " + twilioMsg.getSid());
         } catch (Exception e) {
-            System.err.println("❌ Fallo interno enviando WhatsApp por Twilio: " + e.getMessage());
+            System.err.println("❌ Fallo interno enviando WhatsApp libre: " + e.getMessage());
         }
     }
 }

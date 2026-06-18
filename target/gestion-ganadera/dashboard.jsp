@@ -84,6 +84,7 @@
     String rolUsuarioDash = (String) request.getAttribute("rolTexto"); 
     if (rolUsuarioDash == null) rolUsuarioDash = "";
     boolean esVeterinario = rolUsuarioDash.equalsIgnoreCase("Veterinario") || "2".equals(rolUsuarioDash);
+    boolean esOperario = rolUsuarioDash.contains("Operario") || "3".equals(rolUsuarioDash);
 %>
 
 <input type="hidden" id="dashLabels" value="<%= request.getAttribute("labelsGrafico") != null ? request.getAttribute("labelsGrafico") : "L,M,M" %>">
@@ -154,6 +155,7 @@
         </div>
     </div>
 
+    <% if (!esOperario) { %>
     <div class="row g-4 mb-4">
         <div class="col-lg-8">
             <div class="dash-card">
@@ -191,6 +193,7 @@
             </div>
         </div>
     </div>
+    <% } %>
 
     <% } else { %>
     <div class="row g-4 mb-4">
@@ -457,6 +460,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
