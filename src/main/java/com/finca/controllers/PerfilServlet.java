@@ -1,12 +1,10 @@
 package com.finca.controllers;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.UUID;
 
-import com.finca.dao.UsuarioDAO;
+import com.finca.services.AuthService;
+import com.finca.services.EmpleadoService;
+import com.finca.services.FileService;
 import com.finca.models.Usuario;
 
 import jakarta.servlet.ServletException;
@@ -22,20 +20,22 @@ import jakarta.servlet.http.Part;
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 public class PerfilServlet extends HttpServlet {
 
-    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
+    private final AuthService authService = new AuthService();
+    private final EmpleadoService empleadoService = new EmpleadoService();
+    private final FileService fileService = new FileService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Usuario sessionUser = (Usuario) session.getAttribute("usuarioLogueado");
-        
-        if (sessionUser == null) {
+        if (!authService.estaAutenticado(request)) {
             response.sendRedirect("login");
             return;
         }
 
+        HttpSession session = request.getSession();
+        Usuario sessionUser = (Usuario) session.getAttribute("usuarioLogueado");
+        
         // Consultamos la base de datos para traer los datos más frescos del usuario
-        Usuario usuario = usuarioDAO.obtenerPorEmail(sessionUser.getEmail());
+        Usuario usuario = authService.obtenerPorEmail(sessionUser.getEmail());
         if (usuario == null) {
             response.sendRedirect("login");
             return;
@@ -52,15 +52,15 @@ public class PerfilServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Usuario sessionUser = (Usuario) session.getAttribute("usuarioLogueado");
-        
-        if (sessionUser == null) {
+        if (!authService.estaAutenticado(request)) {
             response.sendRedirect("login");
             return;
         }
 
-        Usuario u = usuarioDAO.obtenerPorEmail(sessionUser.getEmail());
+        HttpSession session = request.getSession();
+        Usuario sessionUser = (Usuario) session.getAttribute("usuarioLogueado");
+
+        Usuario u = authService.obtenerPorEmail(sessionUser.getEmail());
         if (u == null) {
             response.sendRedirect("login");
             return;
@@ -76,30 +76,16 @@ public class PerfilServlet extends HttpServlet {
         if(contactoEmergencia != null) u.setContactoEmergencia(contactoEmergencia);
 
         // Lógica para actualizar la Foto de Perfil
-        Part filePart = request.getPart("profilePicture");
-        if (filePart != null && filePart.getSize() > 0) {
-            String extension = filePart.getSubmittedFileName().substring(filePart.getSubmittedFileName().lastIndexOf("."));
-            String fileName = "avatar_" + UUID.randomUUID().toString() + extension;
-            
-            String targetPath = request.getServletContext().getRealPath("") + File.separator + "uploads";
-            File targetDir = new File(targetPath);
-            if (!targetDir.exists()) targetDir.mkdir();
-            filePart.write(targetPath + File.separator + fileName);
-            
-            String srcPath = "C:\\Users\\angel\\OneDrive\\Desktop\\Ejercicios Java\\Finca la rosa\\gestion-ganadera\\src\\main\\webapp\\uploads";
-            File srcDir = new File(srcPath);
-            if (!srcDir.exists()) srcDir.mkdir();
-            
-            Files.copy(
-                new File(targetPath + File.separator + fileName).toPath(), 
-                new File(srcPath + File.separator + fileName).toPath(),
-                StandardCopyOption.REPLACE_EXISTING
-            );
+        try {
+            Part filePart = request.getPart("profilePicture");
+            String fileName = fileService.guardarImagenEmpleado(request, filePart, u.getProfilePicture());
             u.setProfilePicture(fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // Guardamos y actualizamos la sesión
-        if (usuarioDAO.actualizarPerfil(u)) {
+        if (empleadoService.actualizarPerfil(u)) {
             session.setAttribute("usuarioLogueado", u); // Refrescar foto en el menú
             response.sendRedirect("perfil?msg=actualizado");
         } else {

@@ -398,28 +398,30 @@
     <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content" style="border-radius: 20px; background-color: #FFFFFF; overflow: hidden; border: none;">
             
-            <div id="carnetImprimible" style="width: 100%; max-width: 320px; margin: 0 auto; background-color: #FFFFFF; padding: 35px 20px; border: 6px solid #464704; border-radius: 20px; box-sizing: border-box; text-align: center; position: relative;">
-                
-                <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;">
-                    <div style="font-size: 24px; line-height: 1;">🌹</div>
-                    <h5 style="margin: 0; color: #464704; font-weight: 900; font-size: 1.35rem; letter-spacing: -0.5px;">Finca La Rosa</h5>
-                </div>
-                
-                <div style="background-color: #423926; color: #FFFFFF; font-size: 0.7rem; padding: 4px 15px; border-radius: 20px; display: inline-block; font-weight: bold; letter-spacing: 1px; margin-bottom: 25px;">
-                    CARNET DE INGRESO
-                </div>
-                
-                <div style="background-color: #FFFFFF; padding: 12px; border-radius: 15px; border: 2px solid #E2E4D5; width: 164px; height: 164px; margin: 0 auto 25px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center;">
-                    <div id="qrContenedor" style="display: inline-block;"></div>
-                </div>
+            <div style="display: flex; justify-content: center; background: #fafafa; padding: 15px;">
+                <div id="carnetImprimible" style="width: 340px; height: 540px; background-color: #FFFFFF; padding: 30px 25px; border: 6px solid #464704; border-radius: 20px; box-sizing: border-box; text-align: center; position: relative;">
+                    
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; margin-top: 10px;">
+                        <i class="bi bi-flower1" style="font-size: 28px; color: #e83e8c; line-height: 1;"></i>
+                        <h5 style="margin: 0; color: #464704; font-weight: 900; font-size: 1.5rem; letter-spacing: -0.5px;">Finca La Rosa</h5>
+                    </div>
+                    
+                    <div style="background-color: #423926; color: #FFFFFF; font-size: 0.75rem; padding: 5px 20px; border-radius: 20px; display: inline-block; font-weight: bold; letter-spacing: 1px; margin-bottom: 30px;">
+                        CARNET DE INGRESO
+                    </div>
+                    
+                    <div style="background-color: #FFFFFF; padding: 15px; border-radius: 15px; border: 2px solid #E2E4D5; width: 170px; height: 170px; margin: 0 auto 30px auto; display: flex; align-items: center; justify-content: center;">
+                        <div id="qrContenedor" style="display: inline-block;"></div>
+                    </div>
 
-                <h5 id="carnetNombre" style="color: #423926; font-weight: 800; margin: 0 0 4px 0; font-size: 1.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</h5>
-                <p id="carnetCargo" style="color: #9CA889; font-weight: 800; font-size: 0.85rem; margin: 0 0 22px 0; text-transform: uppercase; letter-spacing: 0.5px;">-</p>
-                
-                <div style="border-top: 2px dashed #E2E4D5; padding-top: 15px; text-align: left; font-size: 0.85rem; color: #423926; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;">
-                    <div style="width: 46%;"><b>CC:</b> <span id="carnetDoc" style="font-weight: 500;"></span></div>
-                    <div style="width: 46%;"><b>RH:</b> <span id="carnetRh" style="font-weight: 500;"></span></div>
-                    <div style="width: 100%;"><b>ARL:</b> <span id="carnetArl" style="font-weight: 500;"></span></div>
+                    <h5 id="carnetNombre" style="color: #423926; font-weight: 800; margin: 0 0 5px 0; font-size: 1.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</h5>
+                    <p id="carnetCargo" style="color: #9CA889; font-weight: 800; font-size: 0.9rem; margin: 0 0 25px 0; text-transform: uppercase; letter-spacing: 0.5px;">-</p>
+                    
+                    <div style="border-top: 2px dashed #E2E4D5; padding-top: 20px; text-align: left; font-size: 0.9rem; color: #423926; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;">
+                        <div style="width: 45%;"><b>CC:</b> <span id="carnetDoc" style="font-weight: 500;"></span></div>
+                        <div style="width: 45%;"><b>RH:</b> <span id="carnetRh" style="font-weight: 500;"></span></div>
+                        <div style="width: 100%;"><b>ARL:</b> <span id="carnetArl" style="font-weight: 500;"></span></div>
+                    </div>
                 </div>
             </div>
 
@@ -468,17 +470,20 @@
         const nombreEmpleado = document.getElementById('carnetNombre').textContent.replace(/\s+/g, '_');
         
         const opciones = {
-            margin:       [4, 4, 4, 4], 
+            margin:       0, 
             filename:     'Carnet_' + nombreEmpleado + '.pdf',
             image:        { type: 'jpeg', quality: 1.0 },
             html2canvas:  { 
                 scale: 4, // Calidad Ultra HD para escaneo perfecto del sensor de la cámara
                 useCORS: true, 
-                backgroundColor: '#ffffff' 
+                backgroundColor: '#ffffff',
+                width: 340,
+                height: 540,
+                windowWidth: 340
             },
             jsPDF:        { 
                 unit: 'mm', 
-                format: [92, 138], // Proporciones de Carnet Industrial holgadas
+                format: [54, 86], // Estándar de tarjeta de identificación (CR80)
                 orientation: 'portrait' 
             }
         };

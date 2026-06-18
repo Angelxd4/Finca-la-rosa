@@ -2,9 +2,8 @@ package com.finca.controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Random;
 
-import com.finca.dao.UsuarioDAO;
+import com.finca.services.AuthService;
 import com.finca.models.Usuario;
 import com.google.gson.JsonObject; // Importación clave para blindar el JSON
 
@@ -18,7 +17,7 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
+    private final AuthService authService = new AuthService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -56,36 +55,21 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         
-        Usuario u = usuarioDAO.validarLogin(email, password);
         JsonObject json = new JsonObject();
-        
-        if (u != null) {
-            String otp = String.format("%06d", new Random().nextInt(999999));
-            
-            // ========================================================
-            // IMPRESIÓN DEL CÓDIGO OTP EN LA CONSOLA (INICIO DE SESIÓN)
-            // ========================================================
-            System.out.println("\n=========================================");
-            System.out.println("🔑 CÓDIGO OTP PARA INICIO DE SESIÓN");
-            System.out.println("👤 Usuario ID: " + u.getId() + " (" + email + ")");
-            System.out.println("🔢 CÓDIGO OTP: " + otp);
-            System.out.println("=========================================\n");
-            
-            usuarioDAO.guardarTokenOTP(u.getId(), otp);
-            
-            try {
-                com.finca.utils.EmailService.enviarCodigoOTP(email, otp);
+        try {
+            Usuario u = authService.verificarCredencialesYEnviarOTP(email, password);
+            if (u != null) {
                 json.addProperty("success", true);
                 json.addProperty("idUsuario", u.getId());
                 json.addProperty("email", email);
-            } catch (Throwable e) {
-                e.printStackTrace(); 
+            } else {
                 json.addProperty("success", false);
-                json.addProperty("message", "Falla enviando correo: " + e.toString());
+                json.addProperty("message", "El correo electrónico o la contraseña son incorrectos.");
             }
-        } else {
+        } catch (Exception e) {
+            e.printStackTrace(); 
             json.addProperty("success", false);
-            json.addProperty("message", "El correo electrónico o la contraseña son incorrectos.");
+            json.addProperty("message", "Falla en el servidor: " + e.getMessage());
         }
         out.print(json.toString());
     }
@@ -97,8 +81,8 @@ public class LoginServlet extends HttpServlet {
             String email = request.getParameter("email");
             String otp = request.getParameter("otp");
             
-            if (usuarioDAO.validarTokenOTP(idUsuario, otp)) {
-                Usuario u = usuarioDAO.obtenerPorEmail(email);
+            if (authService.validarOTP(idUsuario, otp)) {
+                Usuario u = authService.obtenerPorEmail(email);
                 if (u != null) {
                     HttpSession session = request.getSession();
                     session.setAttribute("usuarioLogueado", u);
@@ -120,35 +104,21 @@ public class LoginServlet extends HttpServlet {
 
     private void handleRequestOtp(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {
         String email = request.getParameter("email");
-        Usuario u = usuarioDAO.obtenerPorEmail(email);
         JsonObject json = new JsonObject();
         
-        if (u != null) {
-            String otp = String.format("%06d", new Random().nextInt(999999));
-            
-            // ========================================================
-            // IMPRESIÓN DEL CÓDIGO OTP EN LA CONSOLA (RECUPERAR CLAVE)
-            // ========================================================
-            System.out.println("\n=========================================");
-            System.out.println("🔑 CÓDIGO OTP PARA RECUPERAR CONTRASEÑA");
-            System.out.println("👤 Usuario ID: " + u.getId() + " (" + email + ")");
-            System.out.println("🔢 CÓDIGO OTP: " + otp);
-            System.out.println("=========================================\n");
-
-            usuarioDAO.guardarTokenOTP(u.getId(), otp);
-            
-            try {
-                com.finca.utils.EmailService.enviarCodigoOTP(email, otp);
+        try {
+            Usuario u = authService.solicitarOTPRecuperacion(email);
+            if (u != null) {
                 json.addProperty("success", true);
                 json.addProperty("idUsuario", u.getId());
-            } catch (Throwable e) {
-                e.printStackTrace();
+            } else {
                 json.addProperty("success", false);
-                json.addProperty("message", "Falla de correo: " + e.toString());
+                json.addProperty("message", "El correo no existe en nuestro sistema.");
             }
-        } else {
+        } catch (Exception e) {
+            e.printStackTrace();
             json.addProperty("success", false);
-            json.addProperty("message", "El correo no existe en nuestro sistema.");
+            json.addProperty("message", "Falla de servidor: " + e.getMessage());
         }
         out.print(json.toString());
     }
@@ -159,7 +129,7 @@ public class LoginServlet extends HttpServlet {
             int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
             String otp = request.getParameter("otp");
             
-            if (usuarioDAO.validarTokenOTP(idUsuario, otp)) {
+            if (authService.validarOTP(idUsuario, otp)) {
                 json.addProperty("success", true);
             } else {
                 json.addProperty("success", false);
@@ -178,7 +148,7 @@ public class LoginServlet extends HttpServlet {
             int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
             String newPassword = request.getParameter("newPassword");
             
-            if (usuarioDAO.actualizarPassword(idUsuario, newPassword)) {
+            if (authService.actualizarContrasena(idUsuario, newPassword)) {
                 json.addProperty("success", true);
             } else {
                 json.addProperty("success", false);

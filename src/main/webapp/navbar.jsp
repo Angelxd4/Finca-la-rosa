@@ -118,18 +118,52 @@
         <div class="sidebar-logo" style="width: 35px; height: 35px; font-size: 1rem;"><i class="bi bi-moisture"></i></div>
         <span class="sidebar-brand-text fs-5">La Rosa</span>
     </div>
-    <button class="btn border-0 p-0 fs-1 text-dark" onclick="toggleSidebar()"><i class="bi bi-list" style="color: var(--moss);"></i></button>
+    <div class="d-flex align-items-center gap-3">
+        <div class="dropdown">
+            <a href="#" class="text-decoration-none position-relative" id="notiDropdownMobile" data-bs-toggle="dropdown" aria-expanded="false" style="color: var(--moss); font-size: 1.25rem;">
+                <i class="bi bi-bell-fill"></i>
+                <span id="notiBadgeMobile" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.55rem; padding: 0.35em 0.5em; display: none; border: 2px solid #fff;">0</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="notiDropdownMobile" style="width: 300px; max-height: 400px; overflow-y: auto; border-radius: 15px; padding: 0; margin-top: 10px; z-index: 9999;">
+                <li class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: #fafafa; position: sticky; top: 0; z-index: 10; border-radius: 15px 15px 0 0;">
+                    <span class="fw-bold" style="color: var(--moss); font-size: 0.95rem;"><i class="bi bi-bell me-1"></i> Notificaciones</span>
+                    <button class="btn btn-sm btn-link text-decoration-none p-0 fw-bold" style="font-size: 0.8rem; color: var(--brand-info);" onclick="marcarNotificacionesLeidas()">Marcar Leídas</button>
+                </li>
+                <div id="notiListMobile">
+                    <li class="p-4 text-center text-muted" style="font-size: 0.85rem;"><div class="spinner-border spinner-border-sm me-2"></div>Cargando...</li>
+                </div>
+            </ul>
+        </div>
+        <button class="btn border-0 p-0 fs-1 text-dark" onclick="toggleSidebar()"><i class="bi bi-list" style="color: var(--moss);"></i></button>
+    </div>
 </div>
 
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 <aside class="sidebar-finca" id="mainSidebar">
-    <div class="sidebar-header">
-        <div class="sidebar-logo"><i class="bi bi-moisture"></i></div>
+    <div class="sidebar-header align-items-center">
+        <div class="sidebar-logo"><i class="bi bi-flower1"></i></div>
         <div>
             <span class="sidebar-brand-text d-block">Finca La Rosa</span>
             <span style="font-size: 10px; color: var(--drab); font-weight: 800; letter-spacing: 0.5px;">SISTEMA GANADERO</span>
         </div>
+        
+        <div class="dropdown ms-auto me-2 d-none d-lg-block">
+            <a href="#" class="text-decoration-none position-relative" id="notiDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="color: var(--moss); font-size: 1.25rem;">
+                <i class="bi bi-bell-fill"></i>
+                <span id="notiBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.55rem; padding: 0.35em 0.5em; display: none; border: 2px solid #fff;">0</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="notiDropdown" style="width: 320px; max-height: 400px; overflow-y: auto; border-radius: 15px; padding: 0; margin-top: 10px;">
+                <li class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: #fafafa; position: sticky; top: 0; z-index: 10; border-radius: 15px 15px 0 0;">
+                    <span class="fw-bold" style="color: var(--moss); font-size: 0.95rem;"><i class="bi bi-bell me-1"></i> Notificaciones</span>
+                    <button class="btn btn-sm btn-link text-decoration-none p-0 fw-bold" style="font-size: 0.8rem; color: var(--brand-info);" onclick="marcarNotificacionesLeidas()">Marcar Leídas</button>
+                </li>
+                <div id="notiList">
+                    <li class="p-4 text-center text-muted" style="font-size: 0.85rem;"><div class="spinner-border spinner-border-sm me-2"></div>Cargando...</li>
+                </div>
+            </ul>
+        </div>
+        
         <button class="btn border-0 p-0 fs-3 d-lg-none ms-auto" onclick="toggleSidebar()"><i class="bi bi-x" style="color: var(--moss);"></i></button>
     </div>
 
@@ -154,6 +188,7 @@
             if (rolMenuSeguro.equals("1") || rolMenuSeguro.contains("admin")) { 
         %>
         <a href="empleados" class="sidebar-link nav-auto-active"><i class="bi bi-people-fill"></i> Personal</a>
+        <a href="asistencias" class="sidebar-link nav-auto-active"><i class="bi bi-calendar2-check-fill"></i> Asistencias</a>
         <% } %>
     </nav>
 
@@ -215,31 +250,30 @@
         }
     }
     
-    // 3. NUEVA API DEL CLIMA (WTTR.IN - Búsqueda por Municipio en vez de satélite)
+    // 3. NUEVA API DEL CLIMA (Open-Meteo con coordenadas exactas de Santa Rosa de Viterbo, Boyacá)
     function fetchWeather() {
-        const url = 'https://wttr.in/Santa+Rosa+de+Viterbo,Boyaca,Colombia?format=j1&lang=es';
+        const url = 'https://api.open-meteo.com/v1/forecast?latitude=5.8852&longitude=-73.0134&current=temperature_2m,weather_code';
         fetch(url, { cache: 'no-store' })
         .then(function(response) {
             if (!response.ok) throw new Error("Estación meteorológica no respondió");
             return response.json();
         })
         .then(function(data) {
-            if(data && data.current_condition && data.current_condition.length > 0) {
-                const current = data.current_condition[0];
-                const temp = current.temp_C;
+            if(data && data.current) {
+                const temp = data.current.temperature_2m;
+                const code = data.current.weather_code;
                 
-                let desc = current.lang_es ? current.lang_es[0].value : current.weatherDesc[0].value;
-                if (desc.length > 18) { desc = desc.substring(0, 15) + '...'; }
+                let desc = "Despejado";
+                let icon = "bi-sun-fill text-warning";
 
-                const code = current.weatherCode;
-                let icon = 'bi-cloud-sun';
-                
-                if (code === '113') { icon = 'bi-sun-fill text-warning'; }
-                else if (code === '116') { icon = 'bi-cloud-sun-fill text-warning'; }
-                else if (['119', '122'].includes(code)) { icon = 'bi-cloud-fill text-secondary'; }
-                else if (['143', '248', '260'].includes(code)) { icon = 'bi-cloud-fog2-fill text-secondary'; }
-                else if (['176', '263', '266', '293', '296', '299', '302', '305', '308', '311', '314', '353', '356', '359'].includes(code)) { icon = 'bi-cloud-rain-fill text-info'; }
-                else if (['386', '389', '392', '395'].includes(code)) { icon = 'bi-cloud-lightning-rain-fill text-danger'; }
+                if (code === 0) { desc = "Despejado"; icon = "bi-sun-fill text-warning"; }
+                else if (code === 1 || code === 2) { desc = "Parc. Nublado"; icon = "bi-cloud-sun-fill text-warning"; }
+                else if (code === 3) { desc = "Nublado"; icon = "bi-cloud-fill text-secondary"; }
+                else if (code === 45 || code === 48) { desc = "Niebla"; icon = "bi-cloud-fog2-fill text-secondary"; }
+                else if (code >= 51 && code <= 57) { desc = "Llovizna"; icon = "bi-cloud-drizzle-fill text-info"; }
+                else if (code >= 61 && code <= 67) { desc = "Lluvia"; icon = "bi-cloud-rain-fill text-info"; }
+                else if (code >= 80 && code <= 82) { desc = "Chubascos"; icon = "bi-cloud-rain-heavy-fill text-info"; }
+                else if (code >= 95) { desc = "Tormenta"; icon = "bi-cloud-lightning-rain-fill text-danger"; }
 
                 let weatherEl = document.getElementById('systemWeather');
                 if (weatherEl) {
@@ -257,12 +291,95 @@
     }
     
     document.addEventListener("DOMContentLoaded", function() {
+        // ACTUALIZAR FECHA Y HORA AL CARGAR Y CADA SEGUNDO
         updateDateTime();
         setInterval(updateDateTime, 1000);
+
+        // OBTENER CLIMA AL CARGAR
+        fetchWeather();
         
-        fetchWeather(); 
+        // OBTENER NOTIFICACIONES AL CARGAR Y CADA 30 SEGUNDOS
+        fetchNotificaciones();
+        setInterval(fetchNotificaciones, 30000);
+        
         setInterval(fetchWeather, 1800000); // 30 mins
     });
+
+    // 4. LÓGICA DE NOTIFICACIONES
+    function fetchNotificaciones() {
+        const urlNoti = '<%= request.getContextPath() %>/NotificacionesServlet';
+        fetch(urlNoti, { credentials: 'same-origin' })
+            .then(res => {
+                if(!res.ok) {
+                    return res.text().then(text => { throw new Error(res.status + ": " + text); });
+                }
+                return res.json();
+            })
+            .then(data => {
+                let badgeDesktop = document.getElementById('notiBadge');
+                let badgeMobile = document.getElementById('notiBadgeMobile');
+                
+                if (data.noLeidas > 0) {
+                    if (badgeDesktop) { badgeDesktop.textContent = data.noLeidas; badgeDesktop.style.display = 'inline-block'; }
+                    if (badgeMobile) { badgeMobile.textContent = data.noLeidas; badgeMobile.style.display = 'inline-block'; }
+                } else {
+                    if (badgeDesktop) badgeDesktop.style.display = 'none';
+                    if (badgeMobile) badgeMobile.style.display = 'none';
+                }
+
+                let listHTML = '';
+                if (data.notificaciones && data.notificaciones.length > 0) {
+                    data.notificaciones.forEach(n => {
+                        let bgClass = n.leida ? 'bg-white' : 'bg-light';
+                        let dot = n.leida ? '' : '<span class="position-absolute top-50 start-0 translate-middle p-1 bg-danger border border-light rounded-circle" style="margin-left: 15px;"></span>';
+                        listHTML += `
+                            <a href="<%= request.getContextPath() %>/\${n.link}" class="text-decoration-none border-bottom p-3 d-block text-dark \${bgClass} position-relative noti-item" style="transition: background 0.3s;">
+                                \${dot}
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong style="font-size: 0.85rem; color: var(--brand-dark);">\${n.titulo}</strong>
+                                    <small class="text-muted" style="font-size: 0.7rem;">\${n.tiempo}</small>
+                                </div>
+                                <div style="font-size: 0.8rem; color: #666; line-height: 1.3;">\${n.mensaje}</div>
+                            </a>
+                        `;
+                    });
+                } else {
+                    listHTML = '<li class="p-4 text-center text-muted" style="font-size: 0.85rem;"><i class="bi bi-check2-circle d-block fs-3 mb-2 text-success"></i>Estás al día.<br>No tienes notificaciones.</li>';
+                }
+                
+                let listDesktop = document.getElementById('notiList');
+                let listMobile = document.getElementById('notiListMobile');
+                if (listDesktop) listDesktop.innerHTML = listHTML;
+                if (listMobile) listMobile.innerHTML = listHTML;
+            })
+            .catch(err => {
+                console.error("Error al obtener notificaciones", err);
+                let htmlErr = '<li class="p-4 text-center text-danger" style="font-size: 0.85rem;">No se pudieron cargar las notificaciones.</li>';
+                let listDesktop = document.getElementById('notiList');
+                let listMobile = document.getElementById('notiListMobile');
+                if (listDesktop) listDesktop.innerHTML = htmlErr;
+                if (listMobile) listMobile.innerHTML = htmlErr;
+            });
+    }
+
+    function marcarNotificacionesLeidas() {
+        fetch('<%= request.getContextPath() %>/NotificacionesServlet', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'action=marcarLeidas'
+        })
+        .then(res => res.text())
+        .then(data => {
+            if(data === 'ok') {
+                let badgeDesktop = document.getElementById('notiBadge');
+                let badgeMobile = document.getElementById('notiBadgeMobile');
+                if (badgeDesktop) badgeDesktop.style.display = 'none';
+                if (badgeMobile) badgeMobile.style.display = 'none';
+                fetchNotificaciones();
+            }
+        });
+    }
 
     function toggleSidebar() {
         const sidebar = document.getElementById('mainSidebar');

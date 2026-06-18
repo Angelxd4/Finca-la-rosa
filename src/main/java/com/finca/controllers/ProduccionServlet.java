@@ -5,53 +5,35 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.finca.dao.BovinoDAO;
-import com.finca.dao.ProduccionDAO;
-import com.finca.dao.UsuarioDAO;
+import com.finca.services.AuthService;
+import com.finca.services.BovinoService;
+import com.finca.services.ProduccionService;
 import com.finca.models.Bovino;
 import com.finca.models.DetalleOrdeno;
 import com.finca.models.Ordeno;
-import com.finca.models.Usuario;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/produccion")
 public class ProduccionServlet extends HttpServlet {
 
-    private final ProduccionDAO produccionDAO = new ProduccionDAO();
-    private final UsuarioDAO usuarioDAO = new UsuarioDAO(); 
-    private final BovinoDAO bovinoDAO = new BovinoDAO(); 
-
-    // 🔒 NUEVO: Método de Seguridad para restringir el acceso a la Lechería
-    private boolean verificarPermisoOperarioYAdmin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HttpSession session = request.getSession();
-        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
-        
-        if (usuarioLogueado == null) {
-            response.sendRedirect("login");
-            return false;
-        }
-        
-        String rol = usuarioLogueado.getRol() != null ? usuarioLogueado.getRol() : "";
-        // Solo permitimos el paso a Administrador (1) y Operario/Vaquero (3)
-        if (!rol.equals("1") && !rol.equalsIgnoreCase("Administrador") && 
-            !rol.equals("3") && !rol.equalsIgnoreCase("Operario")) {
-            
-            response.sendRedirect("dashboard?error=acceso_denegado");
-            return false;
-        }
-        return true;
-    }
+    private final ProduccionService produccionService = new ProduccionService();
+    private final AuthService authService = new AuthService();
+    private final BovinoService bovinoService = new BovinoService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 🔒 BLINDAJE DE SEGURIDAD (Si no es Admin u Operario, se detiene la ejecución)
-        if (!verificarPermisoOperarioYAdmin(request, response)) {
+        if (!authService.estaAutenticado(request)) {
+            response.sendRedirect("login");
+            return;
+        }
+
+        if (!authService.tienePermisoProduccion(request)) {
+            response.sendRedirect("dashboard?error=acceso_denegado");
             return;
         }
 
@@ -59,18 +41,19 @@ public class ProduccionServlet extends HttpServlet {
         if (filtro == null) filtro = "dia";
         request.setAttribute("filtroActivo", filtro);
 
-        request.setAttribute("historial", produccionDAO.obtenerHistorial(filtro));
+        request.setAttribute("historial", produccionService.obtenerHistorial(filtro));
+        request.setAttribute("stockFabrica", produccionService.obtenerStock("LAC-001"));
+        request.setAttribute("stockVenta", produccionService.obtenerStock("LAC-002"));
         
-        request.setAttribute("stockFabrica", produccionDAO.obtenerStock("LAC-001"));
-        request.setAttribute("stockVenta", produccionDAO.obtenerStock("LAC-002"));
-        
-        double[] stats = produccionDAO.obtenerEstadisticas(filtro);
+        double[] stats = produccionService.obtenerEstadisticas(filtro);
         request.setAttribute("stats", stats);
         
         try {
-            request.setAttribute("listaEmpleados", usuarioDAO.obtenerTodos());
-            request.setAttribute("listaVacas", bovinoDAO.obtenerPorClasificacion("Producción"));
-        } catch (Exception e) {}
+            request.setAttribute("listaEmpleados", authService.obtenerTodosEmpleados());
+            request.setAttribute("listaVacas", bovinoService.obtenerPorClasificacion("Producción"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
         if (request.getParameter("msg") != null) {
             String m = request.getParameter("msg");
@@ -91,8 +74,13 @@ public class ProduccionServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 🔒 BLINDAJE DE SEGURIDAD PARA OPERACIONES DE ESCRITURA (Guardar/Vaciar tanques)
-        if (!verificarPermisoOperarioYAdmin(request, response)) {
+        if (!authService.estaAutenticado(request)) {
+            response.sendRedirect("login");
+            return;
+        }
+
+        if (!authService.tienePermisoProduccion(request)) {
+            response.sendRedirect("dashboard?error=acceso_denegado");
             return;
         }
 
@@ -105,7 +93,7 @@ public class ProduccionServlet extends HttpServlet {
             String turno = request.getParameter("turno");
             double porcFabrica = Double.parseDouble(request.getParameter("porcFabrica"));
             
-            if (produccionDAO.asignarLeche(filtroRetorno, turno, porcFabrica)) {
+            if (produccionService.asignarLeche(filtroRetorno, turno, porcFabrica)) {
                 response.sendRedirect("produccion?f=" + filtroRetorno + "&msg=asignado");
             } else {
                 response.sendRedirect("produccion?f=" + filtroRetorno + "&error=1");
@@ -115,7 +103,7 @@ public class ProduccionServlet extends HttpServlet {
 
         // ACCIÓN: VACIAR EL TANQUE DE DESCARTE
         if ("vaciar_descarte".equals(action)) {
-            if (produccionDAO.vaciarDescartePendiente(filtroRetorno)) {
+            if (produccionService.vaciarDescartePendiente(filtroRetorno)) {
                 response.sendRedirect("produccion?f=" + filtroRetorno + "&msg=vaciado");
             } else {
                 response.sendRedirect("produccion?f=" + filtroRetorno + "&error=1");
@@ -133,7 +121,7 @@ public class ProduccionServlet extends HttpServlet {
         String observaciones = request.getParameter("observaciones");
         if(observaciones == null) observaciones = "";
 
-        List<Bovino> vacas = bovinoDAO.obtenerPorClasificacion("Producción");
+        List<Bovino> vacas = bovinoService.obtenerPorClasificacion("Producción");
         List<DetalleOrdeno> detalles = new ArrayList<>();
         double totalLitros = 0.0;
         int totalVacas = 0;
@@ -173,7 +161,7 @@ public class ProduccionServlet extends HttpServlet {
 
         // VALIDACIÓN BIOLÓGICA BACKEND
         for (DetalleOrdeno det : detalles) {
-            if (produccionDAO.fueOrdenadaEnTurno(det.getIdBovino(), sesionOrdeno.getFechaHora())) {
+            if (produccionService.fueOrdenadaEnTurno(det.getIdBovino(), sesionOrdeno.getFechaHora())) {
                 response.sendRedirect("produccion?f=" + filtroRetorno + "&error=duplicada");
                 return;
             }
@@ -186,7 +174,7 @@ public class ProduccionServlet extends HttpServlet {
         sesionOrdeno.setPromedioLitros(totalVacas > 0 ? (totalLitros / totalVacas) : 0.0);
         sesionOrdeno.setDetalles(detalles);
 
-        if (produccionDAO.registrarSesion(sesionOrdeno)) {
+        if (produccionService.registrarSesion(sesionOrdeno)) {
             response.sendRedirect("produccion?f=" + filtroRetorno + "&msg=registrado");
         } else {
             response.sendRedirect("produccion?f=" + filtroRetorno + "&error=1");

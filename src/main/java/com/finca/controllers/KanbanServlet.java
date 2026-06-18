@@ -1,60 +1,47 @@
 package com.finca.controllers;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.sql.Date;
-import java.util.Base64;
 
-import com.finca.dao.TareaDAO;
-import com.finca.dao.UsuarioDAO;
 import com.finca.models.Tarea;
 import com.finca.models.Usuario;
+import com.finca.services.AuthService;
+import com.finca.services.TareaService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/kanban")
 public class KanbanServlet extends HttpServlet {
 
-    private final TareaDAO tareaDAO = new TareaDAO();
-    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
-
-   // =========================================================
-    // 🔴 CREDENCIALES DE TWILIO OFICIALES
-    // =========================================================
-    private final String TWILIO_ACCOUNT_SID = "ACe422a16dcdf72ca2b32c2806d4e45120"; 
-    private final String TWILIO_AUTH_TOKEN = "1e3acd729c0b32ece8ed1b2bce0cb04e"; // <-- ¡TOKEN NUEVO ACTUALIZADO!
-    private final String TWILIO_NUMBER = "+14155238886";
+    private final TareaService tareaService = new TareaService();
+    private final AuthService authService = new AuthService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
-        if (usuario == null) {
+        if (!authService.estaAutenticado(request)) {
             response.sendRedirect("login");
             return;
         }
 
-        // Lógica de roles
-        String r = usuario.getRol() != null ? usuario.getRol() : "3";
-        boolean esAdmin = r.equals("1") || r.equalsIgnoreCase("Administrador") || r.equals("2") || r.equalsIgnoreCase("Veterinario");
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogueado");
+        
+        boolean esAdmin = authService.esAdministrador(request) || authService.esVeterinario(request);
 
         if (esAdmin) {
-            request.setAttribute("tareas", tareaDAO.obtenerTodas());
-            request.setAttribute("empleados", usuarioDAO.obtenerTodos()); 
+            request.setAttribute("tareas", tareaService.obtenerTodas());
+            try {
+                request.setAttribute("empleados", authService.obtenerTodosEmpleados());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             request.setAttribute("tituloTablero", "Tablero General");
             request.setAttribute("subTitulo", "Supervisa y delega tareas a los operarios.");
         } else {
-            request.setAttribute("tareas", tareaDAO.obtenerPorAsignado(usuario.getId()));
+            request.setAttribute("tareas", tareaService.obtenerPorAsignado(usuario.getId()));
             request.setAttribute("tituloTablero", "Mis Tareas Asignadas");
             request.setAttribute("subTitulo", "Arrastra tus tareas a 'En Progreso' o 'Completada'.");
         }
@@ -73,17 +60,21 @@ public class KanbanServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!authService.estaAutenticado(request)) {
+            response.sendRedirect("login");
+            return;
+        }
+
         Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
         String action = request.getParameter("action");
         
-        String r = usuarioLogueado.getRol() != null ? usuarioLogueado.getRol() : "3";
-        boolean esAdmin = r.equals("1") || r.equalsIgnoreCase("Administrador") || r.equals("2") || r.equalsIgnoreCase("Veterinario");
+        boolean esAdmin = authService.esAdministrador(request) || authService.esVeterinario(request);
 
         // ACCIÓN 1: MOVER TAREA (AJAX)
         if ("mover".equals(action)) {
             int idTarea = Integer.parseInt(request.getParameter("idTarea"));
             String nuevoEstado = request.getParameter("estado");
-            boolean exito = tareaDAO.actualizarEstado(idTarea, nuevoEstado);
+            boolean exito = tareaService.actualizarEstado(idTarea, nuevoEstado);
             response.setContentType("text/plain");
             response.getWriter().write(exito ? "OK" : "ERROR");
             return;
@@ -104,37 +95,8 @@ public class KanbanServlet extends HttpServlet {
             t.setAsignadoA(idAsignado);
             t.setCreadoPor(usuarioLogueado.getId());
 
-            tareaDAO.crear(t);
-
-            // Obtener el teléfono del empleado desde la BD
-            String[] infoEmp = obtenerInfoEmpleado(idAsignado);
-            String waPhone = infoEmp[0].replaceAll("[^0-9]", ""); 
+            tareaService.crearTareaYNotificar(t, usuarioLogueado.getFullName()); // O usar el nombre real, aquí pasaremos el nombre si fuera necesario
             
-            // Si tiene 10 dígitos (Colombia), agrega el prefijo 57
-            if(waPhone.length() == 10 && waPhone.startsWith("3")) {
-                waPhone = "57" + waPhone; 
-            }
-            
-            // Si el empleado tiene un número registrado, disparar el mensaje
-            if (!waPhone.isEmpty()) {
-                String fechaLim = t.getFechaLimite() != null ? t.getFechaLimite().toString() : "Sin fecha límite";
-                
-                // =========================================================
-                // MENSAJE MEJORADO Y CORPORATIVO
-                // =========================================================
-                String mensaje = "🐄 *FINCA LA ROSA | Sistema de Gestión*\n"
-                               + "--------------------------------------------------\n"
-                               + "¡Hola, *" + infoEmp[1] + "*! 👋\n"
-                               + "Se te ha asignado una nueva labor operativa:\n\n"
-                               + "📋 *Tarea:* " + t.getTitulo() + "\n"
-                               + "📝 *Instrucciones:* " + t.getDescripcion() + "\n"
-                               + "⏳ *Fecha Límite:* " + fechaLim + "\n\n"
-                               + "🚜 *Nota:* Por favor, cuando finalices esta labor, ingresa al Tablero Kanban y muévela a la columna de 'Completadas'.\n\n"
-                               + "¡Que tengas un excelente turno! 🌾";
-                
-                enviarWhatsAppAutomatico(waPhone, mensaje);
-            }
-
             response.sendRedirect("kanban?msg=creada");
             return;
         } 
@@ -143,79 +105,9 @@ public class KanbanServlet extends HttpServlet {
         if ("eliminar".equals(action)) {
             if (!esAdmin) { response.sendRedirect("kanban?error=nopermiso"); return; }
             int idTarea = Integer.parseInt(request.getParameter("idTarea"));
-            tareaDAO.eliminar(idTarea);
+            tareaService.eliminarTarea(idTarea);
             response.sendRedirect("kanban?msg=eliminada");
             return;
-        }
-    }
-
-    // UTILIDAD PARA BUSCAR TELÉFONO EN BD
-    private String[] obtenerInfoEmpleado(int id) {
-        String[] info = new String[]{"", "Empleado"}; 
-        String sql = "SELECT telefono, full_name FROM usuarios WHERE id = ?";
-        try (java.sql.Connection conn = com.finca.utils.DbConnection.getConnection();
-             java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            try (java.sql.ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    info[0] = rs.getString("telefono") != null ? rs.getString("telefono") : "";
-                    info[1] = rs.getString("full_name") != null ? rs.getString("full_name") : "Empleado";
-                }
-            }
-        } catch (Exception e) { e.printStackTrace(); }
-        return info;
-    }
-
-    // =========================================================
-    // 🚀 ENVÍO OFICIAL POR TWILIO (API REST)
-    // =========================================================
-    private void enviarWhatsAppAutomatico(String telefono, String mensaje) {
-        try {
-            // Twilio requiere que el número inicie con un '+'
-            if (!telefono.startsWith("+")) {
-                telefono = "+" + telefono;
-            }
-
-            String urlString = "https://api.twilio.com/2010-04-01/Accounts/" + TWILIO_ACCOUNT_SID + "/Messages.json";
-            URL url = new URL(urlString);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("POST");
-            con.setDoOutput(true);
-
-            // Autenticación Básica (Usuario:Password en Base64)
-            String auth = TWILIO_ACCOUNT_SID + ":" + TWILIO_AUTH_TOKEN;
-            String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes("UTF-8"));
-            con.setRequestProperty("Authorization", "Basic " + encodedAuth);
-            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-            // Cuerpo del mensaje según las reglas de Twilio
-            String postData = "To=" + URLEncoder.encode("whatsapp:" + telefono, "UTF-8")
-                            + "&From=" + URLEncoder.encode("whatsapp:" + TWILIO_NUMBER, "UTF-8")
-                            + "&Body=" + URLEncoder.encode(mensaje, "UTF-8");
-
-            // Ejecutar la petición
-            try (OutputStream os = con.getOutputStream()) {
-                byte[] input = postData.getBytes("UTF-8");
-                os.write(input, 0, input.length);
-            }
-
-            // Validar respuesta
-            int responseCode = con.getResponseCode();
-            if (responseCode == 201 || responseCode == 200) {
-                System.out.println("✅ WhatsApp enviado por Twilio a: " + telefono);
-            } else {
-                System.out.println("❌ Error enviando WhatsApp por Twilio. Código: " + responseCode);
-                try(BufferedReader br = new BufferedReader(new InputStreamReader(con.getErrorStream(), "UTF-8"))) {
-                    StringBuilder err = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        err.append(line.trim());
-                    }
-                    System.out.println("Detalle del error Twilio: " + err.toString());
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("❌ Fallo interno enviando WhatsApp por Twilio: " + e.getMessage());
         }
     }
 }

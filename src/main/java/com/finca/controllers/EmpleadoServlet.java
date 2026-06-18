@@ -1,13 +1,11 @@
 package com.finca.controllers;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.sql.Date;
-import java.util.UUID;
 
-import com.finca.dao.UsuarioDAO;
+import com.finca.services.AuthService;
+import com.finca.services.EmpleadoService;
+import com.finca.services.FileService;
 import com.finca.models.Usuario;
 
 import jakarta.servlet.ServletException;
@@ -16,45 +14,29 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 
 @WebServlet("/empleados")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 public class EmpleadoServlet extends HttpServlet {
 
-    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
-
-    // Método auxiliar para validar si el usuario es Administrador
-    private boolean verificarPermisoAdmin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HttpSession session = request.getSession();
-        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
-        
-        // Si no hay sesión, se va al login
-        if (usuarioLogueado == null) {
-            response.sendRedirect("login");
-            return false;
-        }
-        
-        // Validar que el rol sea 1 o Administrador
-        String rol = usuarioLogueado.getRol() != null ? usuarioLogueado.getRol() : "";
-        if (!rol.equals("1") && !rol.equalsIgnoreCase("Administrador")) {
-            // Si intenta acceder sin permiso, lo enviamos al dashboard con un error o acceso denegado
-            response.sendRedirect("dashboard?error=acceso_denegado");
-            return false;
-        }
-        
-        return true;
-    }
+    private final EmpleadoService empleadoService = new EmpleadoService();
+    private final AuthService authService = new AuthService();
+    private final FileService fileService = new FileService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 🔒 BLINDAJE DE SEGURIDAD
-        if (!verificarPermisoAdmin(request, response)) {
+        if (!authService.estaAutenticado(request)) {
+            response.sendRedirect("login");
             return;
         }
 
-        request.setAttribute("empleados", usuarioDAO.obtenerTodos());
+        if (!authService.esAdministrador(request)) {
+            response.sendRedirect("dashboard?error=acceso_denegado");
+            return;
+        }
+
+        request.setAttribute("empleados", empleadoService.obtenerTodos());
 
         String msg = request.getParameter("msg");
         String error = request.getParameter("error");
@@ -70,8 +52,13 @@ public class EmpleadoServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 🔒 BLINDAJE DE SEGURIDAD PARA OPERACIONES DE ESCRITURA
-        if (!verificarPermisoAdmin(request, response)) {
+        if (!authService.estaAutenticado(request)) {
+            response.sendRedirect("login");
+            return;
+        }
+
+        if (!authService.esAdministrador(request)) {
+            response.sendRedirect("dashboard?error=acceso_denegado");
             return;
         }
 
@@ -79,7 +66,7 @@ public class EmpleadoServlet extends HttpServlet {
 
         if ("delete".equals(action)) {
             int id = Integer.parseInt(request.getParameter("id"));
-            if (usuarioDAO.eliminar(id)) {
+            if (empleadoService.eliminar(id)) {
                 response.sendRedirect("empleados?msg=eliminado");
             } else {
                 response.sendRedirect("empleados?error=errorEliminar");
@@ -108,10 +95,6 @@ public class EmpleadoServlet extends HttpServlet {
         u.setTelefono(request.getParameter("telefono"));
         u.setDireccion(request.getParameter("direccion"));
         u.setHorario(request.getParameter("horario"));
-
-        // =====================================
-        // CAPTURA DE LOS NUEVOS CAMPOS
-        // =====================================
         u.setArl(request.getParameter("arl"));
         u.setTipoSangre(request.getParameter("tipoSangre"));
         u.setEstado(request.getParameter("estado"));
@@ -130,28 +113,11 @@ public class EmpleadoServlet extends HttpServlet {
         }
 
         String fileName = request.getParameter("oldProfilePicture"); 
-        Part filePart = request.getPart("profilePicture");
-
-        if (filePart != null && filePart.getSize() > 0) {
-            String extension = filePart.getSubmittedFileName().substring(filePart.getSubmittedFileName().lastIndexOf("."));
-            fileName = "avatar_" + UUID.randomUUID().toString() + extension;
-            
-            // 1. Guardar en la carpeta Target de Tomcat (Para verla instantáneamente en el HTML)
-            String targetPath = request.getServletContext().getRealPath("") + File.separator + "uploads";
-            File targetDir = new File(targetPath);
-            if (!targetDir.exists()) targetDir.mkdir();
-            filePart.write(targetPath + File.separator + fileName);
-            
-            // 2. Hacer una copia de seguridad física en el código fuente (Para que Maven no la borre)
-            String srcPath = "C:\\Users\\angel\\OneDrive\\Desktop\\Ejercicios Java\\Finca la rosa\\gestion-ganadera\\src\\main\\webapp\\uploads";
-            File srcDir = new File(srcPath);
-            if (!srcDir.exists()) srcDir.mkdir();
-            
-            Files.copy(
-                new File(targetPath + File.separator + fileName).toPath(), 
-                new File(srcPath + File.separator + fileName).toPath(),
-                StandardCopyOption.REPLACE_EXISTING
-            );
+        try {
+            Part filePart = request.getPart("profilePicture");
+            fileName = fileService.guardarImagenEmpleado(request, filePart, fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         u.setProfilePicture(fileName);
 
@@ -159,7 +125,7 @@ public class EmpleadoServlet extends HttpServlet {
         // ACCIONES DE BASE DE DATOS
         // ==========================================
         if ("edit".equals(action)) {
-            if (usuarioDAO.actualizarPerfil(u)) {
+            if (empleadoService.actualizarPerfil(u)) {
                 response.sendRedirect("empleados?msg=actualizado");
             } else {
                 response.sendRedirect("empleados?error=errorGuardar");
@@ -167,12 +133,7 @@ public class EmpleadoServlet extends HttpServlet {
             return;
         }
 
-        if (usuarioDAO.registrar(u)) { 
-            Usuario recienCreado = usuarioDAO.obtenerPorEmail(u.getEmail());
-            if (recienCreado != null) {
-                u.setId(recienCreado.getId());
-                usuarioDAO.actualizarPerfil(u);
-            }
+        if (empleadoService.registrar(u)) { 
             response.sendRedirect("empleados?msg=registrado");
         } else {
             response.sendRedirect("empleados?error=errorGuardar");

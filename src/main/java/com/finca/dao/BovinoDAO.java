@@ -209,8 +209,10 @@ public class BovinoDAO {
     // MÉTODO AGREGADO: Obtener historial general de todos los animales para el Dashboard
     public List<HistorialClinico> obtenerHistorialGeneral() {
         List<HistorialClinico> lista = new ArrayList<>();
-        String sql = "SELECT h.*, u.full_name as veterinario FROM historial_clinico h " +
+        String sql = "SELECT h.*, u.full_name as veterinario, b.numero_arete as arete " +
+                     "FROM historial_clinico h " +
                      "LEFT JOIN usuarios u ON h.veterinario_id = u.id " +
+                     "LEFT JOIN bovinos b ON h.id_bovino = b.id_bovino " +
                      "ORDER BY h.fecha_evento DESC LIMIT 10";
                      
         try (Connection conn = DbConnection.getConnection();
@@ -221,6 +223,7 @@ public class BovinoDAO {
                 HistorialClinico h = new HistorialClinico();
                 h.setIdRegistro(rs.getInt("id_registro"));
                 h.setIdBovino(rs.getInt("id_bovino"));
+                h.setNumeroAreteBovino(rs.getString("arete"));
                 h.setFechaEvento(rs.getDate("fecha_evento"));
                 h.setTipoEvento(rs.getString("tipo_evento"));
                 h.setDescripcion(rs.getString("descripcion"));

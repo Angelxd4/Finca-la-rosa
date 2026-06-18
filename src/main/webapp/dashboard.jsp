@@ -289,7 +289,7 @@
                     <li class="timeline-item">
                         <div class="timeline-icon <%= bgClass %>"><i class="<%= icon %>"></i></div>
                         <span class="timeline-time"><%= act.getFechaEvento() %> | Vet: <%= act.getNombreVeterinario() != null ? act.getNombreVeterinario() : "Sin asignar" %></span>
-                        <div class="timeline-content"><strong style="color: var(--brand-dark);">ID-<%= act.getIdBovino() %>:</strong> <%= act.getDescripcion() %></div>
+                        <div class="timeline-content"><strong style="color: var(--brand-dark);">Arete <%= act.getNumeroAreteBovino() != null ? act.getNumeroAreteBovino() : act.getIdBovino() %>:</strong> <%= act.getDescripcion() %></div>
                     </li>
                     <% 
                             }

@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 public class HistorialClinico {
     private int idRegistro;
     private int idBovino;
+    private String numeroAreteBovino; // Agregado para mostrar el arete en lugar del ID
     private Date fechaEvento;
     private String tipoEvento;
     private String descripcion;
@@ -18,6 +19,7 @@ public class HistorialClinico {
     // Getters
     public int getIdRegistro() { return idRegistro; }
     public int getIdBovino() { return idBovino; }
+    public String getNumeroAreteBovino() { return numeroAreteBovino; }
     public Date getFechaEvento() { return fechaEvento; }
     public String getTipoEvento() { return tipoEvento; }
     public String getDescripcion() { return descripcion; }
@@ -28,6 +30,7 @@ public class HistorialClinico {
     // Setters
     public void setIdRegistro(int idRegistro) { this.idRegistro = idRegistro; }
     public void setIdBovino(int idBovino) { this.idBovino = idBovino; }
+    public void setNumeroAreteBovino(String numeroAreteBovino) { this.numeroAreteBovino = numeroAreteBovino; }
     public void setFechaEvento(Date fechaEvento) { this.fechaEvento = fechaEvento; }
     public void setTipoEvento(String tipoEvento) { this.tipoEvento = tipoEvento; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }

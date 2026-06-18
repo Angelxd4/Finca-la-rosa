@@ -1,16 +1,12 @@
 package com.finca.controllers;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.sql.Date;
 
-import com.finca.dao.BovinoDAO;
+import com.finca.services.AuthService;
+import com.finca.services.BovinoService;
+import com.finca.services.FileService;
 import com.finca.models.Bovino;
-import com.finca.models.Usuario;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -18,42 +14,35 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 
 @WebServlet("/inventario-ganado")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, maxFileSize = 1024 * 1024 * 10, maxRequestSize = 1024 * 1024 * 50)
 public class BovinoServlet extends HttpServlet {
     
-    private final BovinoDAO bovinoDAO = new BovinoDAO();
+    private final BovinoService bovinoService = new BovinoService();
+    private final AuthService authService = new AuthService();
+    private final FileService fileService = new FileService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        if (session.getAttribute("usuarioLogueado") == null) { response.sendRedirect("login"); return; }
+        if (!authService.estaAutenticado(request)) { response.sendRedirect("login"); return; }
         
-        request.setAttribute("listaProduccion", bovinoDAO.obtenerPorClasificacion("Producción"));
-        request.setAttribute("listaVenta", bovinoDAO.obtenerPorClasificacion("Venta"));
-        
-        // ¡LA SOLUCIÓN ESTÁ AQUÍ! Ahora el Servlet busca las crías y se las envía al JSP
-        request.setAttribute("listaCrias", bovinoDAO.obtenerPorClasificacion("Cría"));
+        request.setAttribute("listaProduccion", bovinoService.obtenerPorClasificacion("Producción"));
+        request.setAttribute("listaVenta", bovinoService.obtenerPorClasificacion("Venta"));
+        request.setAttribute("listaCrias", bovinoService.obtenerPorClasificacion("Cría"));
         
         request.getRequestDispatcher("inventario-ganado.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
-        
-        if (usuarioLogueado == null) {
+        if (!authService.estaAutenticado(request)) {
             response.sendRedirect("login");
             return;
         }
 
-        String rol = usuarioLogueado.getRol() != null ? usuarioLogueado.getRol() : "";
-        boolean esVeterinario = rol.equals("2") || rol.equalsIgnoreCase("Veterinario");
-
+        boolean esVeterinario = authService.esVeterinario(request);
         String action = request.getParameter("action");
         
         try {
@@ -66,13 +55,13 @@ public class BovinoServlet extends HttpServlet {
             }
 
             if ("mover".equals(action)) {
-                bovinoDAO.cambiarClasificacion(Integer.parseInt(request.getParameter("id")), request.getParameter("destino"));
+                bovinoService.cambiarClasificacion(Integer.parseInt(request.getParameter("id")), request.getParameter("destino"));
                 response.sendRedirect("inventario-ganado?msg=movido");
                 return;
             }
 
             if ("delete".equals(action)) {
-                bovinoDAO.eliminar(Integer.parseInt(request.getParameter("id")));
+                bovinoService.eliminarBovino(Integer.parseInt(request.getParameter("id")));
                 response.sendRedirect("inventario-ganado?msg=eliminado");
                 return;
             }
@@ -95,38 +84,14 @@ public class BovinoServlet extends HttpServlet {
             Part filePart = request.getPart("imageFile");
             String imagePath = request.getParameter("imageUrl");
 
-            if (filePart != null && filePart.getSize() > 0) {
-                String extension = ".png"; // Por defecto
-                String submittedFileName = filePart.getSubmittedFileName();
-                if (submittedFileName.contains(".")) extension = submittedFileName.substring(submittedFileName.lastIndexOf('.'));
-                
-                String dynamicFileName = "arete_" + b.getNumeroArete().replaceAll("[^a-zA-Z0-9]", "_") + extension;
-                
-                // Ruta Tomcat
-                String tomcatPath = request.getServletContext().getRealPath("") + File.separator + "uploads";
-                new File(tomcatPath).mkdirs();
-                String rutaTomcat = tomcatPath + File.separator + dynamicFileName;
-                
-                try (InputStream is = filePart.getInputStream(); FileOutputStream os = new FileOutputStream(rutaTomcat)) {
-                    is.transferTo(os);
-                }
-                
-                // Ruta Fuente (OneDrive)
-                String sourcePath = "C:\\Users\\angel\\OneDrive\\Desktop\\Ejercicios Java\\Finca la rosa\\gestion-ganadera\\src\\main\\webapp\\uploads";
-                File sourceDir = new File(sourcePath);
-                if (sourceDir.exists()) {
-                    Files.copy(new File(rutaTomcat).toPath(), new File(sourcePath + File.separator + dynamicFileName).toPath(), StandardCopyOption.REPLACE_EXISTING);
-                }
-                
-                imagePath = "uploads/" + dynamicFileName;
-            }
+            imagePath = fileService.guardarImagenBovino(request, filePart, b.getNumeroArete(), imagePath);
             b.setImageUrl(imagePath);
 
             if ("edit".equals(action)) {
-                bovinoDAO.actualizar(b);
+                bovinoService.actualizarBovino(b);
                 response.sendRedirect("inventario-ganado?msg=actualizado");
             } else {
-                bovinoDAO.registrar(b);
+                bovinoService.registrarBovino(b);
                 response.sendRedirect("inventario-ganado?msg=registrado");
             }
         } catch (Exception e) {

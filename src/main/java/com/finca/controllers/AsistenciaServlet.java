@@ -1,11 +1,8 @@
 package com.finca.controllers;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
-import com.finca.utils.DbConnection;
+import com.finca.services.AsistenciaService;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,33 +11,32 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/asistencia-registro")
 public class AsistenciaServlet extends HttpServlet {
+    
+    private final AsistenciaService asistenciaService = new AsistenciaService();
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String qrData = request.getParameter("qrData"); // Ejemplo: FINCA-LAROSA-DOC-123456
+        String qrData = request.getParameter("qrData");
+        String tipoRegistro = request.getParameter("tipoRegistro");
+        
         if (qrData == null || !qrData.startsWith("FINCA-LAROSA-DOC-")) {
-            response.getWriter().write("ERROR: Código inválido");
+            response.getWriter().write("ERROR: Código QR inválido.");
+            return;
+        }
+
+        if (tipoRegistro == null || (!tipoRegistro.equals("entrada") && !tipoRegistro.equals("salida"))) {
+            response.getWriter().write("ERROR: Tipo de registro no válido.");
             return;
         }
 
         String doc = qrData.replace("FINCA-LAROSA-DOC-", "");
         
-        try (Connection conn = DbConnection.getConnection()) {
-            // 1. Buscar usuario por documento
-            PreparedStatement psUser = conn.prepareStatement("SELECT id FROM usuarios WHERE document_id = ?");
-            psUser.setString(1, doc);
-            ResultSet rs = psUser.executeQuery();
-            
-            if (rs.next()) {
-                int userId = rs.getInt("id");
-                // 2. Registrar entrada
-                PreparedStatement psIns = conn.prepareStatement("INSERT INTO asistencia (id_usuario, hora_entrada) VALUES (?, CURRENT_TIMESTAMP)");
-                psIns.setInt(1, userId);
-                psIns.executeUpdate();
-                response.getWriter().write("OK: Entrada registrada correctamente");
-            } else {
-                response.getWriter().write("ERROR: Usuario no encontrado");
-            }
+        try {
+            String resultado = asistenciaService.registrarAsistencia(doc, tipoRegistro);
+            response.getWriter().write(resultado);
         } catch (Exception e) {
-            response.getWriter().write("ERROR: " + e.getMessage());
+            response.getWriter().write("ERROR: Error interno del servidor.");
+            e.printStackTrace();
         }
     }
 }

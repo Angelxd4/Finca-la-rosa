@@ -16,6 +16,7 @@ public class ProduccionDAO {
 
     public ProduccionDAO() {
         actualizarEsquemaBD();
+        vaciarTanquesVencidos();
     }
 
     private void actualizarEsquemaBD() {
@@ -31,6 +32,16 @@ public class ProduccionDAO {
         try (Connection conn = DbConnection.getConnection(); Statement stmt = conn.createStatement()) {
             for (String q : queries) { stmt.execute(q); }
         } catch (Exception e) {}
+    }
+
+    private void vaciarTanquesVencidos() {
+        String sql = "UPDATE sesiones_ordeno SET asignado = true, descarte_vaciado = true " +
+                     "WHERE fecha_hora <= CURRENT_TIMESTAMP - INTERVAL '24 hours' AND (asignado = false OR descarte_vaciado = false)";
+        try (Connection conn = DbConnection.getConnection(); Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public double obtenerStock(String codigo) {
