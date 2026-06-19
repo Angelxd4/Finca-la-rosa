@@ -39,6 +39,171 @@
         --sidebar-width: 270px;
     }
 
+    /* GLOBAL DARK MODE OVERRIDES */
+    html[data-theme="dark"] {
+        --bg-page: #121212 !important;
+        --bg-card: #1E1E1E !important;
+        --ivory: #121212 !important;
+        --text-main: #E0E0E0 !important;
+        --text-subtle: #A0A0A0 !important;
+        --drab: #E0E0E0 !important;
+        --brand-dark: #E0E0E0 !important;
+        --border-subtle: #333333 !important;
+        --brand-primary: #8b9c6f !important;
+        --moss: #8b9c6f !important;
+        --brand-accent: #c4b9a3 !important;
+        --khaki: #c4b9a3 !important;
+        --brand-info: #b3bd9f !important;
+        --sage: #b3bd9f !important;
+        --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+        --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    html[data-theme="dark"] body {
+        background-color: var(--bg-page) !important;
+        color: var(--text-main) !important;
+    }
+
+    html[data-theme="dark"] .sidebar-finca,
+    html[data-theme="dark"] .mobile-header,
+    html[data-theme="dark"] .live-clock,
+    html[data-theme="dark"] .user-profile,
+    html[data-theme="dark"] .dash-card,
+    html[data-theme="dark"] .mini-stat-card,
+    html[data-theme="dark"] .glass-panel,
+    html[data-theme="dark"] .table-custom-wrapper,
+    html[data-theme="dark"] .bg-white,
+    html[data-theme="dark"] .modal-content,
+    html[data-theme="dark"] .dropdown-menu,
+    html[data-theme="dark"] .weather-widget,
+    html[data-theme="dark"] .bovino-card,
+    html[data-theme="dark"] .task-card,
+    html[data-theme="dark"] .kanban-col,
+    html[data-theme="dark"] .form-control,
+    html[data-theme="dark"] .form-select,
+    html[data-theme="dark"] .card,
+    html[data-theme="dark"] .card-body,
+    html[data-theme="dark"] .card-header,
+    html[data-theme="dark"] .card-footer,
+    html[data-theme="dark"] .list-group-item,
+    html[data-theme="dark"] .offcanvas,
+    html[data-theme="dark"] .accordion-item,
+    html[data-theme="dark"] .accordion-button,
+    html[data-theme="dark"] .page-link,
+    html[data-theme="dark"] .dropdown-item,
+    html[data-theme="dark"] .table,
+    html[data-theme="dark"] .table > :not(caption) > * > *,
+    html[data-theme="dark"] .table td,
+    html[data-theme="dark"] .table th,
+    html[data-theme="dark"] .table tr,
+    html[data-theme="dark"] .table thead,
+    html[data-theme="dark"] .table tbody,
+    html[data-theme="dark"] .table-container,
+    html[data-theme="dark"] .module-container,
+    html[data-theme="dark"] .view-list,
+    html[data-theme="dark"] [style*="background: #FFFFFF"],
+    html[data-theme="dark"] [style*="background-color: #FFFFFF"],
+    html[data-theme="dark"] [style*="background: #ffffff"],
+    html[data-theme="dark"] [style*="background-color: #ffffff"],
+    html[data-theme="dark"] [style*="background: white"],
+    html[data-theme="dark"] [style*="background-color: white"] {
+        background-color: var(--bg-card) !important;
+        background: var(--bg-card) !important;
+        color: var(--text-main) !important;
+        border-color: var(--border-subtle) !important;
+    }
+
+    html[data-theme="dark"] .form-control:focus,
+    html[data-theme="dark"] .form-select:focus,
+    html[data-theme="dark"] div.dataTables_wrapper div.dataTables_filter input:focus {
+        background-color: var(--bg-card) !important;
+        color: var(--text-main) !important;
+        border-color: var(--brand-info) !important;
+        box-shadow: 0 0 0 4px rgba(156, 168, 137, 0.2) !important;
+    }
+    
+    html[data-theme="dark"] div.dataTables_wrapper div.dataTables_filter input {
+        background-color: var(--bg-card) !important;
+        color: var(--text-main) !important;
+        border-color: var(--border-subtle) !important;
+    }
+
+    html[data-theme="dark"] .bg-light,
+    html[data-theme="dark"] .apple-tabs-wrapper,
+    html[data-theme="dark"] .sidebar-link:hover,
+    html[data-theme="dark"] .dropdown-item:hover,
+    html[data-theme="dark"] .nav-tabs .nav-link.active,
+    html[data-theme="dark"] .table-hover tbody tr:hover td,
+    html[data-theme="dark"] .kanban-col.drag-over,
+    html[data-theme="dark"] [style*="background: #fafafa"],
+    html[data-theme="dark"] [style*="background-color: #fafafa"] {
+        background-color: #2a2a2a !important;
+        background: #2a2a2a !important;
+        color: var(--text-main) !important;
+    }
+
+    /* FIX BAD ALERT COLORS AND CONTEXTUAL BACKGROUNDS */
+    html[data-theme="dark"] .alert-warning,
+    html[data-theme="dark"] .bg-warning-subtle {
+        background-color: #4a441e !important;
+        border-color: #635b27 !important;
+        color: #f7eb94 !important;
+    }
+    html[data-theme="dark"] .alert-warning *, html[data-theme="dark"] .bg-warning-subtle * {
+        color: #f7eb94 !important;
+    }
+    html[data-theme="dark"] .text-warning { color: #f7eb94 !important; }
+
+    html[data-theme="dark"] .alert-danger,
+    html[data-theme="dark"] .bg-danger-subtle {
+        background-color: #4a1e1e !important;
+        border-color: #632727 !important;
+        color: #f79494 !important;
+    }
+    html[data-theme="dark"] .alert-danger *, html[data-theme="dark"] .bg-danger-subtle * {
+        color: #f79494 !important;
+    }
+    html[data-theme="dark"] .text-danger { color: #f79494 !important; }
+
+    html[data-theme="dark"] .alert-info,
+    html[data-theme="dark"] .bg-info-subtle {
+        background-color: #1e3a4a !important;
+        border-color: #274b63 !important;
+        color: #94cff7 !important;
+    }
+
+    /* Typography and generic text */
+    html[data-theme="dark"] .text-dark,
+    html[data-theme="dark"] .text-muted,
+    html[data-theme="dark"] .text-secondary,
+    html[data-theme="dark"] .text-brand,
+    html[data-theme="dark"] .nav-link,
+    html[data-theme="dark"] .table td,
+    html[data-theme="dark"] .table th,
+    html[data-theme="dark"] .sidebar-link,
+    html[data-theme="dark"] .user-name,
+    html[data-theme="dark"] .card-title,
+    html[data-theme="dark"] .mini-stat-title,
+    html[data-theme="dark"] .task-title,
+    html[data-theme="dark"] .task-desc,
+    html[data-theme="dark"] .timeline-content,
+    html[data-theme="dark"] div.dataTables_wrapper,
+    html[data-theme="dark"] h1, html[data-theme="dark"] h2, html[data-theme="dark"] h3, 
+    html[data-theme="dark"] h4, html[data-theme="dark"] h5, html[data-theme="dark"] h6,
+    html[data-theme="dark"] p, html[data-theme="dark"] span:not(.badge),
+    html[data-theme="dark"] div.dataTables_wrapper div.dataTables_length label,
+    html[data-theme="dark"] div.dataTables_wrapper div.dataTables_filter label,
+    html[data-theme="dark"] div.dataTables_wrapper div.dataTables_info,
+    html[data-theme="dark"] .fw-bolder,
+    html[data-theme="dark"] .fw-medium,
+    html[data-theme="dark"] .fw-bold {
+        color: var(--text-main) !important;
+    }
+    
+    html[data-theme="dark"] .table-hover tbody tr:hover td {
+        background-color: #2a2a2a !important;
+    }
+
     @media (min-width: 992px) {
         body {
             padding-left: calc(var(--sidebar-width) + 40px) !important;
@@ -119,6 +284,7 @@
         <span class="sidebar-brand-text fs-5">La Rosa</span>
     </div>
     <div class="d-flex align-items-center gap-3">
+        <button class="btn border-0 p-0 fs-5" onclick="toggleDarkMode()" id="darkModeToggleBtnMobile" style="color: var(--moss);"><i class="bi bi-moon-stars-fill"></i></button>
         <div class="dropdown">
             <a href="#" class="text-decoration-none position-relative" id="notiDropdownMobile" data-bs-toggle="dropdown" aria-expanded="false" style="color: var(--moss); font-size: 1.25rem;">
                 <i class="bi bi-bell-fill"></i>
@@ -148,7 +314,8 @@
             <span style="font-size: 10px; color: var(--drab); font-weight: 800; letter-spacing: 0.5px;">SISTEMA GANADERO</span>
         </div>
         
-        <div class="dropdown ms-auto me-2 d-none d-lg-block">
+        <button class="btn border-0 p-0 fs-5 d-none d-lg-block ms-auto me-3" onclick="toggleDarkMode()" id="darkModeToggleBtn" style="color: var(--moss);"><i class="bi bi-moon-stars-fill"></i></button>
+        <div class="dropdown me-2 d-none d-lg-block">
             <a href="#" class="text-decoration-none position-relative" id="notiDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="color: var(--moss); font-size: 1.25rem;">
                 <i class="bi bi-bell-fill"></i>
                 <span id="notiBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.55rem; padding: 0.35em 0.5em; display: none; border: 2px solid #fff;">0</span>
@@ -189,6 +356,7 @@
         %>
         <a href="empleados" class="sidebar-link nav-auto-active"><i class="bi bi-people-fill"></i> Personal</a>
         <a href="asistencias" class="sidebar-link nav-auto-active"><i class="bi bi-calendar2-check-fill"></i> Asistencias</a>
+        <a href="asistencia-escaner.jsp" class="sidebar-link nav-auto-active" target="_blank"><i class="bi bi-qr-code-scan"></i> Escáner QR de Ingreso</a>
         <% } %>
     </nav>
 
@@ -225,6 +393,37 @@
 </aside>
 
 <script>
+    // 0. LÓGICA DE DARK MODE
+    function initDarkMode() {
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.addEventListener("DOMContentLoaded", () => updateDarkModeIcons(true));
+        }
+    }
+    
+    function toggleDarkMode() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('darkMode', 'false');
+            updateDarkModeIcons(false);
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('darkMode', 'true');
+            updateDarkModeIcons(true);
+        }
+    }
+
+    function updateDarkModeIcons(isDark) {
+        const iconClass = isDark ? 'bi-sun-fill' : 'bi-moon-stars-fill';
+        const btnDesktop = document.getElementById('darkModeToggleBtn');
+        const btnMobile = document.getElementById('darkModeToggleBtnMobile');
+        if(btnDesktop) btnDesktop.innerHTML = '<i class="bi ' + iconClass + '"></i>';
+        if(btnMobile) btnMobile.innerHTML = '<i class="bi ' + iconClass + '"></i>';
+    }
+
+    initDarkMode();
+
     // 1. LÓGICA DE NAVEGACIÓN ACTIVA
     let currentPath = window.location.pathname;
     let navLinks = document.querySelectorAll('.nav-auto-active');

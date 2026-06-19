@@ -196,8 +196,52 @@
                 </div>
             </div>
 
+            <style>
+                html[data-theme="dark"] .discard-card {
+                    background: #000000 !important;
+                    border-color: #2e0000 !important;
+                }
+                html[data-theme="dark"] .discard-card .text-danger {
+                    color: #ff4d4d !important;
+                }
+            </style>
+            
+            <% 
+                // Logica de Alerta 24H
+                boolean pasaron24h = false;
+                if (lista != null && !lista.isEmpty()) {
+                    // Assuming the list is ordered by date descending (most recent first)
+                    // If not, we can find the max date
+                    java.util.Date ultimaSesion = null;
+                    for (com.finca.models.Ordeno o : lista) {
+                        if (ultimaSesion == null || o.getFechaHora().after(ultimaSesion)) {
+                            ultimaSesion = o.getFechaHora();
+                        }
+                    }
+                    if (ultimaSesion != null) {
+                        long diffInMillies = Math.abs(new java.util.Date().getTime() - ultimaSesion.getTime());
+                        long diff = java.util.concurrent.TimeUnit.HOURS.convert(diffInMillies, java.util.concurrent.TimeUnit.MILLISECONDS);
+                        if (diff >= 24) {
+                            pasaron24h = true;
+                        }
+                    }
+                }
+            %>
+
+            <% if (pasaron24h) { %>
+            <div class="col-12 mb-2">
+                <div class="alert alert-danger border-0 rounded-4 shadow-sm mb-2 d-flex align-items-center">
+                    <i class="bi bi-exclamation-octagon-fill fs-3 me-3 text-danger"></i>
+                    <div>
+                        <strong class="d-block text-dark">¡Atención! Han pasado 24 horas o más.</strong>
+                        <span class="text-dark small">El ciclo diario ha terminado. Se han vaciado los tanques principales para el nuevo turno.</span>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+
             <div class="col-lg-4 col-md-6">
-                <div class="card-stat position-relative" style="background: #fff5f5 !important; border-color: #ffe3e3 !important;">
+                <div class="card-stat position-relative discard-card" style="background: #fff5f5; border-color: #ffe3e3;">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="fw-bold text-danger mb-0 text-uppercase" style="letter-spacing: 1px;"><i class="bi bi-exclamation-triangle-fill me-2"></i> Tanque de Descarte</h6>
                     </div>

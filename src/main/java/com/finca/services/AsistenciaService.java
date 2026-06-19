@@ -55,14 +55,16 @@ public class AsistenciaService {
         java.util.function.BiConsumer<String, String> addRow = (header, data) -> {
             com.lowagie.text.pdf.PdfPCell cellHeader = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(header, fontCellHeader));
             cellHeader.setBackgroundColor(brandPrimary);
-            cellHeader.setPadding(10f);
+            cellHeader.setPadding(12f);
             cellHeader.setBorderColor(java.awt.Color.WHITE);
+            cellHeader.setBorderWidthBottom(1f);
             table.addCell(cellHeader);
             
             com.lowagie.text.pdf.PdfPCell cellData = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(data != null ? data : "N/A", fontCellData));
             cellData.setBackgroundColor(lightGray);
-            cellData.setPadding(10f);
+            cellData.setPadding(12f);
             cellData.setBorderColor(java.awt.Color.WHITE);
+            cellData.setBorderWidthBottom(1f);
             table.addCell(cellData);
         };
         
@@ -75,7 +77,6 @@ public class AsistenciaService {
         String entradaStr = asistencia.getHoraEntrada() != null ? sdfTime.format(asistencia.getHoraEntrada()) : "Sin Registrar";
         String salidaStr = asistencia.getHoraSalida() != null ? sdfTime.format(asistencia.getHoraSalida()) : "Sin Registrar";
 
-        addRow.accept("ID Registro", "#" + asistencia.getIdAsistencia());
         addRow.accept("Empleado", asistencia.getNombreUsuario());
         addRow.accept("Documento (CC)", asistencia.getDocumentoUsuario());
         addRow.accept("Teléfono", asistencia.getTelefono());
@@ -94,6 +95,10 @@ public class AsistenciaService {
         
         document.add(table);
         
+        // Espaciador antes de la firma
+        com.lowagie.text.Paragraph espaciador = new com.lowagie.text.Paragraph("\n\n\n\n");
+        document.add(espaciador);
+
         // Sello
         com.lowagie.text.Font fontFirma = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 10, com.lowagie.text.Font.NORMAL, java.awt.Color.DARK_GRAY);
         com.lowagie.text.Paragraph firma = new com.lowagie.text.Paragraph("_____________________________\nFirma Autorizada", fontFirma);

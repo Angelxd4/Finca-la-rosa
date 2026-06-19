@@ -585,7 +585,39 @@
                     extend: 'pdfHtml5',
                     text: '<i class="bi bi-file-earmark-pdf-fill"></i> PDF Clínica',
                     className: 'btn btn-danger btn-sm',
-                    orientation: 'portrait'
+                    orientation: 'portrait',
+                    pageSize: 'A4',
+                    title: 'FINCA LA ROSA - HISTORIAL CLÍNICO',
+                    customize: function(doc) {
+                        // Color corporativo y alineación
+                        doc.styles.title = {
+                            color: '#464704',
+                            fontSize: '18',
+                            alignment: 'center',
+                            bold: true,
+                            margin: [0, 0, 0, 15]
+                        };
+                        doc.styles.tableHeader = {
+                            fillColor: '#464704',
+                            color: 'white',
+                            alignment: 'center',
+                            bold: true,
+                            margin: [0, 5, 0, 5]
+                        };
+                        doc.defaultStyle.alignment = 'center';
+                        
+                        // Ajuste ancho de tabla
+                        var objLayout = {};
+                        objLayout.hLineWidth = function(i) { return 0.5; };
+                        objLayout.vLineWidth = function(i) { return 0.5; };
+                        objLayout.hLineColor = function(i) { return '#E2E4D5'; };
+                        objLayout.vLineColor = function(i) { return '#E2E4D5'; };
+                        doc.content[1].layout = objLayout;
+                        
+                        // Centrado automático de tabla
+                        var colCount = doc.content[1].table.body[0].length;
+                        doc.content[1].table.widths = Array(colCount).fill('*');
+                    }
                 },
                 {
                     extend: 'print',

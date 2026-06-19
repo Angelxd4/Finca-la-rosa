@@ -62,6 +62,10 @@
         .badge-role-admin { background-color: rgba(183, 167, 140, 0.2); color: var(--brand-dark); }
         .badge-role-vet { background-color: rgba(156, 168, 137, 0.2); color: var(--brand-primary); }
         .badge-role-op { background-color: #f5f5f7; color: var(--text-subtle); border: 1px solid var(--border-subtle); }
+        
+        html[data-theme="dark"] .badge-role-admin { background-color: rgba(183, 167, 140, 0.15) !important; color: #E0E0E0 !important; }
+        html[data-theme="dark"] .badge-role-vet { background-color: rgba(156, 168, 137, 0.15) !important; color: #E0E0E0 !important; }
+        html[data-theme="dark"] .badge-role-op { background-color: #2a2a2a !important; color: #E0E0E0 !important; border-color: #444 !important; }
 
         /* Botones de Acción Mínimos */
         .action-btn { transition: all 0.2s ease; border-radius: 10px; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: none; color: var(--text-subtle); }
@@ -111,6 +115,7 @@
         
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .info-item { background: #f9f9fb; padding: 15px 20px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.02); }
+        html[data-theme="dark"] .info-item { background-color: #1e1e1e !important; border-color: #333 !important; }
         .info-label { font-size: 0.75rem; color: var(--text-subtle); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
         .info-value { font-size: 0.95rem; color: var(--text-main); font-weight: 600; word-break: break-word; }
         

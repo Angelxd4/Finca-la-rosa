@@ -115,12 +115,6 @@
                 <h1 class="page-title">Historial de Asistencias</h1>
                 <div class="page-subtitle">Registro de entradas y salidas del personal</div>
             </div>
-            <div>
-                <!-- Enlace rápido para el escáner si se desea -->
-                <a href="asistencia-escaner.jsp" class="btn btn-brand" target="_blank">
-                    <i class="bi bi-qr-code-scan me-2"></i> Abrir Escáner QR
-                </a>
-            </div>
         </div>
 
         <div class="table-responsive">
