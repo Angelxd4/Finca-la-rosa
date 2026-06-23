@@ -24,7 +24,11 @@ public class TareaDAO {
              ResultSet rs = stmt.executeQuery()) {
              
             while (rs.next()) {
-                lista.add(mapearTarea(rs));
+                try {
+                    lista.add(mapearTarea(rs));
+                } catch (Exception ex) {
+                    System.err.println("Error mapeando tarea individual: " + ex.getMessage());
+                }
             }
         } catch (Exception e) { e.printStackTrace(); }
         return lista;
@@ -45,7 +49,11 @@ public class TareaDAO {
             stmt.setInt(1, idEmpleado);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    lista.add(mapearTarea(rs));
+                    try {
+                        lista.add(mapearTarea(rs));
+                    } catch (Exception ex) {
+                        System.err.println("Error mapeando tarea individual: " + ex.getMessage());
+                    }
                 }
             }
         } catch (Exception e) { e.printStackTrace(); }

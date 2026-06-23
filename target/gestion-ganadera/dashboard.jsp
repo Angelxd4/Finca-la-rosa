@@ -102,11 +102,11 @@
         </div>
         
         <% if (!esVeterinario) { %>
-            <a href="produccion" class="btn btn-brand px-4 shadow-sm">
+            <a href="produccion" class="btn btn-brand btn-ripple px-4 shadow-sm">
                 <i class="bi bi-droplet-half me-2"></i> Ir a Ordeño
             </a>
         <% } else { %>
-            <a href="inventario-ganado" class="btn btn-brand px-4 shadow-sm">
+            <a href="inventario-ganado" class="btn btn-brand btn-ripple px-4 shadow-sm">
                 <i class="bi bi-clipboard2-pulse me-2"></i> Ir a Fichas Clínicas
             </a>
         <% } %>
@@ -115,7 +115,7 @@
     <% if (!esVeterinario) { %>
     <div class="row g-4 mb-4">
         <div class="col-lg-3 col-md-6">
-            <div class="mini-stat-card green">
+            <div class="mini-stat-card green animate-fade-in-up delay-100">
                 <div class="mini-stat-title">Producción de Hoy</div>
                 <div class="d-flex justify-content-between align-items-end">
                     <div class="mini-stat-value"><%= request.getAttribute("produccionHoy") %> <span class="fs-6 fw-normal" style="color: var(--text-subtle);">L</span></div>
@@ -125,7 +125,7 @@
         </div>
 
         <div class="col-lg-3 col-md-6">
-            <div class="mini-stat-card red">
+            <div class="mini-stat-card red animate-fade-in-up delay-200">
                 <div class="mini-stat-title">Descarte de Hoy</div>
                 <div class="d-flex justify-content-between align-items-end">
                     <div class="mini-stat-value text-danger"><%= request.getAttribute("descarteHoy") %> <span class="fs-6 fw-normal text-danger opacity-50">L</span></div>
@@ -135,7 +135,7 @@
         </div>
 
         <div class="col-lg-3 col-md-6">
-            <div class="mini-stat-card yellow">
+            <div class="mini-stat-card yellow animate-fade-in-up delay-300">
                 <div class="mini-stat-title">Tanques Disponibles</div>
                 <div class="d-flex justify-content-between align-items-end">
                     <div class="mini-stat-value"><%= request.getAttribute("stockLeche") %> <span class="fs-6 fw-normal" style="color: var(--text-subtle);">L</span></div>
@@ -145,7 +145,7 @@
         </div>
 
         <div class="col-lg-3 col-md-6">
-            <div class="mini-stat-card purple">
+            <div class="mini-stat-card purple animate-fade-in-up delay-400">
                 <div class="mini-stat-title">Productos en Fábrica</div>
                 <div class="d-flex justify-content-between align-items-end">
                     <div class="mini-stat-value"><%= request.getAttribute("lotesQueso") %> <span class="fs-6 fw-normal" style="color: var(--text-subtle);">Stock</span></div>
@@ -158,7 +158,7 @@
     <% if (!esOperario) { %>
     <div class="row g-4 mb-4">
         <div class="col-lg-8">
-            <div class="dash-card">
+            <div class="dash-card animate-fade-in-up delay-500">
                 <div class="card-title">
                     <span><i class="bi bi-graph-up me-2" style="color: var(--brand-primary);"></i> Tendencia de Producción (Últimos 7 días activos)</span>
                 </div>
@@ -169,7 +169,7 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="dash-card">
+            <div class="dash-card animate-fade-in-up delay-500">
                 <div class="card-title">
                     <span><i class="bi bi-pie-chart-fill me-2" style="color: var(--brand-accent);"></i> Distribución del Hato (<%= request.getAttribute("totalBovinos") %> Cabezas)</span>
                 </div>
@@ -313,7 +313,7 @@
                 </div>
                 
                 <div class="table-responsive">
-                    <table class="table table-clean">
+                    <table class="table table-clean table-premium-hover">
                         <thead>
                             <tr>
                                 <th>Lote</th>

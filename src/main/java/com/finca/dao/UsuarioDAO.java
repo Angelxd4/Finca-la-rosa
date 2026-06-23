@@ -23,7 +23,11 @@ public class UsuarioDAO {
              ResultSet rs = stmt.executeQuery()) {
             
             while (rs.next()) {
-                lista.add(mapearUsuario(rs));
+                try {
+                    lista.add(mapearUsuario(rs));
+                } catch (Exception ex) {
+                    System.err.println("Error mapeando usuario individual: " + ex.getMessage());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

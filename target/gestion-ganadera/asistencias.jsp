@@ -16,16 +16,16 @@
 
     <style>
         :root {
-            --bg-page: #F3F5E7 !important;     
-            --bg-card: #FFFFFF !important;
-            --brand-primary: #464704 !important; 
-            --brand-accent: #B7A78C !important;  
-            --brand-info: #9CA889 !important;    
-            --brand-dark: #423926 !important;    
+            --bg-page: #F3F5E7;     
+            --bg-card: #FFFFFF;
+            --brand-primary: #464704; 
+            --brand-accent: #B7A78C;  
+            --brand-info: #9CA889;    
+            --brand-dark: #423926;    
             
-            --text-main: #1d1d1f !important;
-            --text-subtle: #86868b !important;
-            --border-subtle: #d2d2d7 !important;
+            --text-main: #1d1d1f;
+            --text-subtle: #86868b;
+            --border-subtle: #d2d2d7;
             
             --shadow-apple: 0 4px 6px rgba(0, 0, 0, 0.02), 0 10px 20px rgba(0, 0, 0, 0.04);
             --shadow-hover: 0 8px 12px rgba(0, 0, 0, 0.04), 0 20px 30px rgba(70, 71, 4, 0.08);
@@ -58,8 +58,37 @@
         .badge-status-atiempo { background-color: rgba(156, 168, 137, 0.2); color: var(--brand-primary); }
         .badge-status-tarde { background-color: rgba(220, 53, 69, 0.1); color: #dc3545; }
 
-        .action-btn { transition: all 0.2s ease; border-radius: 10px; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: none; color: var(--text-subtle); text-decoration: none; }
-        .btn-pdf:hover { background-color: rgba(156, 168, 137, 0.15); color: var(--brand-primary); }
+        .btn-pdf { 
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); 
+            border-radius: 12px; 
+            padding: 8px 16px; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: rgba(156, 168, 137, 0.15); 
+            color: var(--brand-primary); 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: 0.85rem; 
+            border: 1px solid rgba(156, 168, 137, 0.3);
+            gap: 8px;
+        }
+        .btn-pdf:hover { 
+            background-color: var(--brand-primary); 
+            color: #FFFFFF !important; 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(70, 71, 4, 0.2); 
+        }
+
+        .avatar-circle {
+            background-color: var(--brand-info);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 700;
+        }
 
         /* Header Layout */
         .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
@@ -118,7 +147,7 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table align-middle">
+            <table class="table align-middle table-premium-hover">
                 <thead>
                     <tr>
                         <th class="ps-4">Empleado</th>
@@ -155,8 +184,8 @@
                                     </div>
                                 <% } %>
                                 <div>
-                                    <div class="fw-bold text-dark"><%= a.getNombreUsuario() %></div>
-                                    <div class="small text-subtle">C.C. <%= a.getDocumentoUsuario() %></div>
+                                    <div class="fw-bold" style="color: var(--text-main);"><%= a.getNombreUsuario() %></div>
+                                    <div class="small" style="color: var(--text-subtle);">C.C. <%= a.getDocumentoUsuario() %></div>
                                 </div>
                             </div>
                         </td>
@@ -167,8 +196,9 @@
                         <td data-label="Estado"><span class="badge badge-custom <%= estadoClase %>"><%= estado %></span></td>
                         
                         <td data-label="Comprobante" class="text-end pe-4">
-                            <a href="asistencias?action=pdf&id=<%= a.getIdAsistencia() %>" class="action-btn btn-pdf" title="Descargar PDF">
+                            <a href="asistencias?action=pdf&id=<%= a.getIdAsistencia() %>" class="btn-pdf" title="Descargar Comprobante en PDF">
                                 <i class="bi bi-file-earmark-pdf-fill fs-5"></i>
+                                <span>PDF</span>
                             </a>
                         </td>
                     </tr>

@@ -111,7 +111,7 @@
                 if (tareas != null) {
                     for (Tarea t : tareas) {
                         if ("Pendiente".equals(t.getEstado())) {
-                            String inicial = t.getAsignadoNombre() != null ? t.getAsignadoNombre().substring(0,1).toUpperCase() : "U";
+                            String inicial = (t.getAsignadoNombre() != null && !t.getAsignadoNombre().trim().isEmpty()) ? t.getAsignadoNombre().trim().substring(0,1).toUpperCase() : "U";
             %>
             <div class="task-card" draggable="true" ondragstart="drag(event)" id="task-<%= t.getIdTarea() %>">
                 <div class="d-flex justify-content-between align-items-start">
@@ -126,8 +126,8 @@
                 </div>
                 <div class="task-desc"><%= t.getDescripcion() %></div>
                 <div class="task-footer">
-                    <div class="task-date"><i class="bi bi-calendar-event me-1"></i> <%= t.getFechaLimite() %></div>
-                    <div class="task-assignee" title="Asignado a: <%= t.getAsignadoNombre() %>">
+                    <div class="task-date"><i class="bi bi-calendar-event me-1"></i> <%= t.getFechaLimite() != null ? t.getFechaLimite() : "Sin fecha" %></div>
+                    <div class="task-assignee" title="Asignado a: <%= t.getAsignadoNombre() != null ? t.getAsignadoNombre() : "Usuario" %>">
                         <div class="assignee-avatar">
                             <% if (t.getAsignadoFoto() != null && !t.getAsignadoFoto().isEmpty()) { %>
                                 <img src="uploads/<%= t.getAsignadoFoto() %>" alt="A">
@@ -147,7 +147,7 @@
                 if (tareas != null) {
                     for (Tarea t : tareas) {
                         if ("En Progreso".equals(t.getEstado())) {
-                            String inicial = t.getAsignadoNombre() != null ? t.getAsignadoNombre().substring(0,1).toUpperCase() : "U";
+                            String inicial = (t.getAsignadoNombre() != null && !t.getAsignadoNombre().trim().isEmpty()) ? t.getAsignadoNombre().trim().substring(0,1).toUpperCase() : "U";
             %>
             <div class="task-card" draggable="true" ondragstart="drag(event)" id="task-<%= t.getIdTarea() %>" style="border-left: 3px solid var(--brand-info);">
                 <div class="d-flex justify-content-between align-items-start">
@@ -162,8 +162,8 @@
                 </div>
                 <div class="task-desc"><%= t.getDescripcion() %></div>
                 <div class="task-footer">
-                    <div class="task-date"><i class="bi bi-calendar-event me-1"></i> <%= t.getFechaLimite() %></div>
-                    <div class="task-assignee" title="Asignado a: <%= t.getAsignadoNombre() %>">
+                    <div class="task-date"><i class="bi bi-calendar-event me-1"></i> <%= t.getFechaLimite() != null ? t.getFechaLimite() : "Sin fecha" %></div>
+                    <div class="task-assignee" title="Asignado a: <%= t.getAsignadoNombre() != null ? t.getAsignadoNombre() : "Usuario" %>">
                         <div class="assignee-avatar">
                             <% if (t.getAsignadoFoto() != null && !t.getAsignadoFoto().isEmpty()) { %>
                                 <img src="uploads/<%= t.getAsignadoFoto() %>" alt="A">
@@ -183,7 +183,7 @@
                 if (tareas != null) {
                     for (Tarea t : tareas) {
                         if ("Completada".equals(t.getEstado())) {
-                            String inicial = t.getAsignadoNombre() != null ? t.getAsignadoNombre().substring(0,1).toUpperCase() : "U";
+                            String inicial = (t.getAsignadoNombre() != null && !t.getAsignadoNombre().trim().isEmpty()) ? t.getAsignadoNombre().trim().substring(0,1).toUpperCase() : "U";
             %>
             <div class="task-card" draggable="true" ondragstart="drag(event)" id="task-<%= t.getIdTarea() %>" style="opacity: 0.7; background: #fafafa;">
                 <div class="d-flex justify-content-between align-items-start">
@@ -198,7 +198,7 @@
                 </div>
                 <div class="task-footer border-0 pt-2">
                     <div class="task-date" style="color: var(--text-subtle);"><i class="bi bi-check-lg"></i> Terminada</div>
-                    <div class="task-assignee">
+                    <div class="task-assignee" title="Asignado a: <%= t.getAsignadoNombre() != null ? t.getAsignadoNombre() : "Usuario" %>">
                         <div class="assignee-avatar" style="filter: grayscale(100%); border-color: #d1d5cb;">
                             <% if (t.getAsignadoFoto() != null && !t.getAsignadoFoto().isEmpty()) { %>
                                 <img src="uploads/<%= t.getAsignadoFoto() %>" alt="A">

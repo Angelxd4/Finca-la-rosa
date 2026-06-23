@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,6 +23,25 @@
             --text-main: #1d1d1f !important;
             --text-subtle: #86868b !important;
             --shadow-apple: 0 4px 6px rgba(0, 0, 0, 0.02), 0 10px 20px rgba(0, 0, 0, 0.04);
+            --toggle-bg: #f5f5f7;
+            --toggle-active-bg: #ffffff;
+            --reader-border: #d2d2d7;
+            --border-subtle: rgba(0,0,0,0.1);
+        }
+
+        /* DARK MODE PALETTE - PREMIUM ZINC */
+        html[data-theme="dark"] {
+            --bg-page: #09090b !important;
+            --bg-card: #18181b !important;
+            --text-main: #f4f4f5 !important;
+            --text-subtle: #a1a1aa !important;
+            --brand-dark: #f4f4f5 !important;
+            --brand-primary: #a3b889 !important; /* Bright Sage */
+            --shadow-apple: 0 10px 40px rgba(0, 0, 0, 0.8);
+            --toggle-bg: #09090b;
+            --toggle-active-bg: #27272a;
+            --reader-border: #27272a;
+            --border-subtle: #27272a;
         }
 
         body { 
@@ -37,12 +56,13 @@
 
         .scanner-card {
             background: var(--bg-card);
-            border-radius: 32px;
+            border-radius: 36px;
             box-shadow: var(--shadow-apple);
-            padding: 40px;
+            padding: 50px 40px;
             width: 100%;
             max-width: 500px;
             text-align: center;
+            border: 1px solid var(--border-subtle);
         }
 
         .brand-icon {
@@ -63,13 +83,14 @@
             font-size: 0.95rem;
         }
 
-        /* Toggle Button Group */
+        /* iOS-style Segmented Control */
         .btn-group-toggle {
             display: flex;
-            background: #f5f5f7;
-            border-radius: 20px;
-            padding: 5px;
+            background: var(--toggle-bg);
+            border-radius: 18px;
+            padding: 6px;
             margin-bottom: 30px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .btn-toggle {
@@ -84,29 +105,69 @@
         }
 
         .btn-toggle.active {
-            background: #ffffff;
+            background: var(--toggle-active-bg);
             color: var(--brand-primary);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-weight: 700;
         }
 
         #reader {
-            border-radius: 20px;
+            border-radius: 24px;
             overflow: hidden;
-            border: 2px dashed #d2d2d7 !important;
+            border: 2px dashed var(--reader-border) !important;
             margin-bottom: 20px;
+            background: var(--toggle-bg);
+            padding: 10px;
         }
 
         #reader button {
             background-color: var(--brand-primary);
-            color: white;
+            color: #09090b;
             border: none;
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-weight: 600;
-            margin-top: 10px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        
+        #reader button:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
         }
 
+        /* Invertir el ícono de la cámara de html5-qrcode en modo oscuro */
+        html[data-theme="dark"] #reader img {
+            filter: invert(1);
+            opacity: 0.8;
+        }
+        
+        /* Asegurar que los textos de error o mensajes del lector sean visibles */
+        html[data-theme="dark"] #reader span {
+            color: var(--text-main) !important;
+        }
+
+        /* SweetAlert2 Dark Mode overrides */
+        div:where(.swal2-container) div:where(.swal2-popup) {
+            border-radius: 30px !important;
+            background: var(--bg-card) !important;
+            color: var(--text-main) !important;
+            box-shadow: var(--shadow-apple) !important;
+        }
+        div:where(.swal2-container) h2:where(.swal2-title) { color: var(--brand-dark) !important; }
+        div:where(.swal2-container) div:where(.swal2-html-container) { color: var(--text-subtle) !important; }
+
     </style>
+    <script>
+        // Sincronizar con el tema elegido en el resto de la app
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark'); // Por defecto oscuro
+        }
+    </script>
 </head>
 <body>
     
@@ -126,11 +187,7 @@
 
         <div id="reader"></div>
         
-        <div class="mt-4">
-            <a href="login" class="text-decoration-none" style="color: var(--brand-info); font-weight: 600; font-size: 0.9rem;">
-                <i class="bi bi-arrow-left"></i> Volver al Login
-            </a>
-        </div>
+        <!-- Botón de salir eliminado para modo kiosco -->
     </div>
 
     <script>

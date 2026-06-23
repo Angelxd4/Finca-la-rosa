@@ -26,6 +26,7 @@
                         : "U";
 %>
 
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/premium-ui.css">
 <style>
     :root {
         /* PALETA FINCA LA ROSA (DARK MOSS GREEN & EARTH TONES) */
@@ -39,29 +40,60 @@
         --sidebar-width: 270px;
     }
 
-    /* GLOBAL DARK MODE OVERRIDES */
+    /* GLOBAL DARK MODE OVERRIDES - TRUE PREMIUM DARK */
     html[data-theme="dark"] {
-        --bg-page: #121212 !important;
-        --bg-card: #1E1E1E !important;
-        --ivory: #121212 !important;
-        --text-main: #E0E0E0 !important;
-        --text-subtle: #A0A0A0 !important;
-        --drab: #E0E0E0 !important;
-        --brand-dark: #E0E0E0 !important;
-        --border-subtle: #333333 !important;
-        --brand-primary: #8b9c6f !important;
-        --moss: #8b9c6f !important;
-        --brand-accent: #c4b9a3 !important;
-        --khaki: #c4b9a3 !important;
-        --brand-info: #b3bd9f !important;
-        --sage: #b3bd9f !important;
-        --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
-        --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.5) !important;
+        --bg-page: #09090b !important; /* Zinc 950 */
+        --bg-card: #18181b !important; /* Zinc 900 */
+        --ivory: #09090b !important;
+        --text-main: #f4f4f5 !important;
+        --text-subtle: #a1a1aa !important;
+        --drab: #f4f4f5 !important;
+        --brand-dark: #f4f4f5 !important;
+        --border-subtle: #27272a !important; /* Zinc 800 */
+        --brand-primary: #a3b889 !important; /* Bright Sage */
+        --moss: #a3b889 !important;
+        --brand-accent: #d4c4a8 !important; /* Bright Khaki */
+        --khaki: #d4c4a8 !important;
+        --brand-info: #8A9F6D !important;
+        --sage: #8A9F6D !important;
+        --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.8) !important;
+        --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.6) !important;
     }
 
-    html[data-theme="dark"] body {
+    html[data-theme="dark"] body,
+    html[data-theme="dark"] .text-dark {
         background-color: var(--bg-page) !important;
         color: var(--text-main) !important;
+    }
+    
+    html[data-theme="dark"] .text-dark {
+        background-color: transparent !important;
+    }
+
+    html[data-theme="dark"] .text-muted {
+        color: var(--text-subtle) !important;
+    }
+
+    /* FIX BOOTSTRAP ALERTS FOR DARK MODE */
+    html[data-theme="dark"] .alert-warning {
+        background-color: rgba(255, 193, 7, 0.1) !important;
+        border: 1px solid rgba(255, 193, 7, 0.2) !important;
+        color: #ffc107 !important;
+    }
+    html[data-theme="dark"] .alert-danger {
+        background-color: rgba(220, 53, 69, 0.1) !important;
+        border: 1px solid rgba(220, 53, 69, 0.2) !important;
+        color: #ff6b6b !important;
+    }
+    html[data-theme="dark"] .alert-success {
+        background-color: rgba(25, 135, 84, 0.1) !important;
+        border: 1px solid rgba(25, 135, 84, 0.2) !important;
+        color: #75b798 !important;
+    }
+    html[data-theme="dark"] .alert-info {
+        background-color: rgba(13, 202, 240, 0.1) !important;
+        border: 1px solid rgba(13, 202, 240, 0.2) !important;
+        color: #6edff6 !important;
     }
 
     html[data-theme="dark"] .sidebar-finca,
@@ -128,6 +160,46 @@
         border-color: var(--border-subtle) !important;
     }
 
+    /* INPUTS GLOBALES EN DARK MODE */
+    html[data-theme="dark"] .form-control,
+    html[data-theme="dark"] .form-select,
+    html[data-theme="dark"] .input-group-text {
+        background-color: #121214 !important;
+        color: #f4f4f5 !important;
+        border-color: #27272a !important;
+    }
+    
+    html[data-theme="dark"] .form-control::placeholder,
+    html[data-theme="dark"] .form-select::placeholder {
+        color: #a1a1aa !important;
+        opacity: 0.8 !important;
+    }
+
+    html[data-theme="dark"] .form-control:focus,
+    html[data-theme="dark"] .form-select:focus {
+        background-color: #18181b !important;
+        border-color: var(--brand-primary) !important;
+        box-shadow: 0 0 0 4px rgba(163, 184, 137, 0.2) !important;
+    }
+
+    /* BOTONES GLOBALES EN DARK MODE (Alto Contraste) */
+    html[data-theme="dark"] .btn-brand {
+        background-color: var(--brand-primary) !important;
+        color: #09090b !important;
+        border-color: var(--brand-primary) !important;
+        font-weight: 800 !important;
+    }
+    html[data-theme="dark"] .btn-brand:hover:not(:disabled) {
+        background-color: #f4f4f5 !important;
+        color: #09090b !important;
+        border-color: #f4f4f5 !important;
+    }
+    html[data-theme="dark"] .btn-brand:disabled {
+        background-color: #27272a !important;
+        color: #a1a1aa !important;
+        border-color: #27272a !important;
+    }
+
     html[data-theme="dark"] .bg-light,
     html[data-theme="dark"] .apple-tabs-wrapper,
     html[data-theme="dark"] .sidebar-link:hover,
@@ -137,8 +209,19 @@
     html[data-theme="dark"] .kanban-col.drag-over,
     html[data-theme="dark"] [style*="background: #fafafa"],
     html[data-theme="dark"] [style*="background-color: #fafafa"] {
-        background-color: #2a2a2a !important;
-        background: #2a2a2a !important;
+        background-color: #18181b !important;
+        background: #18181b !important;
+        color: var(--text-main) !important;
+    }
+
+    /* SWEETALERT DARK MODE OVERRIDES */
+    html[data-theme="dark"] div:where(.swal2-container) div:where(.swal2-popup) {
+        background: var(--bg-card) !important;
+        color: var(--text-main) !important;
+        border: 1px solid var(--border-subtle) !important;
+    }
+    html[data-theme="dark"] div:where(.swal2-container) .swal2-title,
+    html[data-theme="dark"] div:where(.swal2-container) .swal2-html-container {
         color: var(--text-main) !important;
     }
 
@@ -173,8 +256,8 @@
     }
 
     /* Typography and generic text */
-    html[data-theme="dark"] .text-dark,
-    html[data-theme="dark"] .text-muted,
+    html[data-theme="dark"] .text-dark:not(.bg-warning):not(.bg-info):not(.bg-light):not(.bg-white),
+    html[data-theme="dark"] .text-muted:not(.bg-warning):not(.bg-info):not(.bg-light):not(.bg-white),
     html[data-theme="dark"] .text-secondary,
     html[data-theme="dark"] .text-brand,
     html[data-theme="dark"] .nav-link,
@@ -275,6 +358,10 @@
         body { padding-top: 80px !important; padding-left: 15px !important; padding-right: 15px !important; }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(66, 57, 38, 0.6); backdrop-filter: blur(3px); z-index: 1035; display: none; }
         .sidebar-overlay.show { display: block; }
+    } /* Cierre de media query */
+
+    html[data-theme="dark"] .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
     }
 </style>
 
@@ -290,8 +377,8 @@
                 <i class="bi bi-bell-fill"></i>
                 <span id="notiBadgeMobile" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.55rem; padding: 0.35em 0.5em; display: none; border: 2px solid #fff;">0</span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="notiDropdownMobile" style="width: 300px; max-height: 400px; overflow-y: auto; border-radius: 15px; padding: 0; margin-top: 10px; z-index: 9999;">
-                <li class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: #fafafa; position: sticky; top: 0; z-index: 10; border-radius: 15px 15px 0 0;">
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 glass-dropdown" aria-labelledby="notiDropdownMobile" style="width: 300px; max-height: 400px; overflow-y: auto; border-radius: 15px; padding: 0; margin-top: 10px; z-index: 9999;">
+                <li class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: rgba(250, 250, 250, 0.7); backdrop-filter: blur(5px); position: sticky; top: 0; z-index: 10; border-radius: 15px 15px 0 0;">
                     <span class="fw-bold" style="color: var(--moss); font-size: 0.95rem;"><i class="bi bi-bell me-1"></i> Notificaciones</span>
                     <button class="btn btn-sm btn-link text-decoration-none p-0 fw-bold" style="font-size: 0.8rem; color: var(--brand-info);" onclick="marcarNotificacionesLeidas()">Marcar Leídas</button>
                 </li>
@@ -320,8 +407,8 @@
                 <i class="bi bi-bell-fill"></i>
                 <span id="notiBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.55rem; padding: 0.35em 0.5em; display: none; border: 2px solid #fff;">0</span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="notiDropdown" style="width: 320px; max-height: 400px; overflow-y: auto; border-radius: 15px; padding: 0; margin-top: 10px;">
-                <li class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: #fafafa; position: sticky; top: 0; z-index: 10; border-radius: 15px 15px 0 0;">
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 glass-dropdown" aria-labelledby="notiDropdown" style="width: 320px; max-height: 400px; overflow-y: auto; border-radius: 15px; padding: 0; margin-top: 10px;">
+                <li class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: rgba(250, 250, 250, 0.7); backdrop-filter: blur(5px); position: sticky; top: 0; z-index: 10; border-radius: 15px 15px 0 0;">
                     <span class="fw-bold" style="color: var(--moss); font-size: 0.95rem;"><i class="bi bi-bell me-1"></i> Notificaciones</span>
                     <button class="btn btn-sm btn-link text-decoration-none p-0 fw-bold" style="font-size: 0.8rem; color: var(--brand-info);" onclick="marcarNotificacionesLeidas()">Marcar Leídas</button>
                 </li>
@@ -505,6 +592,7 @@
     });
 
     // 4. LÓGICA DE NOTIFICACIONES
+    let lastUnreadCount = -1;
     function fetchNotificaciones() {
         const urlNoti = '<%= request.getContextPath() %>/NotificacionesServlet';
         fetch(urlNoti, { credentials: 'same-origin' })
@@ -519,26 +607,47 @@
                 let badgeMobile = document.getElementById('notiBadgeMobile');
                 
                 if (data.noLeidas > 0) {
-                    if (badgeDesktop) { badgeDesktop.textContent = data.noLeidas; badgeDesktop.style.display = 'inline-block'; }
-                    if (badgeMobile) { badgeMobile.textContent = data.noLeidas; badgeMobile.style.display = 'inline-block'; }
+                    if (badgeDesktop) { badgeDesktop.textContent = data.noLeidas; badgeDesktop.style.display = 'inline-block'; badgeDesktop.classList.add('badge-pulse'); }
+                    if (badgeMobile) { badgeMobile.textContent = data.noLeidas; badgeMobile.style.display = 'inline-block'; badgeMobile.classList.add('badge-pulse'); }
+                    
+                    if (lastUnreadCount !== -1 && data.noLeidas > lastUnreadCount) {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                toast: true, position: 'top-end', showConfirmButton: false, timer: 3500, timerProgressBar: true,
+                                icon: 'info', title: 'Nuevas Notificaciones', text: `Tienes ${data.noLeidas} alertas sin leer.`,
+                                background: 'var(--bg-card)', color: 'var(--text-main)', iconColor: 'var(--brand-primary)'
+                            });
+                        }
+                    }
                 } else {
-                    if (badgeDesktop) badgeDesktop.style.display = 'none';
-                    if (badgeMobile) badgeMobile.style.display = 'none';
+                    if (badgeDesktop) { badgeDesktop.style.display = 'none'; badgeDesktop.classList.remove('badge-pulse'); }
+                    if (badgeMobile) { badgeMobile.style.display = 'none'; badgeMobile.classList.remove('badge-pulse'); }
                 }
+                lastUnreadCount = data.noLeidas;
 
                 let listHTML = '';
                 if (data.notificaciones && data.notificaciones.length > 0) {
                     data.notificaciones.forEach(n => {
                         let bgClass = n.leida ? 'bg-white' : 'bg-light';
-                        let dot = n.leida ? '' : '<span class="position-absolute top-50 start-0 translate-middle p-1 bg-danger border border-light rounded-circle" style="margin-left: 15px;"></span>';
+                        let dot = n.leida ? '' : '<span class="position-absolute top-50 start-0 translate-middle p-1 bg-danger border border-light rounded-circle noti-unread-dot" style="margin-left: 15px;"></span>';
+                        
+                        let tLower = n.titulo.toLowerCase();
+                        let iconClass = 'bi-info-circle';
+                        let iconColor = 'var(--brand-info)';
+                        if(tLower.includes('vacuna') || tLower.includes('tratamiento')) { iconClass = 'bi-heart-pulse-fill'; iconColor = '#dc3545'; }
+                        else if(tLower.includes('tanque') || tLower.includes('leche') || tLower.includes('ordeño')) { iconClass = 'bi-droplet-half'; iconColor = 'var(--brand-primary)'; }
+                        else if(tLower.includes('parto') || tLower.includes('cría') || tLower.includes('lote')) { iconClass = 'bi-stars'; iconColor = '#ffc107'; }
+
                         listHTML += `
-                            <a href="<%= request.getContextPath() %>/\${n.link}" class="text-decoration-none border-bottom p-3 d-block text-dark \${bgClass} position-relative noti-item" style="transition: background 0.3s;">
+                            <a href="<%= request.getContextPath() %>/\${n.link}" class="text-decoration-none border-bottom p-3 d-block \${bgClass} position-relative noti-item" style="transition: background 0.3s; color: var(--text-main);">
                                 \${dot}
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <strong style="font-size: 0.85rem; color: var(--brand-dark);">\${n.titulo}</strong>
-                                    <small class="text-muted" style="font-size: 0.7rem;">\${n.tiempo}</small>
+                                    <strong style="font-size: 0.85rem; color: var(--brand-dark);">
+                                        <i class="bi \${iconClass} me-1" style="color: \${iconColor}"></i>\${n.titulo}
+                                    </strong>
+                                    <small class="text-muted" style="font-size: 0.7rem; color: var(--text-subtle) !important;">\${n.tiempo}</small>
                                 </div>
-                                <div style="font-size: 0.8rem; color: #666; line-height: 1.3;">\${n.mensaje}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-subtle); line-height: 1.3; padding-left: 20px;">\${n.mensaje}</div>
                             </a>
                         `;
                     });
@@ -562,22 +671,35 @@
     }
 
     function marcarNotificacionesLeidas() {
-        fetch('<%= request.getContextPath() %>/NotificacionesServlet', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'action=marcarLeidas'
-        })
-        .then(res => res.text())
-        .then(data => {
-            if(data === 'ok') {
-                let badgeDesktop = document.getElementById('notiBadge');
-                let badgeMobile = document.getElementById('notiBadgeMobile');
-                if (badgeDesktop) badgeDesktop.style.display = 'none';
-                if (badgeMobile) badgeMobile.style.display = 'none';
-                fetchNotificaciones();
-            }
-        });
+        document.querySelectorAll('.noti-unread-dot').forEach(el => el.classList.add('hide-dot'));
+        document.querySelectorAll('.noti-item').forEach(el => el.classList.add('marking-read'));
+        
+        setTimeout(() => {
+            fetch('<%= request.getContextPath() %>/NotificacionesServlet', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'action=marcarLeidas'
+            })
+            .then(res => res.text())
+            .then(data => {
+                if(data === 'ok') {
+                    let badgeDesktop = document.getElementById('notiBadge');
+                    let badgeMobile = document.getElementById('notiBadgeMobile');
+                    if (badgeDesktop) { badgeDesktop.style.display = 'none'; badgeDesktop.classList.remove('badge-pulse'); }
+                    if (badgeMobile) { badgeMobile.style.display = 'none'; badgeMobile.classList.remove('badge-pulse'); }
+                    lastUnreadCount = 0;
+                    fetchNotificaciones();
+                    
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            toast: true, position: 'top-end', showConfirmButton: false, timer: 2000,
+                            icon: 'success', title: 'Notificaciones marcadas como leídas'
+                        });
+                    }
+                }
+            });
+        }, 400);
     }
 
     function toggleSidebar() {

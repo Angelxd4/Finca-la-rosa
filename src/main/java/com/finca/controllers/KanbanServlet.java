@@ -34,7 +34,15 @@ public class KanbanServlet extends HttpServlet {
         if (esAdmin) {
             request.setAttribute("tareas", tareaService.obtenerTodas());
             try {
-                request.setAttribute("empleados", authService.obtenerTodosEmpleados());
+                java.util.List<Usuario> todos = authService.obtenerTodosEmpleados();
+                java.util.List<Usuario> disponibles = new java.util.ArrayList<>();
+                for(Usuario u : todos) {
+                    boolean esInactivo = "Inactivo".equalsIgnoreCase(u.getEstado());
+                    if (!esInactivo && u.getId() != usuario.getId()) {
+                        disponibles.add(u);
+                    }
+                }
+                request.setAttribute("empleados", disponibles);
             } catch (Exception e) {
                 e.printStackTrace();
             }

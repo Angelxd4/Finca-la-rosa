@@ -12,7 +12,6 @@
 
     <style>
         :root {
-            /* Paleta Institucional Finca La Rosa */
             --moss: #464704;
             --sage: #9CA889;
             --khaki: #B7A78C;
@@ -20,14 +19,41 @@
             --ivory: #F3F5E7;
             --blanco-puro: #FFFFFF;
             --texto-suave: #7F8C8D;
+            --btn-bg: var(--moss);
+            --btn-text: var(--blanco-puro);
+            --bg-body: var(--ivory);
+            --bg-card: var(--blanco-puro);
+            --text-main: var(--drab);
+            --border-color: rgba(255, 255, 255, 0.5);
+            --input-bg: #F8F9F3;
+            --input-border: rgba(156, 168, 137, 0.2);
+            --shadow-color: rgba(70, 71, 4, 0.15);
+        }
+
+        /* DARK MODE PALETTE - Sincronizado con Premium UI */
+        html[data-theme="dark"] {
+            --bg-body: #09090b;
+            --bg-card: #18181b;
+            --text-main: #f4f4f5;
+            --texto-suave: #a1a1aa;
+            --ivory: #09090b;
+            --blanco-puro: #18181b;
+            --border-color: #27272a;
+            --input-bg: #09090b;
+            --input-border: #27272a;
+            --shadow-color: rgba(0, 0, 0, 0.8);
+            --drab: #f4f4f5;
+            --moss: #a3b889; /* Bright Sage for dark mode */
+            --btn-text: #09090b; /* Dark text on bright button in dark mode */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         body {
-            background: var(--ivory);
+            background: var(--bg-body);
             display: flex; align-items: center; justify-content: center; flex-direction: column;
             min-height: 100vh; overflow: hidden;
+            transition: background 0.3s ease;
         }
 
         /* ================= ANIMACIONES ================= */
@@ -37,10 +63,10 @@
 
         /* ================= CONTENEDOR PRINCIPAL ================= */
         .container {
-            background-color: var(--blanco-puro);
+            background-color: var(--bg-card);
             border-radius: 40px; 
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 20px 60px rgba(70, 71, 4, 0.15);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 60px var(--shadow-color);
             position: relative; overflow: hidden;
             width: 1000px; max-width: 95%; height: 650px;
             animation: cardScale 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
@@ -56,7 +82,7 @@
         @keyframes move { 0%, 49.99% { opacity: 0; z-index: 1; } 50%, 100% { opacity: 1; z-index: 5; } }
 
         form {
-            background-color: var(--blanco-puro); display: flex; align-items: center; justify-content: center;
+            background-color: var(--bg-card); display: flex; align-items: center; justify-content: center;
             flex-direction: column; padding: 0 60px; height: 100%; text-align: center;
         }
 
@@ -73,22 +99,22 @@
         .input-group { width: 100%; position: relative; margin-bottom: 15px; }
         input {
             width: 100%; padding: 18px 25px; font-size: 15px; border-radius: 18px;
-            border: 2px solid rgba(156, 168, 137, 0.2); background: #F8F9F3;
-            color: var(--drab); font-weight: 600; text-align: center; transition: all 0.3s;
+            border: 2px solid var(--input-border); background: var(--input-bg);
+            color: var(--text-main); font-weight: 600; text-align: center; transition: all 0.3s;
         }
-        input::placeholder { color: var(--sage); opacity: 0.8; font-weight: 500; }
-        input:focus { border-color: var(--moss); background: var(--blanco-puro); outline: none; box-shadow: 0 0 0 5px rgba(70, 71, 4, 0.1); }
+        input::placeholder { color: var(--texto-suave); opacity: 0.8; font-weight: 500; }
+        input:focus { border-color: var(--moss); background: var(--bg-card); outline: none; box-shadow: 0 0 0 5px rgba(70, 71, 4, 0.1); }
         .toggle-password { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--sage); transition: 0.3s; }
         .toggle-password:hover { color: var(--moss); }
 
         /* ================= BOTONES ================= */
         button {
-            background: var(--moss); color: var(--blanco-puro); border-radius: 18px; padding: 18px; font-weight: 700;
+            background: var(--moss); color: var(--btn-text); border-radius: 18px; padding: 18px; font-weight: 800;
             border: none; width: 100%; margin-top: 15px; letter-spacing: 1px; font-size: 14px; cursor: pointer;
             transition: all 0.3s; box-shadow: 0 10px 25px rgba(70, 71, 4, 0.25); text-transform: uppercase;
         }
-        button:hover:not(:disabled) { background: var(--drab); transform: translateY(-3px); box-shadow: 0 15px 30px rgba(66, 57, 38, 0.35); }
-        button:disabled { background: var(--sage); cursor: not-allowed; box-shadow: none; transform: none; }
+        button:hover:not(:disabled) { background: var(--text-main); color: var(--bg-body); transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35); }
+        button:disabled { background: var(--texto-suave); cursor: not-allowed; box-shadow: none; transform: none; }
 
         .btn-ghost { background: transparent; border: 2px solid var(--ivory); color: var(--ivory); box-shadow: none; }
         .btn-ghost:hover { background: rgba(243, 245, 231, 0.15); box-shadow: none; }
@@ -103,16 +129,17 @@
         .container.active .toggle-left { transform: translateX(0); }
         .toggle-right { right: 0; transform: translateX(0); }
         .container.active .toggle-right { transform: translateX(200%); }
-        .toggle-panel h2 { font-size: 38px; font-weight: 800; color: var(--blanco-puro); margin-bottom: 15px; }
-        .toggle-panel p { font-size: 16px; line-height: 1.6; font-weight: 500; margin-bottom: 30px; opacity: 0.9; }
-        .toggle-panel .brand-emblem { background: rgba(255,255,255,0.15); color: var(--ivory); box-shadow: none; border: 1px solid rgba(255,255,255,0.2); }
+        .toggle-panel h2 { font-size: 38px; font-weight: 800; color: #ffffff; margin-bottom: 15px; }
+        .toggle-panel p { font-size: 16px; line-height: 1.6; font-weight: 500; margin-bottom: 30px; color: rgba(255,255,255,0.9); }
+        .toggle-panel .brand-emblem { background: rgba(255,255,255,0.2); color: #ffffff; box-shadow: none; border: 1px solid rgba(255,255,255,0.3); }
 
         /* ================= DISEÑO MEJORADO DE SWEETALERT (VENTANAS OTP) ================= */
         div:where(.swal2-container) div:where(.swal2-popup) {
             border-radius: 35px !important;
             padding: 2.5em 2em !important;
-            box-shadow: 0 25px 60px rgba(70,71,4,0.2) !important;
-            background: var(--blanco-puro) !important;
+            box-shadow: 0 25px 60px var(--shadow-color) !important;
+            background: var(--bg-card) !important;
+            border: 1px solid var(--border-color);
         }
         
         .swal-custom-header { margin-bottom: 15px; }
@@ -145,19 +172,46 @@
         
         .swal2-input.otp-input {
             border-radius: 20px !important; text-align: center !important; font-size: 2.5rem !important;
-            font-weight: 800 !important; letter-spacing: 15px !important; color: var(--moss) !important;
-            border: 2px solid rgba(156, 168, 137, 0.3) !important; background: #F8F9F3 !important;
+            font-weight: 800 !important; letter-spacing: 15px !important; color: var(--text-main) !important;
+            border: 2px solid var(--input-border) !important; background: var(--input-bg) !important;
             margin: 1em auto 0 !important; max-width: 80% !important; transition: all 0.3s !important;
         }
         .swal2-input.otp-input:focus { border-color: var(--moss) !important; box-shadow: 0 0 0 5px rgba(70, 71, 4, 0.1) !important; }
 
         @media (max-width: 850px) {
-            .container { height: 100vh; max-width: 100%; border-radius: 0; }
+            .container { height: 100vh; max-width: 100%; border-radius: 0; border: none; }
             .toggle-container { display: none; }
             .form-container { width: 100%; }
             .sign-up { display: none; }
         }
+
+        .dark-mode-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px var(--shadow-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+        .dark-mode-fab:hover {
+            transform: translateY(-3px);
+        }
     </style>
+    <script>
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
 </head>
 
 <body>
@@ -255,10 +309,33 @@
         </div>
     </div>
 
+    <button class="dark-mode-fab" id="loginThemeToggle" title="Cambiar Tema" onclick="toggleLoginTheme()">
+        <i class="fa-solid fa-moon" id="loginThemeIcon"></i>
+    </button>
+
     <script>
         const container = document.getElementById('container');
         document.getElementById('register').addEventListener('click', () => container.classList.add("active"));
         document.getElementById('login').addEventListener('click', () => container.classList.remove("active"));
+
+        function toggleLoginTheme() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('darkMode', 'false');
+                document.getElementById('loginThemeIcon').className = 'fa-solid fa-moon';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('darkMode', 'true');
+                document.getElementById('loginThemeIcon').className = 'fa-solid fa-sun';
+            }
+        }
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.getElementById('loginThemeIcon').className = 'fa-solid fa-sun';
+            }
+        });
 
         function togglePasswordVisibility(inputId, iconElement) {
             const passwordInput = document.getElementById(inputId);

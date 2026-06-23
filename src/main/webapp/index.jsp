@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/premium-ui.css">
 
     <style>
         :root {
@@ -306,7 +307,7 @@
                     <p class="hero-text">
                         Plataforma centralizada para el control del inventario bovino, monitoreo de bioseguridad, ordeño en tiempo real y transformación de lácteos. Diseñado para optimizar los procesos de la Finca La Rosa.
                     </p>
-                    <a href="login" class="btn-primary-custom">
+                    <a href="login" class="btn-primary-custom btn-ripple">
                         Acceder al Portal <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
@@ -337,7 +338,7 @@
             
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
-                    <div class="feature-card">
+                    <div class="feature-card animate-fade-in-up delay-100">
                         <div class="feature-icon"><i class="bi bi-clipboard2-data-fill"></i></div>
                         <h3 class="feature-title">Inventario Bovino</h3>
                         <p class="feature-text">Control exacto del hato ganadero, clasificando animales por producción, venta y crías con validaciones biológicas.</p>
@@ -345,7 +346,7 @@
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    <div class="feature-card">
+                    <div class="feature-card animate-fade-in-up delay-200">
                         <div class="feature-icon"><i class="bi bi-shield-plus"></i></div>
                         <h3 class="feature-title">Bioseguridad</h3>
                         <p class="feature-text">Registro clínico de tratamientos y alertas asíncronas para apartar la leche de descarte del tanque comercial.</p>
@@ -353,7 +354,7 @@
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    <div class="feature-card">
+                    <div class="feature-card animate-fade-in-up delay-300">
                         <div class="feature-icon"><i class="bi bi-droplet-half"></i></div>
                         <h3 class="feature-title">Ordeño y Lácteos</h3>
                         <p class="feature-text">Cálculo de eficiencia de ordeño en tiempo real y módulo de fábrica para transformar leche cruda en productos.</p>
@@ -361,7 +362,7 @@
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    <div class="feature-card">
+                    <div class="feature-card animate-fade-in-up delay-400">
                         <div class="feature-icon"><i class="bi bi-kanban"></i></div>
                         <h3 class="feature-title">Tablero Kanban</h3>
                         <p class="feature-text">Gestión ágil para asignar responsabilidades a operarios y veterinarios mediante sistema interactivo Drag & Drop.</p>

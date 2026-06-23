@@ -101,6 +101,7 @@
         .card-stat:hover { transform: translateY(-5px); box-shadow: 0 20px 45px rgba(66, 57, 38, 0.1); border-color: var(--brand-accent) !important; }
 
         .card-stock { background: linear-gradient(135deg, var(--brand-primary), var(--brand-dark)) !important; color: white !important; border-radius: 24px; box-shadow: 0 12px 30px rgba(66, 57, 38, 0.25); height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 25px; position: relative; overflow: hidden; border: none !important; }
+        html[data-theme="dark"] .card-stock { background: linear-gradient(135deg, #18181b, #272B22) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .card-stock .watermark { position: absolute; right: -20px; bottom: -20px; font-size: 8rem; opacity: 0.1; transform: rotate(-15deg); pointer-events: none; color: var(--bg-page); }
         
         .progress-bar { background-color: var(--brand-accent) !important; }
@@ -198,11 +199,11 @@
 
             <style>
                 html[data-theme="dark"] .discard-card {
-                    background: #000000 !important;
-                    border-color: #2e0000 !important;
+                    background: rgba(220, 53, 69, 0.1) !important;
+                    border-color: rgba(220, 53, 69, 0.2) !important;
                 }
                 html[data-theme="dark"] .discard-card .text-danger {
-                    color: #ff4d4d !important;
+                    color: #ff6b6b !important;
                 }
             </style>
             
