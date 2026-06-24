@@ -334,7 +334,7 @@
         <h4 class="fw-bold text-dark mb-3"><i class="bi bi-card-checklist text-brand me-2"></i> Detalle de Sesiones (<%= filtroActivo.replace("_", " ").toUpperCase() %>)</h4>
         
         <div class="table-container table-responsive">
-            <table class="table table-hover align-middle">
+            <table id="tablaProduccionHistorico" class="table table-hover align-middle">
                 <thead>
                     <tr>
                         <th>Fecha y Lugar</th>
@@ -773,6 +773,23 @@
 
             btn.disabled = (totalVacas === 0 && totalDescarte === 0);
         }
+
+        // Inicialización de DataTables
+        $(document).ready(function() {
+            if (!$.fn.DataTable.isDataTable('#tablaProduccionHistorico')) {
+                $('#tablaProduccionHistorico').DataTable({
+                    language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' },
+                    dom: '<"d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3"Bf>rt<"d-flex flex-wrap justify-content-between align-items-center mt-3"ip>',
+                    buttons: [
+                        { extend: 'excelHtml5', text: '<i class="bi bi-file-earmark-excel"></i> Excel', className: 'btn btn-success btn-sm shadow-sm rounded-pill px-3' },
+                        { extend: 'pdfHtml5', text: '<i class="bi bi-file-earmark-pdf"></i> PDF', className: 'btn btn-danger btn-sm shadow-sm rounded-pill px-3' }
+                    ],
+                    pageLength: 10,
+                    ordering: true,
+                    responsive: true
+                });
+            }
+        });
     </script>
 </body>
 </html>

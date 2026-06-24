@@ -145,7 +145,7 @@
     </div>
 
     <div class="module-container table-responsive">
-        <table class="table align-middle">
+        <table id="tablaEmpleados" class="table table-hover align-middle">
             <thead class="text-center">
                 <tr>
                     <th class="text-start">Empleado</th>
@@ -174,7 +174,8 @@
                             String cargoReal = (u.getCargo() != null && !u.getCargo().isEmpty()) ? u.getCargo() : "Sin asignar";
                             
                             String fotoHtml = (u.getProfilePicture() != null && !u.getProfilePicture().isEmpty())
-                                              ? "<img src='uploads/" + u.getProfilePicture() + "' alt='Foto'>"
+                                              ? "<img src='uploads/" + u.getProfilePicture().replace("\\", "/") + "?t=" + System.currentTimeMillis() + "' alt='Foto' style='width: 100%; height: 100%; object-fit: cover; border-radius: 50%;' onerror=\"this.style.display='none'; this.nextElementSibling.style.display='flex';\">" +
+                                                "<div style='width: 100%; height: 100%; border-radius: 50%; background: #9CA889; color: white; display: none; align-items: center; justify-content: center; font-weight: bold;'>" + inicial + "</div>"
                                               : inicial;
                 %>
                 <tr>
@@ -199,7 +200,7 @@
                         <div class="d-flex gap-1 justify-content-center">
                             
                             <button type="button" class="action-btn btn-qr" title="Descargar Gafete PDF"
-                                onclick="verCarnet('<%= u.getFullName() %>', '<%= u.getDocumentId() %>', '<%= cargoReal %>', '<%= u.getTipoSangre() != null ? u.getTipoSangre() : "O+" %>', '<%= u.getArl() != null ? u.getArl() : "Positiva" %>')">
+                                onclick="verCarnet('<%= u.getFullName() %>', '<%= u.getDocumentId() %>', '<%= cargoReal %>', '<%= u.getTipoSangre() != null ? u.getTipoSangre() : "O+" %>', '<%= u.getArl() != null ? u.getArl() : "Positiva" %>', '<%= (u.getProfilePicture() != null && !u.getProfilePicture().isEmpty()) ? u.getProfilePicture().replace("\\", "/").replace("'", "\\'") : "" %>')">
                                 <i class="bi bi-qr-code-scan"></i>
                             </button>
 
@@ -400,32 +401,52 @@
 </div>
 
 <div class="modal fade" id="carnetModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
         <div class="modal-content" style="border-radius: 20px; background-color: #FFFFFF; overflow: hidden; border: none;">
             
             <div style="display: flex; justify-content: center; background: #fafafa; padding: 15px;">
-                <div id="carnetImprimible" style="width: 340px; height: 540px; background-color: #FFFFFF; padding: 30px 25px; border: 6px solid #464704; border-radius: 20px; box-sizing: border-box; text-align: center; position: relative;">
+                <div id="carnetImprimible" style="width: 340px; height: 540px; background-color: #FFFFFF; border-radius: 20px; box-sizing: border-box; text-align: center; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                     
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; margin-top: 10px;">
-                        <i class="bi bi-flower1" style="font-size: 28px; color: #e83e8c; line-height: 1;"></i>
-                        <h5 style="margin: 0; color: #464704; font-weight: 900; font-size: 1.5rem; letter-spacing: -0.5px;">Finca La Rosa</h5>
-                    </div>
-                    
-                    <div style="background-color: #423926; color: #FFFFFF; font-size: 0.75rem; padding: 5px 20px; border-radius: 20px; display: inline-block; font-weight: bold; letter-spacing: 1px; margin-bottom: 30px;">
-                        CARNET DE INGRESO
-                    </div>
-                    
-                    <div style="background-color: #FFFFFF; padding: 15px; border-radius: 15px; border: 2px solid #E2E4D5; width: 170px; height: 170px; margin: 0 auto 30px auto; display: flex; align-items: center; justify-content: center;">
-                        <div id="qrContenedor" style="display: inline-block;"></div>
+                    <!-- Header Splash -->
+                    <div style="background: linear-gradient(135deg, #464704, #272B22); padding: 25px 20px 60px 20px; text-align: center;">
+                        <h5 style="margin: 0; color: #FFFFFF; font-weight: 800; font-size: 1.3rem; letter-spacing: 1px;"><i class="fa-solid fa-rose me-2" style="color: #e83e8c;"></i>FINCA LA ROSA</h5>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.75rem; letter-spacing: 2px; margin-top: 5px; margin-bottom: 0;">IDENTIFICACIÓN OFICIAL</p>
                     </div>
 
-                    <h5 id="carnetNombre" style="color: #423926; font-weight: 800; margin: 0 0 5px 0; font-size: 1.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</h5>
-                    <p id="carnetCargo" style="color: #9CA889; font-weight: 800; font-size: 0.9rem; margin: 0 0 25px 0; text-transform: uppercase; letter-spacing: 0.5px;">-</p>
-                    
-                    <div style="border-top: 2px dashed #E2E4D5; padding-top: 20px; text-align: left; font-size: 0.9rem; color: #423926; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;">
-                        <div style="width: 45%;"><b>CC:</b> <span id="carnetDoc" style="font-weight: 500;"></span></div>
-                        <div style="width: 45%;"><b>RH:</b> <span id="carnetRh" style="font-weight: 500;"></span></div>
-                        <div style="width: 100%;"><b>ARL:</b> <span id="carnetArl" style="font-weight: 500;"></span></div>
+                    <!-- Avatar Floating -->
+                    <div style="position: absolute; top: 75px; left: 0; right: 0; margin: 0 auto; width: 110px; height: 110px; border-radius: 50%; background: #fff; padding: 5px; box-shadow: 0 8px 16px rgba(0,0,0,0.15);">
+                        <div id="carnetFotoContainer" style="width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: #f0f0f0;">
+                            <!-- img or initial injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Body Content -->
+                    <div style="padding: 65px 25px 20px 25px;">
+                        <h4 id="carnetNombre" style="color: #1d1d1f; font-weight: 800; margin: 0 0 8px 0; font-size: 1.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</h4>
+                        <span id="carnetCargo" style="background-color: rgba(156,168,137,0.15); color: #464704; font-weight: 800; font-size: 0.8rem; padding: 6px 16px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin-bottom: 20px; border: 1px solid rgba(156,168,137,0.3);">-</span>
+                        
+                        <!-- QR Code Area -->
+                        <div style="background-color: #FFFFFF; padding: 10px; border-radius: 16px; border: 2px dashed #E2E4D5; width: 130px; height: 130px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center;">
+                            <div id="qrContenedor" style="display: inline-block;"></div>
+                        </div>
+
+                        <!-- Footer Details -->
+                        <div style="background: #fcfcfd; border-radius: 12px; padding: 12px; text-align: left; font-size: 0.85rem; color: #1d1d1f; display: flex; justify-content: space-between; border: 1px solid #f0f0f0;">
+                            <div style="text-align: center;">
+                                <div style="color: #86868b; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">C.C.</div>
+                                <div id="carnetDoc" style="font-weight: 600;">-</div>
+                            </div>
+                            <div style="width: 1px; background: #e5e5e5;"></div>
+                            <div style="text-align: center;">
+                                <div style="color: #86868b; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">RH</div>
+                                <div id="carnetRh" style="font-weight: 600;">-</div>
+                            </div>
+                            <div style="width: 1px; background: #e5e5e5;"></div>
+                            <div style="text-align: center;">
+                                <div style="color: #86868b; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">ARL</div>
+                                <div id="carnetArl" style="font-weight: 600;">-</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -444,24 +465,38 @@
     // ==========================================
     // LÓGICA DE CÓDIGO QR SEGURO Y PDF NÍTIDO
     // ==========================================
-    function verCarnet(nombre, documento, cargo, rh, arl) {
+    function verCarnet(nombre, documento, cargo, rh, arl, foto) {
         document.getElementById('carnetNombre').textContent = nombre;
         document.getElementById('carnetCargo').textContent = cargo || 'OPERARIO GANADERO';
         document.getElementById('carnetDoc').textContent = documento;
         document.getElementById('carnetRh').textContent = rh || 'O+';
         document.getElementById('carnetArl').textContent = arl || 'Positiva';
 
+        const carnetFotoContainer = document.getElementById('carnetFotoContainer');
+        const inicial = nombre.trim().charAt(0).toUpperCase();
+        
+        if (foto && foto.trim() !== '' && foto !== 'null') {
+            const fotoLimpia = foto.trim().replace(/\\/g, '/');
+            const timestamp = new Date().getTime();
+            carnetFotoContainer.innerHTML = 
+                '<img src="uploads/' + fotoLimpia + '?t=' + timestamp + '" alt="Foto" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" ' +
+                'onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\';">' +
+                '<div style="width: 100%; height: 100%; border-radius: 50%; background: #9CA889; color: white; display: none; align-items: center; justify-content: center; font-size: 44px; line-height: 1; font-weight: bold; font-family: sans-serif;">' + inicial + '</div>';
+        } else {
+            carnetFotoContainer.innerHTML = '<div style="width: 100%; height: 100%; border-radius: 50%; background: #9CA889; color: white; display: flex; align-items: center; justify-content: center; font-size: 44px; line-height: 1; font-weight: bold; font-family: sans-serif;">' + inicial + '</div>';
+        }
+
         var qrString = "FINCA-LAROSA-DOC-" + documento;
         
         // Limpiar códigos QR generados anteriormente
         document.getElementById('qrContenedor').innerHTML = "";
         
-        // Dibujamos el QR nativo localmente (A prueba de fallos y bloqueos CORS en el PDF)
+        // Dibujamos el QR nativo localmente
         new QRCode(document.getElementById("qrContenedor"), {
             text: qrString,
-            width: 140,
-            height: 140,
-            colorDark : "#464704", 
+            width: 110,
+            height: 110,
+            colorDark : "#1d1d1f", 
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
         });
@@ -474,34 +509,48 @@
         const elemento = document.getElementById('carnetImprimible');
         const nombreEmpleado = document.getElementById('carnetNombre').textContent.replace(/\s+/g, '_');
         
-        const opciones = {
-            margin:       0, 
-            filename:     'Carnet_' + nombreEmpleado + '.pdf',
-            image:        { type: 'jpeg', quality: 1.0 },
-            html2canvas:  { 
-                scale: 4, // Calidad Ultra HD para escaneo perfecto del sensor de la cámara
-                useCORS: true, 
-                backgroundColor: '#ffffff',
-                width: 340,
-                height: 540,
-                windowWidth: 340
-            },
-            jsPDF:        { 
-                unit: 'mm', 
-                format: [54, 86], // Estándar de tarjeta de identificación (CR80)
-                orientation: 'portrait' 
-            }
-        };
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        document.documentElement.setAttribute('data-theme', 'light');
+
+        // Eliminar bordes y sombras temporalmente para evitar recortes en html2canvas
+        const oldShadow = elemento.style.boxShadow;
+        const oldRadius = elemento.style.borderRadius;
+        elemento.style.boxShadow = 'none';
+        elemento.style.borderRadius = '0px';
 
         const btn = document.querySelector('.btn-brand i.bi-file-earmark-pdf-fill').parentElement;
-        const textoOriginal = btn.innerHTML;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Generando Gafete...';
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando...';
         btn.disabled = true;
 
-        html2pdf().set(opciones).from(elemento).save().then(() => {
-            btn.innerHTML = textoOriginal;
-            btn.disabled = false;
-        });
+        setTimeout(() => {
+            const opciones = {
+                margin:       [0, 0, 0, 0],
+                filename:     'Gafete_' + nombreEmpleado + '.pdf',
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { 
+                    scale: 4,
+                    useCORS: true,
+                    backgroundColor: '#ffffff'
+                },
+                jsPDF:        { unit: 'mm', format: [54, 86], orientation: 'portrait' }
+            };
+
+            html2pdf().set(opciones).from(elemento).save().then(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                elemento.style.boxShadow = oldShadow;
+                elemento.style.borderRadius = oldRadius;
+            }).catch(err => {
+                console.error("Error generating PDF:", err);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                elemento.style.boxShadow = oldShadow;
+                elemento.style.borderRadius = oldRadius;
+            });
+        }, 150);
     }
 
     // ==========================================
@@ -625,7 +674,7 @@
     function confirmarEliminacion(idForm, nombre) {
         Swal.fire({
             title: '¿Eliminar Empleado?',
-            html: `Se dará de baja a <b>${nombre}</b>. Esta acción restringirá su acceso al sistema.`,
+            html: 'Se dará de baja a <b>' + nombre + '</b>. Esta acción restringirá su acceso al sistema.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc3545',
@@ -640,6 +689,23 @@
     }
     
     document.getElementById('modalAddEmpleado').addEventListener('hidden.bs.modal', resetModal);
+
+    // Inicialización de DataTables
+    $(document).ready(function() {
+        if (!$.fn.DataTable.isDataTable('#tablaEmpleados')) {
+            $('#tablaEmpleados').DataTable({
+                language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' },
+                dom: '<"d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3"Bf>rt<"d-flex flex-wrap justify-content-between align-items-center mt-3"ip>',
+                buttons: [
+                    { extend: 'excelHtml5', text: '<i class="bi bi-file-earmark-excel"></i> Excel', className: 'btn btn-success btn-sm shadow-sm rounded-pill px-3' },
+                    { extend: 'pdfHtml5', text: '<i class="bi bi-file-earmark-pdf"></i> PDF', className: 'btn btn-danger btn-sm shadow-sm rounded-pill px-3' }
+                ],
+                pageLength: 10,
+                ordering: true,
+                responsive: true
+            });
+        }
+    });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

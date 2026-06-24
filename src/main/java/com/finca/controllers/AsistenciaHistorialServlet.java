@@ -44,7 +44,8 @@ public class AsistenciaHistorialServlet extends HttpServlet {
                     response.setHeader("Content-Disposition", "attachment; filename=Comprobante_Asistencia_" + asistencia.getIdAsistencia() + ".pdf");
                     
                     try {
-                        asistenciaService.generarPdfAsistencia(asistencia, response.getOutputStream());
+                        String uploadPath = request.getServletContext().getRealPath("") + java.io.File.separator + "uploads";
+                        asistenciaService.generarPdfAsistencia(asistencia, response.getOutputStream(), uploadPath);
                     } catch (Exception e) {
                         e.printStackTrace();
                         response.sendRedirect("asistencias?error=pdf");

@@ -2,12 +2,11 @@ package com.finca.controllers;
 
 import java.io.IOException;
 
+import com.finca.models.Bovino;
+import com.finca.models.HistorialClinico;
 import com.finca.services.AuthService;
 import com.finca.services.BovinoService;
 import com.finca.services.EmpleadoService;
-import com.finca.models.Bovino;
-import com.finca.models.HistorialClinico;
-import com.finca.models.Usuario;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

@@ -76,7 +76,7 @@ public class UsuarioDAO {
     }
 
     public boolean eliminar(int id) {
-        String sql = "DELETE FROM usuarios WHERE id=?";
+        String sql = "UPDATE usuarios SET estado = 'Inactivo' WHERE id=?";
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
              
@@ -93,7 +93,7 @@ public class UsuarioDAO {
     // ==========================================
 
     public Usuario validarLogin(String email, String password) {
-        String sql = "SELECT * FROM usuarios WHERE email = ? AND password = ?";
+        String sql = "SELECT * FROM usuarios WHERE email = ? AND password = ? AND (estado != 'Inactivo' OR estado IS NULL)";
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
              

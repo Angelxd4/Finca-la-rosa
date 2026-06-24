@@ -1226,6 +1226,26 @@
             input.value = "";
         }
     }
+
+    // Inicialización de DataTables para las vistas de Inventario
+    $(document).ready(function() {
+        const tableOptions = {
+            language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' },
+            dom: '<"d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3"Bf>rt<"d-flex flex-wrap justify-content-between align-items-center mt-3"ip>',
+            buttons: [
+                { extend: 'excelHtml5', text: '<i class="bi bi-file-earmark-excel"></i> Excel', className: 'btn btn-success btn-sm shadow-sm rounded-pill px-3' },
+                { extend: 'pdfHtml5', text: '<i class="bi bi-file-earmark-pdf"></i> PDF', className: 'btn btn-danger btn-sm shadow-sm rounded-pill px-3' }
+            ],
+            pageLength: 10,
+            ordering: true,
+            responsive: true
+        };
+        
+        if (!$.fn.DataTable.isDataTable('#tableTodos')) $('#tableTodos').DataTable(tableOptions);
+        if (!$.fn.DataTable.isDataTable('#tableProduccion')) $('#tableProduccion').DataTable(tableOptions);
+        if (!$.fn.DataTable.isDataTable('#tableCrias')) $('#tableCrias').DataTable(tableOptions);
+        if (!$.fn.DataTable.isDataTable('#tableVentas')) $('#tableVentas').DataTable(tableOptions);
+    });
 </script>
 </body>
 </html>

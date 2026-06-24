@@ -27,6 +27,9 @@
 %>
 
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/premium-ui.css">
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
 <style>
     :root {
         /* PALETA FINCA LA ROSA (DARK MOSS GREEN & EARTH TONES) */
@@ -285,6 +288,63 @@
     
     html[data-theme="dark"] .table-hover tbody tr:hover td {
         background-color: #2a2a2a !important;
+    }
+
+    /* GLOBAL PRINT STYLES - FIX PDFs IN DARK MODE */
+    @media print {
+        /* Neutralize dark mode variables */
+        html[data-theme="dark"] {
+            --bg-page: #ffffff !important;
+            --bg-card: #ffffff !important;
+            --text-main: #000000 !important;
+            --text-subtle: #444444 !important;
+            --brand-primary: #000000 !important;
+            --brand-dark: #000000 !important;
+            --border-subtle: #cccccc !important;
+        }
+
+        body, html[data-theme="dark"] body {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* Force black text for absolute safety */
+        .text-dark, .text-muted, .text-subtle, .text-brand, 
+        html[data-theme="dark"] .text-dark, html[data-theme="dark"] .text-muted {
+            color: #000000 !important;
+        }
+
+        /* Clean up UI for PDFs */
+        .sidebar-finca, .mobile-header, .no-print, .btn, form:not(.print-form), 
+        .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_length, 
+        .dataTables_wrapper .dataTables_paginate {
+            display: none !important;
+        }
+
+        /* Strip shadows and heavy backgrounds */
+        * {
+            box-shadow: none !important;
+            text-shadow: none !important;
+        }
+
+        .card-stat, .card-stock, .table-container, .modal-content, .bg-page, .bg-card {
+            border: 1px solid #dddddd !important;
+            background: transparent !important;
+            border-radius: 4px !important;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        
+        .card-stock { background: none !important; }
+
+        /* Tables for PDF */
+        table { border-collapse: collapse !important; width: 100% !important; border: 1px solid #000 !important; }
+        th, td { border: 1px solid #000 !important; padding: 10px !important; color: #000 !important; }
+        th { background-color: #f0f0f0 !important; font-weight: bold !important; }
+        
+        .badge { border: 1px solid #000 !important; color: #000 !important; background: transparent !important; }
     }
 
     @media (min-width: 992px) {
@@ -709,3 +769,16 @@
         overlay.classList.toggle('show');
     }
 </script>
+
+<!-- DataTables Core & jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<!-- DataTables Buttons for Export -->
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
