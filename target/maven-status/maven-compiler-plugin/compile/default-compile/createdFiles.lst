@@ -1,4 +1,5 @@
 com\finca\models\DetalleOrdeno.class
+com\finca\controllers\ReportePdfServlet.class
 com\finca\utils\DbConnection.class
 com\finca\dao\AsistenciaDAO.class
 com\finca\dao\TareaDAO.class
@@ -25,6 +26,7 @@ com\finca\services\ProduccionService.class
 com\finca\controllers\AsistenciaServlet.class
 com\finca\controllers\PerfilBovinoServlet.class
 com\finca\models\Tarea.class
+com\finca\filters\AuthFilter.class
 com\finca\controllers\KanbanServlet.class
 com\finca\models\Notificacion.class
 com\finca\servlets\NotificacionesServlet.class

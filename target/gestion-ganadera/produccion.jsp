@@ -390,13 +390,7 @@
                             </button>
                         </td>
                     </tr>
-                    <% } } else { %>
-                    <tr>
-                        <td colspan="5" class="text-center py-5 text-subtle">
-                            <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>No hay registros para el periodo seleccionado.
-                        </td>
-                    </tr>
-                    <% } %>
+                    <% } } %>
                 </tbody>
             </table>
         </div>

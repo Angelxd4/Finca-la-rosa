@@ -5,9 +5,9 @@
 
 <%
     Usuario usuarioActual = (Usuario) session.getAttribute("usuarioLogueado");
-    if (usuarioActual == null) { response.sendRedirect("login"); return; }
     
     // Verificamos si es Admin o Veterinario para darle permisos de asignar
+
     String r = usuarioActual.getRol() != null ? usuarioActual.getRol() : "3";
     boolean tienePermisos = r.equals("1") || r.equalsIgnoreCase("Administrador") || r.equals("2") || r.equalsIgnoreCase("Veterinario");
 %>

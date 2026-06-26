@@ -15,7 +15,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
     <style>
         :root {
@@ -102,13 +102,23 @@
         </div>
         
         <% if (!esVeterinario) { %>
-            <a href="produccion" class="btn btn-brand btn-ripple px-4 shadow-sm">
-                <i class="bi bi-droplet-half me-2"></i> Ir a Ordeño
-            </a>
+            <div class="d-flex gap-2">
+                <a href="reporte-pdf" target="_blank" class="btn btn-outline-secondary px-3 shadow-sm d-flex align-items-center bg-white" style="border-color: var(--border-subtle);">
+                    <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i> Reporte PDF
+                </a>
+                <a href="produccion" class="btn btn-brand btn-ripple px-4 shadow-sm">
+                    <i class="bi bi-droplet-half me-2"></i> Ir a Ordeño
+                </a>
+            </div>
         <% } else { %>
-            <a href="inventario-ganado" class="btn btn-brand btn-ripple px-4 shadow-sm">
-                <i class="bi bi-clipboard2-pulse me-2"></i> Ir a Fichas Clínicas
-            </a>
+            <div class="d-flex gap-2">
+                <a href="reporte-pdf" target="_blank" class="btn btn-outline-secondary px-3 shadow-sm d-flex align-items-center bg-white" style="border-color: var(--border-subtle);">
+                    <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i> Reporte PDF
+                </a>
+                <a href="inventario-ganado" class="btn btn-brand btn-ripple px-4 shadow-sm">
+                    <i class="bi bi-clipboard2-pulse me-2"></i> Ir a Fichas Clínicas
+                </a>
+            </div>
         <% } %>
     </div>
 
@@ -155,6 +165,25 @@
         </div>
     </div>
 
+    <!-- WIDGET CLIMÁTICO (SANTA ROSA DE VITERBO) -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="dash-card animate-fade-in-up" style="background: linear-gradient(135deg, #1e3a4a, var(--moss)); color: white; display: flex; align-items: center; justify-content: space-between; padding: 25px 35px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                <div class="d-flex align-items-center gap-4">
+                    <i id="weatherIcon" class="bi bi-cloud-sun" style="font-size: 3.5rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));"></i>
+                    <div>
+                        <h4 class="mb-1 fw-bold" style="color: white; letter-spacing: 0.5px;">Santa Rosa de Viterbo, Boyacá</h4>
+                        <span id="weatherDesc" style="font-size: 1rem; opacity: 0.9;">Sincronizando satélite...</span>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <h2 id="weatherTemp" class="mb-0 fw-bolder" style="font-size: 3rem; color: white;">--°C</h2>
+                    <span id="weatherHint" style="font-size: 0.85rem; opacity: 0.8; font-weight: 600;"><i class="bi bi-clock-history me-1"></i> Tiempo Real</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <% if (!esOperario) { %>
     <div class="row g-4 mb-4">
         <div class="col-lg-8">
@@ -162,8 +191,8 @@
                 <div class="card-title">
                     <span><i class="bi bi-graph-up me-2" style="color: var(--brand-primary);"></i> Tendencia de Producción (Últimos 7 días activos)</span>
                 </div>
-                <div style="height: 300px;">
-                    <canvas id="lineChart"></canvas>
+                <div style="min-height: 300px; width: 100%;">
+                    <div id="lineChart"></div>
                 </div>
             </div>
         </div>
@@ -173,8 +202,8 @@
                 <div class="card-title">
                     <span><i class="bi bi-pie-chart-fill me-2" style="color: var(--brand-accent);"></i> Distribución del Hato (<%= request.getAttribute("totalBovinos") %> Cabezas)</span>
                 </div>
-                <div style="height: 250px; display: flex; justify-content: center; align-items: center;">
-                    <canvas id="doughnutChart"></canvas>
+                <div style="height: 250px; display: flex; justify-content: center; align-items: center; width: 100%;">
+                    <div id="doughnutChart" style="width: 100%; height: 100%;"></div>
                 </div>
                 <div class="mt-4 d-flex justify-content-around text-center border-top pt-3" style="border-color: var(--border-subtle) !important;">
                     <div>
@@ -238,8 +267,8 @@
                 <div class="card-title">
                     <span><i class="bi bi-pie-chart-fill me-2" style="color: var(--brand-accent);"></i> Distribución Clínica del Hato (<%= request.getAttribute("totalBovinos") %> Cabezas)</span>
                 </div>
-                <div style="height: 300px; display: flex; justify-content: center; align-items: center;">
-                    <canvas id="doughnutChartVet"></canvas>
+                <div style="height: 300px; display: flex; justify-content: center; align-items: center; width: 100%;">
+                    <div id="doughnutChartVet" style="width: 100%; height: 100%;"></div>
                 </div>
                 <div class="mt-4 d-flex justify-content-around text-center border-top pt-3" style="border-color: var(--border-subtle) !important;">
                     <div>
@@ -373,92 +402,165 @@ document.addEventListener("DOMContentLoaded", function() {
     // LÓGICA JAVASCRIPT PROTEGIDA PARA EVITAR ERRORES EN CONSOLA
     // =========================================================
     
-    // 1. Gráfico de Líneas (Solo se renderiza si el HTML existe)
-    const canvasLine = document.getElementById('lineChart');
-    if (canvasLine) {
-        const ctxLine = canvasLine.getContext('2d');
-        let gradientGreen = ctxLine.createLinearGradient(0, 0, 0, 300);
-        gradientGreen.addColorStop(0, 'rgba(70, 71, 4, 0.4)');
-        gradientGreen.addColorStop(1, 'rgba(70, 71, 4, 0.0)');
-        
-        new Chart(ctxLine, {
-            type: 'line',
-            data: {
-                labels: labelsArr, 
-                datasets: [{
-                    label: 'Litros Diarios',
-                    data: datosArr, 
-                    borderColor: '#464704',
-                    backgroundColor: gradientGreen,
-                    borderWidth: 3,
-                    tension: 0.4, 
-                    fill: true,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#464704',
-                    pointBorderWidth: 2,
-                    pointRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { borderDash: [5, 5], color: '#E2E4D5' }, border: { display: false } },
-                    x: { grid: { display: false }, border: { display: false } }
+    // 1. Gráfico de Líneas ApexCharts (Solo se renderiza si el HTML existe)
+    if (document.getElementById('lineChart')) {
+        var optionsLine = {
+            series: [{
+                name: 'Producción Diaria (L)',
+                data: datosArr
+            }],
+            chart: {
+                type: 'area',
+                height: 300,
+                toolbar: { show: false },
+                fontFamily: 'Inter, sans-serif',
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 800,
+                    animateGradually: { enabled: true, delay: 150 },
+                    dynamicAnimation: { enabled: true, speed: 350 }
                 }
-            }
-        });
+            },
+            colors: ['#464704'],
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.45,
+                    opacityTo: 0.05,
+                    stops: [0, 100]
+                }
+            },
+            dataLabels: { enabled: false },
+            stroke: { curve: 'smooth', width: 3 },
+            xaxis: {
+                categories: labelsArr,
+                axisBorder: { show: false },
+                axisTicks: { show: false },
+                labels: { style: { colors: '#7A7463', fontWeight: 600 } }
+            },
+            yaxis: {
+                labels: { style: { colors: '#7A7463', fontWeight: 600 } }
+            },
+            grid: {
+                borderColor: '#E2E4D5',
+                strokeDashArray: 5,
+                xaxis: { lines: { show: false } },
+                yaxis: { lines: { show: true } }
+            },
+            tooltip: { theme: 'dark' }
+        };
+        var chartLine = new ApexCharts(document.querySelector("#lineChart"), optionsLine);
+        chartLine.render();
     }
 
-    // 2. Gráfico Doughnut Original (Para Admin/Operario)
-    const canvasDoughnut = document.getElementById('doughnutChart');
-    if (canvasDoughnut) {
-        const ctxDoughnut = canvasDoughnut.getContext('2d');
-        new Chart(ctxDoughnut, {
-            type: 'doughnut',
-            data: {
-                labels: ['Producción', 'Crías', 'Toros'],
-                datasets: [{
-                    data: [valProd, valCrias, valToros], 
-                    backgroundColor: ['#464704', '#B7A78C', '#9CA889'],
-                    borderWidth: 0,
-                    hoverOffset: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%', 
-                plugins: { legend: { display: false } }
+    // Opciones base para Gráficos Donut
+    var donutBaseOptions = {
+        chart: {
+            type: 'donut',
+            height: '100%',
+            fontFamily: 'Inter, sans-serif',
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 800,
+                dynamicAnimation: { enabled: true, speed: 350 }
             }
+        },
+        colors: ['#464704', '#B7A78C', '#9CA889'],
+        dataLabels: { enabled: false },
+        plotOptions: {
+            pie: {
+                donut: {
+                    size: '75%',
+                    labels: {
+                        show: true,
+                        name: { show: false },
+                        value: {
+                            show: true,
+                            fontSize: '28px',
+                            fontWeight: 800,
+                            color: '#464704',
+                            formatter: function (val) { return val + "%" }
+                        },
+                        total: {
+                            show: true,
+                            showAlways: false,
+                            label: 'Total',
+                            fontSize: '14px',
+                            fontWeight: 700,
+                            color: '#7A7463'
+                        }
+                    }
+                },
+                expandOnClick: true
+            }
+        },
+        stroke: { show: false },
+        legend: { show: false },
+        tooltip: { theme: 'dark' }
+    };
+
+    // 2. Gráfico Doughnut Original (Para Admin/Operario)
+    if (document.getElementById('doughnutChart')) {
+        var optionsDoughnut = Object.assign({}, donutBaseOptions, {
+            series: [valProd, valCrias, valToros],
+            labels: ['Producción', 'Crías', 'Toros']
         });
+        var chartDoughnut = new ApexCharts(document.querySelector("#doughnutChart"), optionsDoughnut);
+        chartDoughnut.render();
     }
 
     // 3. Gráfico Doughnut Especial (Para Veterinario)
-    const canvasDoughnutVet = document.getElementById('doughnutChartVet');
-    if (canvasDoughnutVet) {
-        const ctxDoughnutVet = canvasDoughnutVet.getContext('2d');
-        new Chart(ctxDoughnutVet, {
-            type: 'doughnut',
-            data: {
-                labels: ['Sanas', 'Crías (Seguimiento)', 'Toros'],
-                datasets: [{
-                    data: [valProd, valCrias, valToros], 
-                    backgroundColor: ['#464704', '#B7A78C', '#9CA889'],
-                    borderWidth: 0,
-                    hoverOffset: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%', 
-                plugins: { legend: { display: false } }
-            }
+    if (document.getElementById('doughnutChartVet')) {
+        var optionsDoughnutVet = Object.assign({}, donutBaseOptions, {
+            series: [valProd, valCrias, valToros],
+            labels: ['Sanas', 'Crías (Seguimiento)', 'Toros']
         });
+        var chartDoughnutVet = new ApexCharts(document.querySelector("#doughnutChartVet"), optionsDoughnutVet);
+        chartDoughnutVet.render();
     }
 });
+
+    // LÓGICA DEL CLIMA (Open-Meteo API)
+    document.addEventListener("DOMContentLoaded", function() {
+        const lat = 5.875;
+        const lon = -72.981;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=\${lat}&longitude=\${lon}&current_weather=true&timezone=auto`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if(data && data.current_weather) {
+                    const temp = data.current_weather.temperature;
+                    const code = data.current_weather.weathercode;
+                    
+                    document.getElementById('weatherTemp').innerText = temp + '°C';
+                    
+                    let desc = "Despejado";
+                    let icon = "bi-sun-fill";
+                    let hint = "Día ideal para labores en potreros.";
+                    
+                    if (code === 0) { desc = "Despejado"; icon = "bi-sun-fill text-warning"; }
+                    else if (code >= 1 && code <= 3) { desc = "Nublado / Parcialmente Nublado"; icon = "bi-cloud-sun-fill text-light"; }
+                    else if (code >= 45 && code <= 48) { desc = "Niebla / Neblina"; icon = "bi-cloud-haze-fill text-secondary"; hint = "Precaución: Visibilidad reducida."; }
+                    else if (code >= 51 && code <= 67) { desc = "Llovizna / Lluvia Ligera"; icon = "bi-cloud-drizzle-fill text-info"; hint = "Humedad alta. Vigilar pastos."; }
+                    else if (code >= 71 && code <= 77) { desc = "Nieve / Granizo"; icon = "bi-cloud-snow-fill text-white"; hint = "¡Alerta Frío! Proteger terneros."; }
+                    else if (code >= 80 && code <= 82) { desc = "Lluvia Fuerte / Aguaceros"; icon = "bi-cloud-rain-heavy-fill text-primary"; hint = "No recomendado aplicar vacunas o abonos hoy."; }
+                    else if (code >= 95 && code <= 99) { desc = "Tormenta Eléctrica"; icon = "bi-cloud-lightning-rain-fill text-warning"; hint = "¡Peligro Eléctrico! Resguardar al personal y ganado."; }
+                    
+                    document.getElementById('weatherDesc').innerText = desc;
+                    document.getElementById('weatherIcon').className = "bi " + icon;
+                    document.getElementById('weatherHint').innerHTML = `<i class="bi bi-info-circle-fill me-1"></i> \${hint}`;
+                }
+            })
+            .catch(error => {
+                console.error("Error obteniendo el clima:", error);
+                document.getElementById('weatherDesc').innerText = "Error de conexión meteorológica";
+                document.getElementById('weatherHint').innerText = "Vuelve a intentar más tarde";
+            });
+    });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

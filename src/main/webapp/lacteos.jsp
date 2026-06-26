@@ -240,13 +240,18 @@
                                 </td>
                                 <td>
                                     <% if (!isMateriaPrima) { %>
-                                    <form action="lacteos" method="POST" class="d-inline" id="formDelete_<%= p.getIdProducto() %>">
-                                        <input type="hidden" name="action" value="delete_producto">
-                                        <input type="hidden" name="id" value="<%= p.getIdProducto() %>">
-                                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" onclick="confirmarEliminacion('<%= p.getIdProducto() %>', '<%= p.getNombre() %>')">
-                                            <i class="bi bi-trash3-fill"></i> Retirar
-                                        </button>
-                                    </form>
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <a href="trazabilidad.jsp?lote=<%= p.getCodigo() %>" target="_blank" class="btn btn-sm btn-outline-brand rounded-pill px-3 fw-bold">
+                                            <i class="bi bi-qr-code-scan"></i> Trazabilidad
+                                        </a>
+                                        <form action="lacteos" method="POST" class="d-inline" id="formDelete_<%= p.getIdProducto() %>">
+                                            <input type="hidden" name="action" value="delete_producto">
+                                            <input type="hidden" name="id" value="<%= p.getIdProducto() %>">
+                                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" onclick="confirmarEliminacion('<%= p.getIdProducto() %>', '<%= p.getNombre() %>')">
+                                                <i class="bi bi-trash3-fill"></i> Retirar
+                                            </button>
+                                        </form>
+                                    </div>
                                     <% } else { %>
                                         <span class="fw-bold" style="font-size: 0.8rem; color: var(--text-subtle);" title="La Materia Prima se nutre automáticamente de los ordeños"><i class="bi bi-lock-fill"></i> Reservado de Ordeño</span>
                                     <% } %>

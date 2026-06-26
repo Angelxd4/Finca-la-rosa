@@ -11,6 +11,7 @@ c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\s
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\controllers\PerfilBovinoServlet.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\controllers\PerfilServlet.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\controllers\ProduccionServlet.java
+c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\controllers\ReportePdfServlet.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\dao\AsistenciaDAO.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\dao\BovinoDAO.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\dao\LoteDAO.java
@@ -19,6 +20,7 @@ c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\s
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\dao\ProductoLacteoDAO.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\dao\TareaDAO.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\dao\UsuarioDAO.java
+c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\filters\AuthFilter.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\models\Asistencia.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\models\Bovino.java
 c:\Users\angel\OneDrive\Desktop\Ejercicios Java\Finca la rosa\gestion-ganadera\src\main\java\com\finca\models\DetalleOrdeno.java

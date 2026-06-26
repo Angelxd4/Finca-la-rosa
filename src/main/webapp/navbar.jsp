@@ -1,12 +1,7 @@
 <%@ page import="com.finca.models.Usuario" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    // 🔒 SEGURIDAD: Verificamos si el usuario realmente inició sesión
     Usuario usuarioActual = (Usuario) session.getAttribute("usuarioLogueado");
-    if (usuarioActual == null) {
-        response.sendRedirect("login");
-        return;
-    }
 
     // =========================================================
     // TRADUCTOR DE ROL Y LÓGICA DE FOTO PARA EL NAVBAR
@@ -454,31 +449,33 @@
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 <aside class="sidebar-finca" id="mainSidebar">
-    <div class="sidebar-header align-items-center">
-        <div class="sidebar-logo"><i class="bi bi-flower1"></i></div>
-        <div>
-            <span class="sidebar-brand-text d-block">Finca La Rosa</span>
-            <span style="font-size: 10px; color: var(--drab); font-weight: 800; letter-spacing: 0.5px;">SISTEMA GANADERO</span>
+    <div class="sidebar-header align-items-center d-flex">
+        <div class="sidebar-logo flex-shrink-0"><i class="bi bi-flower1"></i></div>
+        <div class="flex-grow-1 overflow-hidden" style="min-width: 0;">
+            <span class="sidebar-brand-text d-block text-truncate">Finca La Rosa</span>
+            <span class="d-block text-truncate" style="font-size: 10px; color: var(--drab); font-weight: 800; letter-spacing: 0.5px;">SISTEMA GANADERO</span>
         </div>
         
-        <button class="btn border-0 p-0 fs-5 d-none d-lg-block ms-auto me-3" onclick="toggleDarkMode()" id="darkModeToggleBtn" style="color: var(--moss);"><i class="bi bi-moon-stars-fill"></i></button>
-        <div class="dropdown me-2 d-none d-lg-block">
-            <a href="#" class="text-decoration-none position-relative" id="notiDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="color: var(--moss); font-size: 1.25rem;">
-                <i class="bi bi-bell-fill"></i>
-                <span id="notiBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.55rem; padding: 0.35em 0.5em; display: none; border: 2px solid #fff;">0</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow border-0 glass-dropdown" aria-labelledby="notiDropdown" style="width: 320px; max-height: 400px; overflow-y: auto; border-radius: 15px; padding: 0; margin-top: 10px;">
-                <li class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: rgba(250, 250, 250, 0.7); backdrop-filter: blur(5px); position: sticky; top: 0; z-index: 10; border-radius: 15px 15px 0 0;">
-                    <span class="fw-bold" style="color: var(--moss); font-size: 0.95rem;"><i class="bi bi-bell me-1"></i> Notificaciones</span>
-                    <button class="btn btn-sm btn-link text-decoration-none p-0 fw-bold" style="font-size: 0.8rem; color: var(--brand-info);" onclick="marcarNotificacionesLeidas()">Marcar Leídas</button>
-                </li>
-                <div id="notiList">
-                    <li class="p-4 text-center text-muted" style="font-size: 0.85rem;"><div class="spinner-border spinner-border-sm me-2"></div>Cargando...</li>
-                </div>
-            </ul>
+        <div class="d-flex align-items-center gap-3 flex-shrink-0 ms-auto">
+            <button class="btn border-0 p-0 fs-5" onclick="toggleDarkMode()" id="darkModeToggleBtn" style="color: var(--moss);"><i class="bi bi-moon-stars-fill"></i></button>
+            <div class="dropdown">
+                <a href="#" class="text-decoration-none position-relative" id="notiDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="color: var(--moss); font-size: 1.25rem;">
+                    <i class="bi bi-bell-fill"></i>
+                    <span id="notiBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.55rem; padding: 0.35em 0.5em; display: none; border: 2px solid #fff;">0</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 glass-dropdown" aria-labelledby="notiDropdown" style="width: 320px; max-height: 400px; overflow-y: auto; border-radius: 15px; padding: 0; margin-top: 10px;">
+                    <li class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: rgba(250, 250, 250, 0.7); backdrop-filter: blur(5px); position: sticky; top: 0; z-index: 10; border-radius: 15px 15px 0 0;">
+                        <span class="fw-bold" style="color: var(--moss); font-size: 0.95rem;"><i class="bi bi-bell me-1"></i> Notificaciones</span>
+                        <button class="btn btn-sm btn-link text-decoration-none p-0 fw-bold" style="font-size: 0.8rem; color: var(--brand-info);" onclick="marcarNotificacionesLeidas()">Marcar Leídas</button>
+                    </li>
+                    <div id="notiList">
+                        <li class="p-4 text-center text-muted" style="font-size: 0.85rem;"><div class="spinner-border spinner-border-sm me-2"></div>Cargando...</li>
+                    </div>
+                </ul>
+            </div>
         </div>
         
-        <button class="btn border-0 p-0 fs-3 d-lg-none ms-auto" onclick="toggleSidebar()"><i class="bi bi-x" style="color: var(--moss);"></i></button>
+        <button class="btn border-0 p-0 fs-3 d-lg-none ms-auto flex-shrink-0" onclick="toggleSidebar()"><i class="bi bi-x" style="color: var(--moss);"></i></button>
     </div>
 
     <nav class="sidebar-nav">
@@ -598,16 +595,16 @@
     
     // 3. NUEVA API DEL CLIMA (Open-Meteo con coordenadas exactas de Santa Rosa de Viterbo, Boyacá)
     function fetchWeather() {
-        const url = 'https://api.open-meteo.com/v1/forecast?latitude=5.8852&longitude=-73.0134&current=temperature_2m,weather_code';
+        const url = 'https://api.open-meteo.com/v1/forecast?latitude=5.875&longitude=-72.981&current_weather=true&timezone=auto';
         fetch(url, { cache: 'no-store' })
         .then(function(response) {
             if (!response.ok) throw new Error("Estación meteorológica no respondió");
             return response.json();
         })
         .then(function(data) {
-            if(data && data.current) {
-                const temp = data.current.temperature_2m;
-                const code = data.current.weather_code;
+            if(data && data.current_weather) {
+                const temp = data.current_weather.temperature;
+                const code = data.current_weather.weathercode;
                 
                 let desc = "Despejado";
                 let icon = "bi-sun-fill text-warning";
@@ -637,6 +634,13 @@
     }
     
     document.addEventListener("DOMContentLoaded", function() {
+        // SOLICITAR PERMISOS DE NOTIFICACIÓN NATIVA
+        if ("Notification" in window) {
+            if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+        }
+
         // ACTUALIZAR FECHA Y HORA AL CARGAR Y CADA SEGUNDO
         updateDateTime();
         setInterval(updateDateTime, 1000);
@@ -677,6 +681,18 @@
                                 icon: 'info', title: 'Nuevas Notificaciones', text: `Tienes ${data.noLeidas} alertas sin leer.`,
                                 background: 'var(--bg-card)', color: 'var(--text-main)', iconColor: 'var(--brand-primary)'
                             });
+                        }
+                        
+                        // Lanzar Alerta Nativa
+                        if ("Notification" in window && Notification.permission === "granted") {
+                            let sysNoti = new Notification("Finca La Rosa - Nueva Alerta", {
+                                body: `Tienes ${data.noLeidas} alertas críticas sin leer.`,
+                                icon: "https://cdn-icons-png.flaticon.com/512/1998/1998664.png"
+                            });
+                            sysNoti.onclick = function() {
+                                window.focus();
+                                this.close();
+                            };
                         }
                     }
                 } else {
@@ -768,6 +784,30 @@
         sidebar.classList.toggle('show-mobile');
         overlay.classList.toggle('show');
     }
+
+    // AUTO-HIGHLIGHT DEL SIDEBAR SEGÚN LA RUTA ACTUAL
+    document.addEventListener("DOMContentLoaded", function() {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.nav-auto-active');
+        let found = false;
+        
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && currentPath.includes(href)) {
+                link.classList.add('active-page');
+                found = true;
+            } else {
+                link.classList.remove('active-page');
+            }
+        });
+        
+        // Fallback: si no detectó nada (ej: ruta raíz), forzamos dashboard si existe
+        if (!found && navLinks.length > 0) {
+            if(currentPath.endsWith("/") || currentPath.includes("dashboard")) {
+                navLinks[0].classList.add('active-page');
+            }
+        }
+    });
 </script>
 
 <!-- DataTables Core & jQuery -->

@@ -1,9 +1,9 @@
 package com.finca.services;
 
+import java.util.List;
+
 import com.finca.dao.UsuarioDAO;
 import com.finca.models.Usuario;
-
-import java.util.List;
 
 public class EmpleadoService {
 

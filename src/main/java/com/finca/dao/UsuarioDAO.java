@@ -17,7 +17,7 @@ public class UsuarioDAO {
 
     public List<Usuario> obtenerTodos() {
         List<Usuario> lista = new ArrayList<>();
-        String sql = "SELECT * FROM usuarios ORDER BY id ASC";
+        String sql = "SELECT * FROM usuarios WHERE estado != 'Inactivo' OR estado IS NULL ORDER BY id ASC";
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
