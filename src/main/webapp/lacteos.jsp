@@ -32,35 +32,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <jsp:include page="includes/header.jsp" />
     <title>Fábrica y Lácteos | Finca La Rosa</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
-        :root {
-            /* PALETA FINCA LA ROSA (RÚSTICA - PREMIUM) */
-            --bg-page: #F3F5E7 !important;       /* IVORY */
-            --bg-card: #FFFFFF !important;
-            
-            --brand-primary: #464704 !important; /* DARK MOSS GREEN */
-            --brand-accent: #B7A78C !important;  /* KHAKI */
-            --brand-info: #9CA889 !important;    /* SAGE */
-            --brand-dark: #423926 !important;    /* DRAB DARK BROWN */
-            
-            --border-subtle: #E2E4D5 !important;
-            --text-main: #423926 !important;
-            --shadow-finca: 0 10px 25px rgba(66, 57, 38, 0.05);
-        }
-
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-page) !important; color: var(--text-main); min-height: 100vh; }
-        
-        /* Stats Cards */
-        .card-stat { background: var(--bg-card); border-radius: 20px; padding: 20px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-finca); display: flex; align-items: center; gap: 15px; height: 100%; transition: transform 0.3s; }
+        /* Estilos específicos de Lácteos */
+        .card-stat { background: var(--bg-card); border-radius: 20px; padding: 20px; border: 1px solid var(--border-subtle); box-shadow: 0 10px 25px rgba(66, 57, 38, 0.05); display: flex; align-items: center; gap: 15px; height: 100%; transition: transform 0.3s; }
         .card-stat:hover { transform: translateY(-5px); border-color: var(--brand-accent); }
         .icon-box { width: 55px; height: 55px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 1.6rem; flex-shrink: 0; }
         
@@ -462,5 +439,5 @@
         });
     }
 </script>
-</body>
-</html>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<jsp:include page="includes/footer.jsp" />

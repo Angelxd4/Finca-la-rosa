@@ -3,46 +3,9 @@
 <%@ page import="com.finca.models.Bovino" %>
 <%@ page import="com.finca.models.Usuario" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario Ganadero | Finca La Rosa</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <style>
-        :root {
-            /* PALETA ORIGINAL FINCA LA ROSA */
-            --sage: #9CA889 !important; 
-            --moss: #464704 !important; 
-            --khaki: #B7A78C !important; 
-            --drab: #423926 !important; 
-            --ivory: #F3F5E7 !important; 
-            
-            --border-subtle: #D8DCC7 !important; 
-            --glass-shadow: 0 10px 30px rgba(70, 71, 4, 0.08);
-            --card-shadow: 0 8px 20px rgba(70, 71, 4, 0.06);
-        }
-
-        body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--ivory) !important; 
-            color: var(--drab) !important; 
-            min-height: 100vh;
-        }
-
-        i.bi { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; line-height: 1; }
-        
-        /* BOTONERÍA UNIFICADA */
+<jsp:include page="includes/header.jsp" />
+<style>
+    /* Estilos específicos de Inventario */
         .btn-success { background-color: var(--sage) !important; border-color: var(--moss) !important; color: var(--moss) !important; font-weight: 800;}
         .btn-success:hover { background-color: var(--moss) !important; border-color: var(--moss) !important; color: var(--ivory) !important; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(70, 71, 4, 0.3); }
         
@@ -60,8 +23,6 @@
 
         .text-muted, .text-secondary { color: var(--drab) !important; opacity: 0.8; }
         .text-dark { color: var(--moss) !important; }
-
-        /* CLASES PREMIUM PARA BADGES PASTEL (Sin bordes negros feos) */
         .badge-prod { background-color: rgba(156, 168, 137, 0.25) !important; color: var(--moss) !important; border: 1px solid rgba(156, 168, 137, 0.5); }
         .badge-cria { background-color: rgba(13, 202, 240, 0.15) !important; color: #087990 !important; border: 1px solid rgba(13, 202, 240, 0.3); }
         .badge-venta { background-color: rgba(183, 167, 140, 0.3) !important; color: var(--drab) !important; border: 1px solid rgba(183, 167, 140, 0.6); }
@@ -69,36 +30,24 @@
         .badge-enfermo { background-color: rgba(220, 53, 69, 0.15) !important; color: #b02a37 !important; }
 
         .glass-panel { background: #FFFFFF !important; border: 1px solid var(--border-subtle) !important; border-radius: 24px; box-shadow: var(--glass-shadow); padding: 25px; margin-bottom: 20px;}
-        
-        /* TABS (Segmented Control) */
         .apple-tabs-wrapper { background: var(--ivory); padding: 6px; border-radius: 18px; display: inline-flex; gap: 5px; border: 1px solid var(--border-subtle); margin-bottom: 20px;}
         .nav-tabs { border-bottom: none; gap: 0; }
         .nav-tabs .nav-link { color: var(--drab); font-weight: 700; border: none; border-radius: 14px; padding: 10px 24px; transition: all 0.3s ease; }
         .nav-tabs .nav-link:hover { color: var(--moss); }
         .nav-tabs .nav-link.active { color: var(--moss) !important; background-color: var(--bg-card) !important; border: 1px solid var(--border-subtle); box-shadow: 0 4px 12px rgba(70, 71, 4, 0.08); }
-
-        /* TABLA REDISEÑADA */
         .table-custom-wrapper { border-radius: 20px; overflow: hidden; background: #FFFFFF; border: 1px solid var(--border-subtle); }
         .table { margin-bottom: 0; background: transparent; }
         .table th { white-space: nowrap; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; padding: 18px 15px; border-bottom: 2px solid var(--border-subtle) !important; background-color: var(--ivory); color: var(--moss);}
         .table td { vertical-align: middle; padding: 16px 15px; color: var(--drab); font-size: 0.95rem; border-bottom: 1px solid var(--border-subtle) !important; font-weight: 500;}
         .table-hover tbody tr:hover td { background-color: var(--ivory); }
-
-        /* IMÁGENES DE TABLA (CIRCULARES) */
         .cow-thumbnail { width: 55px; height: 55px; object-fit: cover; border-radius: 50%; border: 2px solid var(--border-subtle); box-shadow: 0 4px 12px rgba(70,71,4,0.1); transition: transform 0.4s ease; }
         .cow-thumbnail:hover { transform: scale(1.3); z-index: 10; position: relative; border-color: var(--moss); }
         .cow-placeholder { width: 55px; height: 55px; border-radius: 50%; background: var(--ivory); border: 2px dashed var(--sage); display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--moss); }
-
-        /* DATATABLES SEARCH & BOTONES */
         div.dataTables_wrapper div.dataTables_filter input { border-radius: 20px; border: 2px solid var(--border-subtle); padding: 8px 16px; outline: none; transition: 0.3s; color: var(--moss); font-weight: 600;}
         div.dataTables_wrapper div.dataTables_filter input:focus { border-color: var(--moss); box-shadow: 0 0 0 4px rgba(70, 71, 4, 0.1); }
         .dt-buttons .btn { border-radius: 12px; font-weight: 700; padding: 6px 16px; margin-right: 8px; border-width: 2px;}
         .page-item.active .page-link { background-color: var(--moss) !important; border-color: var(--moss) !important; color: white !important; border-radius: 10px;}
         .page-link { color: var(--moss); border-radius: 10px; margin: 0 3px; font-weight: 600; border: 1px solid var(--border-subtle); }
-
-        /* ============================================================== */
-        /* TARJETAS GRID WIDGET (LIMPIAS Y ELEGANTES, SIN TEXTO FLOTANTE) */
-        /* ============================================================== */
         .bovino-card { background: #FFFFFF; border: 1px solid var(--border-subtle) !important; border-radius: 24px; overflow: hidden; transition: all 0.4s ease; box-shadow: var(--card-shadow); }
         .bovino-card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(70,71,4,0.12); border-color: var(--sage) !important;}
         
@@ -108,13 +57,9 @@
         .card-placeholder-icon { font-size: 70px; opacity: 0.5; color: var(--sage); }
         
         .card-stat-box { background: var(--ivory); border-radius: 14px; padding: 10px; text-align: center; flex: 1; border: 1px solid var(--border-subtle);}
-
-        /* BOTONES DE ACCIÓN FLOTANTES */
         .action-btn { transition: all 0.3s ease; border-radius: 12px; width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; padding: 0; font-size: 1.1rem; }
         .action-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(70,71,4,0.15); }
-        
-        /* MODALES */
-        .modal-content { background: #FFFFFF; border: none !important; border-radius: 32px; box-shadow: 0 25px 50px rgba(70,71,4,0.25); }
+                .modal-content { background: #FFFFFF; border: none !important; border-radius: 32px; box-shadow: 0 25px 50px rgba(70,71,4,0.25); }
         .modal-header, .modal-footer { border: none !important; padding: 25px 30px; }
         .form-control, .form-select { border-radius: 16px; padding: 14px 18px; background: var(--ivory) !important; border: 1px solid var(--border-subtle) !important; color: var(--drab) !important; transition: all 0.3s ease; font-weight: 600; }
         .form-control:focus, .form-select:focus { background: #ffffff !important; border-color: var(--moss) !important; box-shadow: 0 0 0 4px rgba(70, 71, 4, 0.2) !important; outline: none; }

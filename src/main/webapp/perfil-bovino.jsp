@@ -15,43 +15,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <jsp:include page="includes/header.jsp" />
     <title>Perfil Bovino | Finca La Rosa</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
-    
     <style>
-        :root {
-            /* PALETA FINCA LA ROSA (DARK MOSS GREEN & EARTH TONES) */
-            --bg-page: #F3F5E7 !important;       /* IVORY */
-            --bg-card: #FFFFFF !important;
-            
-            --brand-primary: #464704 !important; /* DARK MOSS GREEN */
-            --brand-accent: #B7A78C !important;  /* KHAKI */
-            --brand-info: #9CA889 !important;    /* SAGE */
-            --brand-dark: #423926 !important;    /* DRAB DARK BROWN */
-            
-            --text-main: #423926 !important;
-            --text-subtle: #7A7463 !important;
-            --border-subtle: #E2E4D5 !important;
-            
-            --shadow-finca: 0 10px 15px -3px rgba(66, 57, 38, 0.08), 0 4px 6px -2px rgba(66, 57, 38, 0.04);
-        }
-
-        body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
-            background-color: var(--bg-page) !important; 
-            color: var(--text-main) !important; 
-            min-height: 100vh;
-        }
-        
         /* UTILIDADES DE MARCA (Blindadas) */
         .text-brand { color: var(--brand-primary) !important; }
         .text-subtle { color: var(--text-subtle) !important; }
@@ -741,7 +708,4 @@
     });
     <% } %>
 </script>
-<!-- Asegurar que ApexCharts esté cargado -->
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-</body>
-</html>
+<jsp:include page="includes/footer.jsp" />

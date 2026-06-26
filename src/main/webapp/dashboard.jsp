@@ -4,77 +4,35 @@
 <%@ page import="com.finca.models.HistorialClinico" %>
 <%@ page import="com.finca.models.LoteProduccion" %>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Finca La Rosa</title>
+<jsp:include page="includes/header.jsp" />
+<style>
+    /* Estilos específicos del Dashboard (Timeline y Minicards) */
+    .mini-stat-card { border-radius: 16px; padding: 20px; border: 1px solid var(--border-subtle); position: relative; overflow: hidden; background-color: var(--bg-card); }
+    .mini-stat-card.green { border-left: 5px solid var(--brand-primary); }
+    .mini-stat-card.yellow { border-left: 5px solid var(--brand-accent); }
+    .mini-stat-card.purple { border-left: 5px solid var(--brand-info); }
+    .mini-stat-card.red { border-left: 5px solid #dc3545; }
+    .mini-stat-title { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--text-subtle); margin-bottom: 5px; }
+    .mini-stat-value { font-size: 1.8rem; font-weight: 800; color: var(--brand-primary); margin-bottom: 0; }
+    .mini-stat-trend { font-size: 0.85rem; font-weight: 700; color: var(--brand-info); }
+
+    .timeline { list-style: none; padding: 0; margin: 0; position: relative; }
+    .timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 15px; width: 2px; background: var(--border-subtle); }
+    .timeline-item { position: relative; padding-left: 45px; margin-bottom: 25px; }
+    .timeline-item:last-child { margin-bottom: 0; }
+    .timeline-icon { position: absolute; left: 0; top: 0; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; z-index: 1; box-shadow: 0 4px 10px rgba(66,57,38,0.1); }
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    .bg-timeline-default { background-color: var(--brand-dark); } 
+    .bg-timeline-vacuna { background-color: var(--brand-info); }   
+    .bg-timeline-enfermedad { background-color: #dc3545; } 
+    .bg-timeline-parto { background-color: var(--brand-primary); }    
 
-    <style>
-        :root {
-            /* PALETA FINCA LA ROSA (DARK MOSS GREEN & EARTH TONES) */
-            --bg-page: #F3F5E7 !important; /* IVORY */
-            --bg-card: #FFFFFF !important;
-            
-            --brand-primary: #464704 !important; /* DARK MOSS GREEN */
-            --brand-accent: #B7A78C !important; /* KHAKI */
-            --brand-info: #9CA889 !important; /* SAGE */
-            --brand-dark: #423926 !important; /* DRAB DARK BROWN */
-            
-            --text-main: #423926 !important;
-            --text-subtle: #7A7463 !important;
-            --border-subtle: #E2E4D5 !important;
-        }
+    .timeline-time { font-size: 0.75rem; color: var(--text-subtle); font-weight: 700; margin-bottom: 4px; display: block; }
+    .timeline-content { font-size: 0.9rem; color: var(--text-main); font-weight: 600; }
 
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-page) !important; color: var(--text-main); }
-        
-        .dash-card { background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-subtle); box-shadow: 0 10px 15px -3px rgba(66, 57, 38, 0.05); padding: 24px; height: 100%; transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .dash-card:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(66, 57, 38, 0.1); border-color: var(--brand-accent); }
-        
-        .card-title { font-size: 0.95rem; font-weight: 800; color: var(--brand-dark); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px;}
-
-        /* MINICARDS SUPERIORES BLINDADAS A LA PALETA */
-        .mini-stat-card { border-radius: 16px; padding: 20px; border: 1px solid var(--border-subtle); position: relative; overflow: hidden; background-color: var(--bg-card); }
-        .mini-stat-card.green { border-left: 5px solid var(--brand-primary); }
-        .mini-stat-card.yellow { border-left: 5px solid var(--brand-accent); }
-        .mini-stat-card.purple { border-left: 5px solid var(--brand-info); }
-        .mini-stat-card.red { border-left: 5px solid #dc3545; }
-
-        .mini-stat-title { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--text-subtle); margin-bottom: 5px; }
-        .mini-stat-value { font-size: 1.8rem; font-weight: 800; color: var(--brand-primary); margin-bottom: 0; }
-        .mini-stat-trend { font-size: 0.85rem; font-weight: 700; color: var(--brand-info); }
-
-        .timeline { list-style: none; padding: 0; margin: 0; position: relative; }
-        .timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 15px; width: 2px; background: var(--border-subtle); }
-        .timeline-item { position: relative; padding-left: 45px; margin-bottom: 25px; }
-        .timeline-item:last-child { margin-bottom: 0; }
-        .timeline-icon { position: absolute; left: 0; top: 0; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; z-index: 1; box-shadow: 0 4px 10px rgba(66,57,38,0.1); }
-        
-        .bg-timeline-default { background-color: var(--brand-dark); } 
-        .bg-timeline-vacuna { background-color: var(--brand-info); }   
-        .bg-timeline-enfermedad { background-color: #dc3545; } 
-        .bg-timeline-parto { background-color: var(--brand-primary); }    
-
-        .timeline-time { font-size: 0.75rem; color: var(--text-subtle); font-weight: 700; margin-bottom: 4px; display: block; }
-        .timeline-content { font-size: 0.9rem; color: var(--text-main); font-weight: 600; }
-
-        .table-clean th { border-top: none; font-size: 0.75rem; text-transform: uppercase; color: var(--text-subtle); font-weight: 800; border-bottom: 2px solid var(--border-subtle); padding-bottom: 15px; }
-        .table-clean td { font-size: 0.9rem; font-weight: 600; color: var(--text-main); vertical-align: middle; border-bottom: 1px solid var(--border-subtle); padding: 12px 5px; }
-        
-        /* BOTONES */
-        .btn-brand { background-color: var(--brand-primary) !important; color: white !important; font-weight: 700; border-radius: 12px; border: 2px solid var(--brand-primary) !important; }
-        .btn-brand:hover { background-color: var(--brand-dark) !important; border-color: var(--brand-dark) !important; transform: translateY(-1px); }
-        .btn-outline-brand { color: var(--brand-primary) !important; border: 2px solid var(--brand-primary) !important; font-weight: 700; border-radius: 12px; background: transparent; }
-        .btn-outline-brand:hover { background-color: var(--brand-primary) !important; color: white !important; }
-    </style>
-</head>
+    .table-clean th { border-top: none; font-size: 0.75rem; text-transform: uppercase; color: var(--text-subtle); font-weight: 800; border-bottom: 2px solid var(--border-subtle); padding-bottom: 15px; }
+    .table-clean td { font-size: 0.9rem; font-weight: 600; color: var(--text-main); vertical-align: middle; border-bottom: 1px solid var(--border-subtle); padding: 12px 5px; }
+</style>
 <body>
 
 <jsp:include page="navbar.jsp" />
@@ -562,6 +520,4 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<jsp:include page="includes/footer.jsp" />
