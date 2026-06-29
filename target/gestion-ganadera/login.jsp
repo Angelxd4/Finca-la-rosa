@@ -206,6 +206,33 @@
         .dark-mode-fab:hover {
             transform: translateY(-3px);
         }
+
+        .back-home-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: var(--bg-card);
+            color: var(--text-main);
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px var(--shadow-color);
+            z-index: 1001;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .back-home-btn:hover {
+            transform: translateX(-5px);
+            color: var(--moss);
+            border-color: var(--moss);
+        }
     </style>
     <script>
         if (localStorage.getItem('darkMode') === 'true') {
@@ -215,6 +242,10 @@
 </head>
 
 <body>
+
+    <a href="index.jsp" class="back-home-btn">
+        <i class="fa-solid fa-arrow-left"></i> Volver al Inicio
+    </a>
 
     <div class="container" id="container">
         
