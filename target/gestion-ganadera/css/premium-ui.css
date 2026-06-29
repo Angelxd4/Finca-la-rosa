@@ -165,3 +165,74 @@ html[data-theme="dark"] .table-premium-hover tbody tr:hover {
     transform: scale(0);
     opacity: 0;
 }
+
+/* --- 7. SweetAlert2 Premium Overrides --- */
+div:where(.swal2-container) div:where(.swal2-popup) {
+    background: var(--bg-card) !important;
+    border-radius: 28px !important;
+    border: 1px solid var(--border-subtle) !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15) !important;
+    padding: 2em !important;
+}
+
+html[data-theme="dark"] div:where(.swal2-container) div:where(.swal2-popup) {
+    background: #1e221c !important; /* var(--moss) muy oscuro */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4) !important;
+}
+
+div:where(.swal2-container) h2:where(.swal2-title) {
+    color: var(--brand-dark) !important;
+    font-weight: 800 !important;
+    font-size: 1.6rem !important;
+}
+
+div:where(.swal2-container) div:where(.swal2-html-container) {
+    color: var(--text-subtle) !important;
+    font-weight: 600 !important;
+    font-size: 1.05rem !important;
+}
+
+/* Botones */
+div:where(.swal2-container) button:where(.swal2-styled) {
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    padding: 12px 28px !important;
+    transition: all 0.3s ease !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-confirm) {
+    background-color: var(--brand-primary) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(70, 71, 4, 0.2) !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-confirm):hover {
+    background-color: var(--brand-dark) !important;
+    transform: translateY(-2px) !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-cancel) {
+    background-color: var(--bg-page) !important;
+    color: var(--text-subtle) !important;
+    border: 1px solid var(--border-subtle) !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-cancel):hover {
+    background-color: var(--border-subtle) !important;
+    color: var(--brand-dark) !important;
+}
+
+/* Iconos */
+div:where(.swal2-icon) {
+    border-width: 4px !important;
+}
+div:where(.swal2-icon).swal2-success {
+    border-color: var(--brand-primary) !important;
+    color: var(--brand-primary) !important;
+}
+div:where(.swal2-icon).swal2-success [class^=swal2-success-line] {
+    background-color: var(--brand-primary) !important;
+}
+div:where(.swal2-icon).swal2-success .swal2-success-ring {
+    border-color: rgba(156, 168, 137, 0.3) !important;
+}

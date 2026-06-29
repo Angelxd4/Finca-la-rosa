@@ -452,8 +452,8 @@
     <div class="sidebar-header align-items-center d-flex">
         <div class="sidebar-logo flex-shrink-0"><i class="bi bi-flower1"></i></div>
         <div class="flex-grow-1 overflow-hidden" style="min-width: 0;">
-            <span class="sidebar-brand-text d-block text-truncate">Finca La Rosa</span>
-            <span class="d-block text-truncate" style="font-size: 10px; color: var(--drab); font-weight: 800; letter-spacing: 0.5px;">SISTEMA GANADERO</span>
+            <span class="sidebar-brand-text d-block text-wrap lh-sm mb-1">Finca La Rosa</span>
+            <span class="d-block text-wrap lh-1" style="font-size: 10px; color: var(--drab); font-weight: 800; letter-spacing: 0.5px;">SISTEMA GANADERO</span>
         </div>
         
         <div class="d-flex align-items-center gap-3 flex-shrink-0 ms-auto">
@@ -488,6 +488,7 @@
         <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: var(--moss); opacity: 0.6; letter-spacing: 1px;">Lechería y Fábrica</div>
         <a href="produccion" class="sidebar-link nav-auto-active"><i class="bi bi-droplet-half"></i> Producción / Ordeño</a>
         <a href="lacteos" class="sidebar-link nav-auto-active"><i class="bi bi-shop"></i> Fábrica de Lácteos</a>
+        <a href="ventas" class="sidebar-link nav-auto-active"><i class="bi bi-cash-coin"></i> Punto de Venta (POS)</a>
         <% } %>
         
         <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: var(--moss); opacity: 0.6; letter-spacing: 1px;">Administración</div>
@@ -822,3 +823,37 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
+<script>
+    /* Lógica de Auto-Cierre de Sesión por Inactividad (15 Minutos) */
+    (function() {
+        let inactivityTimer;
+        const INACTIVITY_TIME = 15 * 60 * 1000; // 15 minutos en ms
+
+        function resetTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(logoutDebidoAInactividad, INACTIVITY_TIME);
+        }
+
+        function logoutDebidoAInactividad() {
+            // Cerramos sesión a nivel frontend usando la hermosa UI que acabamos de armar
+            Swal.fire({
+                title: 'Sesión Cerrada',
+                text: 'Tu sesión ha caducado por 15 minutos de inactividad por seguridad.',
+                icon: 'info',
+                confirmButtonText: 'Volver a Iniciar Sesión',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then(() => {
+                window.location.href = 'logout';
+            });
+        }
+
+        // Reseteamos el temporizador con cualquier interacción
+        const events = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+        events.forEach(event => window.addEventListener(event, resetTimer));
+
+        // Iniciar el temporizador
+        resetTimer();
+    })();
+</script>

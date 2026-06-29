@@ -180,6 +180,20 @@ public class UsuarioDAO {
         }
     }
 
+    public boolean actualizarPasswordObligatorio(int idUsuario, String newPassword) {
+        String sql = "UPDATE usuarios SET password = ?, requiere_cambio_password = false WHERE id = ?";
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             
+            stmt.setString(1, newPassword);
+            stmt.setInt(2, idUsuario);
+            return stmt.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // ==========================================
     // 3. MÉTODOS DE RECURSOS HUMANOS (RRHH)
     // ==========================================
@@ -265,6 +279,9 @@ public class UsuarioDAO {
         u.setQrCodigo(rs.getString("qr_codigo"));
         u.setTipoSangre(rs.getString("tipo_sangre"));
         u.setArl(rs.getString("arl"));
+        
+        // 🔒 Seguridad
+        u.setRequiereCambioPassword(rs.getBoolean("requiere_cambio_password"));
         
         return u;
     }

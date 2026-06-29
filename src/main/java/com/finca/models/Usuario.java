@@ -31,6 +31,9 @@ public class Usuario {
     private String qrCodigo;
     private String tipoSangre;
     private String arl;
+    
+    // 🔒 Seguridad
+    private boolean requiereCambioPassword;
 
     public Usuario() {}
 
@@ -111,4 +114,7 @@ public class Usuario {
 
     public String getArl() { return arl; }
     public void setArl(String arl) { this.arl = arl; }
+
+    public boolean isRequiereCambioPassword() { return requiereCambioPassword; }
+    public void setRequiereCambioPassword(boolean requiereCambioPassword) { this.requiereCambioPassword = requiereCambioPassword; }
 }

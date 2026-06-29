@@ -57,6 +57,16 @@ public class AuthFilter implements Filter {
             return;
         }
 
+        // 🔒 Validar si requiere cambio de contraseña obligatorio (Primer Inicio)
+        com.finca.models.Usuario u = (com.finca.models.Usuario) session.getAttribute("usuarioLogueado");
+        if (u.isRequiereCambioPassword()) {
+            boolean isPasswordChangeRoute = uri.endsWith("/cambiar-password.jsp");
+            if (!isPasswordChangeRoute) {
+                res.sendRedirect(req.getContextPath() + "/cambiar-password.jsp");
+                return;
+            }
+        }
+
         // Usuario autenticado, continuar con la petición normal
         chain.doFilter(request, response);
     }

@@ -531,7 +531,7 @@
                                             for(Bovino v : vacas) {
                                     %>
                                     <option value="<%= v.getIdBovino() %>" data-arete="<%= v.getNumeroArete() %>" data-raza="<%= v.getRaza() %>" data-promedio="<%= v.getLitrosDiariosPromedio() %>" data-salud="<%= v.getEstadoSalud() %>" data-img="<%= v.getImageUrl() %>">
-                                        🐄 <%= v.getNumeroArete() %> - <%= v.getRaza() %> [Salud: <%= v.getEstadoSalud() %>]
+                                        Arete: <%= v.getNumeroArete() %> - <%= v.getRaza() %> [Salud: <%= v.getEstadoSalud() %>]
                                     </option>
                                     <% } } else { %>
                                     <option value="" disabled>No hay vacas asignadas a Producción</option>

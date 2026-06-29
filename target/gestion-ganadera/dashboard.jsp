@@ -53,7 +53,7 @@
 
 <div class="container-fluid px-4 py-4">
     
-    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom" style="border-color: var(--border-subtle) !important;">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4 pb-2 border-bottom" style="border-color: var(--border-subtle) !important;">
         <div>
             <h3 class="fw-bolder mb-0" style="color: var(--brand-dark);">Dashboard General</h3>
             <span style="font-size: 0.9rem; color: var(--text-subtle);">Analíticas en tiempo real de Finca La Rosa</span>
@@ -126,16 +126,16 @@
     <!-- WIDGET CLIMÁTICO (SANTA ROSA DE VITERBO) -->
     <div class="row g-4 mb-4">
         <div class="col-12">
-            <div class="dash-card animate-fade-in-up" style="background: linear-gradient(135deg, #1e3a4a, var(--moss)); color: white; display: flex; align-items: center; justify-content: space-between; padding: 25px 35px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-                <div class="d-flex align-items-center gap-4">
+            <div class="dash-card animate-fade-in-up" style="background: linear-gradient(135deg, #1e3a4a, var(--moss)); color: white; display: flex; flex-direction: column; flex-md-row; align-items: center; justify-content: space-between; gap: 20px; text-align: center; padding: 25px 35px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                <div class="d-flex flex-column flex-md-row align-items-center gap-3 gap-md-4">
                     <i id="weatherIcon" class="bi bi-cloud-sun" style="font-size: 3.5rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));"></i>
-                    <div>
+                    <div class="text-md-start">
                         <h4 class="mb-1 fw-bold" style="color: white; letter-spacing: 0.5px;">Santa Rosa de Viterbo, Boyacá</h4>
                         <span id="weatherDesc" style="font-size: 1rem; opacity: 0.9;">Sincronizando satélite...</span>
                     </div>
                 </div>
-                <div class="text-end">
-                    <h2 id="weatherTemp" class="mb-0 fw-bolder" style="font-size: 3rem; color: white;">--°C</h2>
+                <div class="text-center text-md-end mt-3 mt-md-0">
+                    <h2 id="weatherTemp" class="mb-0 fw-bolder" style="font-size: 3rem; color: white; line-height: 1;">--°C</h2>
                     <span id="weatherHint" style="font-size: 0.85rem; opacity: 0.8; font-weight: 600;"><i class="bi bi-clock-history me-1"></i> Tiempo Real</span>
                 </div>
             </div>
@@ -163,16 +163,16 @@
                 <div style="height: 250px; display: flex; justify-content: center; align-items: center; width: 100%;">
                     <div id="doughnutChart" style="width: 100%; height: 100%;"></div>
                 </div>
-                <div class="mt-4 d-flex justify-content-around text-center border-top pt-3" style="border-color: var(--border-subtle) !important;">
-                    <div>
+                <div class="mt-4 d-flex flex-wrap justify-content-center justify-content-md-around text-center border-top pt-3 gap-3" style="border-color: var(--border-subtle) !important;">
+                    <div class="px-2">
                         <h4 class="fw-bolder mb-0" style="color: var(--brand-primary);"><%= request.getAttribute("porcProduccion") %>%</h4>
                         <span style="font-size: 0.75rem; color: var(--text-subtle); font-weight: 700;">Producción</span>
                     </div>
-                    <div>
+                    <div class="px-2">
                         <h4 class="fw-bolder mb-0" style="color: var(--brand-accent);"><%= request.getAttribute("porcCrias") %>%</h4>
                         <span style="font-size: 0.75rem; color: var(--text-subtle); font-weight: 700;">Crías</span>
                     </div>
-                    <div>
+                    <div class="px-2">
                         <h4 class="fw-bolder mb-0" style="color: var(--brand-info);"><%= request.getAttribute("porcToros") %>%</h4>
                         <span style="font-size: 0.75rem; color: var(--text-subtle); font-weight: 700;">Toros</span>
                     </div>
@@ -228,16 +228,16 @@
                 <div style="height: 300px; display: flex; justify-content: center; align-items: center; width: 100%;">
                     <div id="doughnutChartVet" style="width: 100%; height: 100%;"></div>
                 </div>
-                <div class="mt-4 d-flex justify-content-around text-center border-top pt-3" style="border-color: var(--border-subtle) !important;">
-                    <div>
+                <div class="mt-4 d-flex flex-wrap justify-content-center justify-content-md-around text-center border-top pt-3 gap-3" style="border-color: var(--border-subtle) !important;">
+                    <div class="px-2">
                         <h4 class="fw-bolder mb-0" style="color: var(--brand-primary);"><%= request.getAttribute("porcProduccion") %>%</h4>
                         <span style="font-size: 0.75rem; color: var(--text-subtle); font-weight: 700;">Producción (Sanas)</span>
                     </div>
-                    <div>
+                    <div class="px-2">
                         <h4 class="fw-bolder mb-0" style="color: var(--brand-accent);"><%= request.getAttribute("porcCrias") %>%</h4>
                         <span style="font-size: 0.75rem; color: var(--text-subtle); font-weight: 700;">Crías (Seguimiento)</span>
                     </div>
-                    <div>
+                    <div class="px-2">
                         <h4 class="fw-bolder mb-0" style="color: var(--brand-info);"><%= request.getAttribute("porcToros") %>%</h4>
                         <span style="font-size: 0.75rem; color: var(--text-subtle); font-weight: 700;">Toros Sementales</span>
                     </div>
@@ -294,9 +294,9 @@
         <% if (!esVeterinario) { %>
         <div class="col-lg-8">
             <div class="dash-card">
-                <div class="card-title mb-4">
+                <div class="card-title mb-4 d-flex flex-wrap align-items-center justify-content-between gap-2">
                     <span><i class="bi bi-table me-2" style="color: var(--brand-info);"></i> Últimos Lotes de Fábrica</span>
-                    <a href="lacteos" class="btn btn-sm btn-outline-brand"><i class="bi bi-eye"></i> Ver Todos</a>
+                    <a href="lacteos" class="btn btn-sm btn-outline-brand mt-2 mt-sm-0"><i class="bi bi-eye"></i> Ver Todos</a>
                 </div>
                 
                 <div class="table-responsive">

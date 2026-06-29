@@ -244,7 +244,7 @@
             
             <% if("Producción".equals(vaca.getClasificacion())) { %>
             <div class="panel-finca p-4 mt-4 mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom" style="border-color: var(--border-subtle) !important;">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3 pb-2 border-bottom" style="border-color: var(--border-subtle) !important;">
                     <h5 class="fw-bolder text-brand mb-0"><i class="bi bi-graph-up-arrow me-2 text-info"></i> Analítica: Curva de Lactancia Ideal vs Real</h5>
                     <span class="badge bg-light text-dark border"><i class="bi bi-info-circle me-1"></i> Basado en modelo de 305 días</span>
                 </div>
@@ -285,13 +285,13 @@
                                        if(emp.getRol() != null && (emp.getRol().equals("2") || emp.getRol().equalsIgnoreCase("Veterinario"))) {
                                            tieneVeterinarios = true;
                             %>
-                                           <option value="<%= emp.getId() %>">🧑‍⚕️ <%= emp.getFullName() %></option>
+                                           <option value="<%= emp.getId() %>">Vet: <%= emp.getFullName() %></option>
                             <%         }
                                    }
                                } 
                                if (!tieneVeterinarios) { 
                             %>
-                                   <option value="" disabled>⚠️ No hay veterinarios registrados</option>
+                                   <option value="" disabled>No hay veterinarios registrados</option>
                             <% } %>
                         </select>
                     </div>
@@ -398,7 +398,7 @@
                 <div class="row g-4 mb-4 align-items-center">
                     <div class="col-md-3 text-center">
                         <% if(vaca.getImageUrl() != null && !vaca.getImageUrl().trim().isEmpty() && !vaca.getImageUrl().equals("null")) { %>
-                            <img src="<%= request.getContextPath() %>/<%= vaca.getImageUrl() %>" class="rounded-4 border shadow-sm" style="width: 140px; height: 140px; object-fit: cover;" onerror="this.src='https://placehold.co/150x150/F3F5E7/9CA889?text=🐮'">
+                            <img src="<%= request.getContextPath() %>/<%= vaca.getImageUrl() %>" class="rounded-4 border shadow-sm" style="width: 140px; height: 140px; object-fit: cover;" onerror="this.src='https://placehold.co/150x150/F3F5E7/9CA889?text=IMG'">
                         <% } else { %>
                             <div class="rounded-4 border d-flex align-items-center justify-content-center mx-auto" style="background-color: var(--bg-page); width: 140px; height: 140px; font-size: 50px; color: var(--brand-accent);"><i class="bi bi-camera"></i></div>
                         <% } %>
