@@ -19,5 +19,8 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 # Copiamos el WAR a ROOT para que abra en la página principal
 COPY --from=build /app/target/ROOT.war /usr/local/tomcat/webapps/ROOT.war
 
+# Configuramos Tomcat para que confíe en el proxy HTTPS de Railway (Soluciona el error de redirección a HTTP)
+RUN sed -i 's/<\/Host>/<Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="x-forwarded-for" protocolHeader="x-forwarded-proto" \/><\/Host>/g' /usr/local/tomcat/conf/server.xml
+
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
