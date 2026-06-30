@@ -159,6 +159,7 @@
                 }
             })
             .catch(err => {
+                console.error("Error en recuperar_password:", err);
                 Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo conectar con el servidor.', confirmButtonColor: '#dc3545'});
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-paper-plane me-2"></i> Enviar Clave Temporal';
