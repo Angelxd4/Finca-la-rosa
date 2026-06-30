@@ -23,10 +23,9 @@ public class EmailService {
         try {
             Properties props = new Properties();
             props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.ssl.enable", "true");
+            props.put("mail.smtp.starttls.enable", "true"); // Usar STARTTLS en lugar de SSL estricto
             props.put("mail.smtp.host", "smtp.gmail.com");
-            props.put("mail.smtp.port", "465");
-            props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587"); // Puerto alternativo de Gmail
             
             // TIMEOUTS
             props.put("mail.smtp.connectiontimeout", "5000"); // 5 segundos
