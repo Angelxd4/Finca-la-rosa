@@ -56,7 +56,8 @@ public class AuthService {
         try {
             EmailService.enviarCodigoOTP(email, otp);
         } catch (Exception e) {
-            System.err.println("⚠️ No se pudo enviar el correo (posible bloqueo SMTP de Render). Usa el código OTP de arriba para ingresar.");
+            System.err.println("⚠️ No se pudo enviar el correo por HTTP. ¿Configuraste correctamente tu API Key en EmailService.java? Detalle: " + e.getMessage());
+            System.err.println("Usa el código OTP impreso arriba para ingresar por ahora.");
         }
     }
 
