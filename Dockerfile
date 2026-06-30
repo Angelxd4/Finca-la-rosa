@@ -19,7 +19,8 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 # Copiamos el WAR a ROOT para que abra en la página principal
 COPY --from=build /app/target/ROOT.war /usr/local/tomcat/webapps/ROOT.war
 
-# Configuramos Tomcat para que confíe en el proxy HTTPS de Railway y sirva los uploads desde /app/uploads (Persistencia)
+# Configuramos Tomcat para que asuma HTTPS en todo momento, y confíe en el proxy de Railway
+RUN sed -i 's/<Connector port="8080" protocol="HTTP\/1.1"/<Connector port="8080" protocol="HTTP\/1.1" scheme="https" secure="true" proxyPort="443"/g' /usr/local/tomcat/conf/server.xml
 RUN sed -i 's/<\/Host>/<Context docBase="\/app\/uploads" path="\/uploads" \/><Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="x-forwarded-for" protocolHeader="x-forwarded-proto" \/><\/Host>/g' /usr/local/tomcat/conf/server.xml
 
 # Creamos el directorio de uploads
