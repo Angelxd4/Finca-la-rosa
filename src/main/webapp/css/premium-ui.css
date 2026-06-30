@@ -236,3 +236,22 @@ div:where(.swal2-icon).swal2-success [class^=swal2-success-line] {
 div:where(.swal2-icon).swal2-success .swal2-success-ring {
     border-color: rgba(156, 168, 137, 0.3) !important;
 }
+
+/* Ajustes Móviles para SweetAlert2 */
+@media (max-width: 768px) {
+    div:where(.swal2-container) div:where(.swal2-popup) {
+        padding: 1.5em 1em !important;
+        border-radius: 20px !important;
+        width: 90% !important; /* Asegurar que no se pegue totalmente a los bordes */
+    }
+    div:where(.swal2-container) h2:where(.swal2-title) {
+        font-size: 1.3rem !important;
+    }
+    div:where(.swal2-container) div:where(.swal2-html-container) {
+        font-size: 0.95rem !important;
+    }
+    div:where(.swal2-container) button:where(.swal2-styled) {
+        padding: 10px 20px !important;
+        font-size: 0.95rem !important;
+    }
+}

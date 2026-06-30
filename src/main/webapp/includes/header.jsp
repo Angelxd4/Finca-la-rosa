@@ -82,6 +82,37 @@
         .text-brand { color: var(--brand-primary) !important; }
         .bg-brand { background-color: var(--brand-primary) !important; color: white !important; }
         .text-subtle { color: var(--text-subtle) !important; }
+
+        /* Ajustes Globales para Dispositivos Móviles (Responsive) */
+        @media (max-width: 768px) {
+            /* Hacer que todas las tablas envueltas sean scrollables horizontalmente */
+            .table-custom-wrapper {
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                -webkit-overflow-scrolling: touch; /* Scroll táctil suave */
+            }
+            .table th, .table td {
+                white-space: nowrap !important; /* Evitar que las columnas se aplasten */
+            }
+            
+            /* Ajustar ventanas modales para celulares */
+            .modal-content {
+                border-radius: 20px !important;
+            }
+            .modal-header, .modal-footer, .modal-body {
+                padding: 15px !important; /* Reducir espacios gigantes */
+            }
+            .modal-dialog {
+                margin: 0.5rem !important; /* Aprovechar más el ancho de la pantalla */
+            }
+            .form-control, .form-select {
+                padding: 10px 14px !important; /* Achicar un poco los inputs */
+            }
+            .glass-panel, .dash-card, .panel-finca {
+                padding: 15px !important; /* Reducir padding de paneles principales */
+                border-radius: 16px !important;
+            }
+        }
     </style>
 </head>
 <body>
