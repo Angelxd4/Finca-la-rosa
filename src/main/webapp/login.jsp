@@ -300,10 +300,8 @@
                     <input type="password" name="password" id="password" placeholder="Contraseña" required>
                     <i class="fa-solid fa-eye toggle-password" onclick="togglePasswordVisibility('password', this)"></i>
                 </div>
-                <div style="text-align: right; width: 100%; margin-bottom: 10px; animation: fadeInUp 0.6s 0.45s backwards;">
-                    <a href="recuperar-password.jsp" onclick="window.location.href='recuperar-password.jsp'; return false;" style="color: var(--sage); font-size: 13px; text-decoration: none; font-weight: 600; transition: color 0.3s;" onmouseover="this.style.color='var(--moss)'" onmouseout="this.style.color='var(--sage)'">¿Olvidaste tu contraseña?</a>
-                </div>
                 <button type="submit" style="animation: fadeInUp 0.6s 0.5s backwards;">INGRESAR</button>
+                <button type="button" style="animation: fadeInUp 0.6s 0.55s backwards; background: transparent; border: 2px solid var(--sage); color: var(--sage); box-shadow: none; margin-top: 10px;" onclick="window.location.href='recuperar-password.jsp'">¿Olvidaste tu contraseña?</button>
             </form>
         </div>
         
