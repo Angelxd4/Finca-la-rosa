@@ -53,7 +53,11 @@ public class AuthService {
         System.out.println("=========================================\n");
 
         usuarioDAO.guardarTokenOTP(u.getId(), otp);
-        EmailService.enviarCodigoOTP(email, otp);
+        try {
+            EmailService.enviarCodigoOTP(email, otp);
+        } catch (Exception e) {
+            System.err.println("⚠️ No se pudo enviar el correo (posible bloqueo SMTP de Render). Usa el código OTP de arriba para ingresar.");
+        }
     }
 
     public boolean validarOTP(int idUsuario, String otp) {
