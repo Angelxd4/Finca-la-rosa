@@ -571,16 +571,16 @@
                         </div>
                     </div>
                     <div class="summary-bar">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex gap-3 gap-md-4 ms-3 flex-wrap">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                            <div class="d-flex gap-3 gap-md-4 ms-0 ms-md-3 flex-wrap justify-content-center w-100 w-md-auto">
                                 <div><small class="text-subtle fw-bold d-block text-uppercase" style="font-size: 11px;">Total Vacas</small><strong class="fs-4 text-dark" id="resVacas">0</strong></div>
                                 <div><small class="text-brand fw-bold d-block text-uppercase" style="font-size: 11px;">Comercial</small><strong class="fs-4 text-brand"><span id="resLitros">0.0</span> L</strong></div>
                                 <div class="d-none d-md-block"><small class="text-subtle fw-bold d-block text-uppercase" style="font-size: 11px;">Promedio General</small><strong class="fs-4 text-dark"><span id="resPromedio">0.0</span> L</strong></div>
                                 <div><small class="fw-bold d-block text-uppercase text-danger" style="font-size: 11px;">Descarte</small><strong class="fs-4 text-danger"><span id="resDescarte">0.0</span> L</strong></div>
                             </div>
-                            <div>
-                                <button type="button" class="btn btn-outline-brand fw-bold px-4 rounded-pill me-2 shadow-sm" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-brand px-5 rounded-pill shadow-sm" id="btnGuardar" disabled><i class="bi bi-save me-2"></i> Guardar Registro</button>
+                            <div class="d-flex flex-column flex-md-row w-100 w-md-auto gap-2">
+                                <button type="button" class="btn btn-outline-brand fw-bold px-4 rounded-pill shadow-sm w-100 w-md-auto" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-brand px-5 rounded-pill shadow-sm w-100 w-md-auto" id="btnGuardar" disabled><i class="bi bi-save me-2"></i> Guardar Registro</button>
                             </div>
                         </div>
                     </div>
