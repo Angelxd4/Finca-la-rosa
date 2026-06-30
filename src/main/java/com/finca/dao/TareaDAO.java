@@ -86,7 +86,11 @@ public class TareaDAO {
              
             stmt.setString(1, t.getTitulo());
             stmt.setString(2, t.getDescripcion());
-            stmt.setDate(3, t.getFechaLimite());
+            if (t.getFechaLimite() != null) {
+                stmt.setDate(3, t.getFechaLimite());
+            } else {
+                stmt.setNull(3, java.sql.Types.DATE);
+            }
             stmt.setInt(4, t.getAsignadoA());
             stmt.setInt(5, t.getCreadoPor());
             

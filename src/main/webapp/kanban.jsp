@@ -80,7 +80,8 @@
             .kanban-col {
                 flex: 1 1 auto;
                 width: 100%;
-                min-height: auto;
+                min-height: 120px;
+                margin-bottom: 15px;
             }
             .task-card {
                 margin-bottom: 12px;
