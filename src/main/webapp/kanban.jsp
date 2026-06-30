@@ -70,6 +70,22 @@
         .kanban-col.drag-over { background: rgba(156, 168, 137, 0.15); border: 2px dashed var(--brand-info); }
         
         div:where(.swal2-container) div:where(.swal2-popup) { border-radius: 24px; font-family: 'Inter', sans-serif; }
+
+        @media (max-width: 768px) {
+            .kanban-board {
+                flex-direction: column;
+                overflow-x: visible;
+                gap: 20px;
+            }
+            .kanban-col {
+                flex: 1 1 auto;
+                width: 100%;
+                min-height: auto;
+            }
+            .task-card {
+                margin-bottom: 12px;
+            }
+        }
     </style>
 </head>
 <body>
