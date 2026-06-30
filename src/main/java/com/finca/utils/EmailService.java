@@ -1,50 +1,28 @@
 package com.finca.utils;
 
-import java.util.Properties;
-
-import jakarta.mail.Authenticator;
-import jakarta.mail.Message;
-import jakarta.mail.PasswordAuthentication;
-import jakarta.mail.Session;
-import jakarta.mail.Transport;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
 
 public class EmailService {
 
-    private static final String SENDER_EMAIL = "angeldanicp@gmail.com";
-    private static final String PASSWORD = "mavzgvqrzaqhipmo";
-
     public static void enviarCodigoOTP(String destinatario, String codigo) throws Exception {
 
-        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(EmailService.class.getClassLoader());
+        String apiKey = System.getenv("SENDGRID_API_KEY");
+        String fromEmail = System.getenv("SENDGRID_FROM_EMAIL");
 
-        try {
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.starttls.enable", "true"); // Usar STARTTLS en lugar de SSL estricto
-            props.put("mail.smtp.host", "smtp.gmail.com");
-            props.put("mail.smtp.port", "587"); // Puerto alternativo de Gmail
-            
-            // TIMEOUTS
-            props.put("mail.smtp.connectiontimeout", "5000"); // 5 segundos
-            props.put("mail.smtp.timeout", "5000");
-            props.put("mail.smtp.writetimeout", "5000");
+        if (apiKey == null || apiKey.isBlank()) {
+            throw new Exception("Variable de entorno SENDGRID_API_KEY no configurada.");
+        }
+        if (fromEmail == null || fromEmail.isBlank()) {
+            throw new Exception("Variable de entorno SENDGRID_FROM_EMAIL no configurada.");
+        }
 
-            Session session = Session.getInstance(props, new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(SENDER_EMAIL, PASSWORD);
-                }
-            });
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(SENDER_EMAIL));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
-            message.setSubject("Código de Seguridad - Finca La Rosa");
-
-            String htmlContent = """
+        String htmlContent = """
                 <!DOCTYPE html>
                 <html lang="es">
                 <head>
@@ -92,11 +70,25 @@ public class EmailService {
                 </html>
                 """.formatted(codigo);
 
-            message.setContent(htmlContent, "text/html; charset=utf-8");
-            Transport.send(message);
+        Email from = new Email(fromEmail, "Finca La Rosa");
+        Email to = new Email(destinatario);
+        Content content = new Content("text/html", htmlContent);
+        Mail mail = new Mail(from, "Código de Seguridad - Finca La Rosa", to, content);
 
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        SendGrid sg = new SendGrid(apiKey);
+        Request request = new Request();
+        request.setMethod(Method.POST);
+        request.setEndpoint("mail/send");
+        request.setBody(mail.build());
+
+        Response response = sg.api(request);
+
+        // SendGrid returns 2xx on success (202 Accepted is the standard response)
+        if (response.getStatusCode() < 200 || response.getStatusCode() >= 300) {
+            throw new Exception(
+                "Error al enviar correo vía SendGrid. HTTP " + response.getStatusCode()
+                + ": " + response.getBody()
+            );
         }
     }
 }
