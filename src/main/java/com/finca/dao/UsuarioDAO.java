@@ -93,7 +93,7 @@ public class UsuarioDAO {
     // ==========================================
 
     public Usuario validarLogin(String email, String password) {
-        String sql = "SELECT * FROM usuarios WHERE email = ? AND password = ? AND (estado != 'Inactivo' OR estado IS NULL)";
+        String sql = "SELECT * FROM usuarios WHERE LOWER(email) = LOWER(?) AND password = ? AND (estado != 'Inactivo' OR estado IS NULL)";
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
              
@@ -111,7 +111,7 @@ public class UsuarioDAO {
     }
 
     public Usuario obtenerPorEmail(String email) {
-        String sql = "SELECT * FROM usuarios WHERE email = ?";
+        String sql = "SELECT * FROM usuarios WHERE LOWER(email) = LOWER(?)";
         try (Connection conn = DbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
              
