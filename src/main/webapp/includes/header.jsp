@@ -86,7 +86,7 @@
         /* Ajustes Globales para Dispositivos Móviles (Responsive) */
         @media (max-width: 768px) {
             /* Hacer que todas las tablas envueltas sean scrollables horizontalmente */
-            .table-custom-wrapper {
+            .table-custom-wrapper, .module-container, .table-responsive {
                 overflow-x: auto !important;
                 overflow-y: hidden !important;
                 -webkit-overflow-scrolling: touch; /* Scroll táctil suave */

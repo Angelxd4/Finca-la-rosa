@@ -1,0 +1,238 @@
+/* =========================================================================
+   FINCA LA ROSA - PREMIUM UI STYLES
+   ========================================================================= */
+
+/* --- 1. Custom Premium Scrollbar --- */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(156, 168, 137, 0.5); /* var(--sage) translúcido */
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(70, 71, 4, 0.7); /* var(--moss) translúcido */
+}
+
+/* Scrollbars para Dark Mode */
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: rgba(160, 160, 160, 0.3);
+}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: rgba(224, 224, 224, 0.5);
+}
+
+/* --- 2. Glassmorphism Utilities --- */
+.glass-dropdown {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 10px 40px rgba(70, 71, 4, 0.1) !important;
+}
+
+html[data-theme="dark"] .glass-dropdown {
+    background: rgba(29, 33, 26, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+html[data-theme="dark"] .glass-panel {
+    background: rgba(29, 33, 26, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* --- 3. Micro-Animations --- */
+
+/* Entrada suave hacia arriba (Fade-in-up) */
+@keyframes fadeInUpPremium {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUpPremium 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0; /* Oculto inicialmente hasta que la animación corre */
+}
+
+/* Retrasos secuenciales (Staggered Delays) */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* Efecto Ripple (Ondas) suave en botones */
+.btn-ripple {
+    position: relative;
+    overflow: hidden;
+    transform: translate3d(0, 0, 0); /* Force hardware acceleration */
+}
+
+.btn-ripple::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform .5s, opacity 1s;
+}
+
+.btn-ripple:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
+}
+
+/* --- 4. Premium Hover States para Tablas --- */
+.table-premium-hover tbody tr {
+    transition: all 0.3s ease;
+}
+
+.table-premium-hover tbody tr:hover {
+    background-color: rgba(156, 168, 137, 0.08) !important;
+    transform: scale(1.01);
+    box-shadow: 0 4px 15px rgba(70, 71, 4, 0.05);
+    border-radius: 8px;
+    z-index: 10;
+    position: relative;
+}
+
+html[data-theme="dark"] .table-premium-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* --- 5. Fix Mobile Sidebar Overlay --- */
+.sidebar-overlay {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    background: rgba(30, 30, 30, 0.4);
+    transition: all 0.4s ease;
+}
+
+/* --- 6. Notifications & Badges --- */
+@keyframes pulseShadowAlert {
+    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+    70% { box-shadow: 0 0 0 8px rgba(220, 53, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+.badge-pulse {
+    animation: pulseShadowAlert 2s infinite;
+}
+
+.noti-item {
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.noti-item.marking-read {
+    opacity: 0.6;
+    background-color: var(--bg-card) !important;
+    transform: translateX(10px);
+}
+
+.noti-unread-dot {
+    transition: all 0.4s ease;
+}
+
+.noti-unread-dot.hide-dot {
+    transform: scale(0);
+    opacity: 0;
+}
+
+/* --- 7. SweetAlert2 Premium Overrides --- */
+div:where(.swal2-container) div:where(.swal2-popup) {
+    background: var(--bg-card) !important;
+    border-radius: 28px !important;
+    border: 1px solid var(--border-subtle) !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15) !important;
+    padding: 2em !important;
+}
+
+html[data-theme="dark"] div:where(.swal2-container) div:where(.swal2-popup) {
+    background: #1e221c !important; /* var(--moss) muy oscuro */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4) !important;
+}
+
+div:where(.swal2-container) h2:where(.swal2-title) {
+    color: var(--brand-dark) !important;
+    font-weight: 800 !important;
+    font-size: 1.6rem !important;
+}
+
+div:where(.swal2-container) div:where(.swal2-html-container) {
+    color: var(--text-subtle) !important;
+    font-weight: 600 !important;
+    font-size: 1.05rem !important;
+}
+
+/* Botones */
+div:where(.swal2-container) button:where(.swal2-styled) {
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    padding: 12px 28px !important;
+    transition: all 0.3s ease !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-confirm) {
+    background-color: var(--brand-primary) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(70, 71, 4, 0.2) !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-confirm):hover {
+    background-color: var(--brand-dark) !important;
+    transform: translateY(-2px) !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-cancel) {
+    background-color: var(--bg-page) !important;
+    color: var(--text-subtle) !important;
+    border: 1px solid var(--border-subtle) !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-cancel):hover {
+    background-color: var(--border-subtle) !important;
+    color: var(--brand-dark) !important;
+}
+
+/* Iconos */
+div:where(.swal2-icon) {
+    border-width: 4px !important;
+}
+div:where(.swal2-icon).swal2-success {
+    border-color: var(--brand-primary) !important;
+    color: var(--brand-primary) !important;
+}
+div:where(.swal2-icon).swal2-success [class^=swal2-success-line] {
+    background-color: var(--brand-primary) !important;
+}
+div:where(.swal2-icon).swal2-success .swal2-success-ring {
+    border-color: rgba(156, 168, 137, 0.3) !important;
+}
