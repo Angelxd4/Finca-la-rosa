@@ -31,7 +31,7 @@ public class AuthFilter implements Filter {
         
         // Rutas que no requieren sesión (rutas públicas)
         boolean isLogin = uri.endsWith("/login") || uri.endsWith("/login.jsp") || uri.endsWith("/LoginServlet");
-        boolean isRecover = uri.endsWith("/recuperar") || uri.endsWith("/recuperar.jsp") || uri.endsWith("/RecuperacionServlet");
+        boolean isRecover = uri.endsWith("/recuperar") || uri.endsWith("/recuperar.jsp") || uri.endsWith("/RecuperacionServlet") || uri.endsWith("/recuperar-password.jsp") || uri.endsWith("/recuperar_password");
         boolean isStaticResource = uri.contains("/css/") || uri.contains("/js/") || uri.contains("/img/") || uri.contains("/uploads/") || uri.contains("/assets/");
         boolean isTrazabilidad = uri.endsWith("/trazabilidad") || uri.endsWith("/trazabilidad.jsp");
         boolean isIndex = uri.endsWith("/") || uri.endsWith("/index.jsp");
