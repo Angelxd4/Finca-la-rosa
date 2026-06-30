@@ -20,11 +20,12 @@
             --text-dark: #2b3445;
         }
 
-        body {
+        html, body {
             font-family: 'Montserrat', sans-serif;
             background-color: #f8f9fa;
             color: var(--text-dark);
             overflow-x: hidden;
+            max-width: 100%;
             scroll-behavior: smooth;
         }
 
@@ -327,18 +328,39 @@
         /* --- RESPONSIVIDAD --- */
         @media (max-width: 991px) {
             .hero-section {
-                padding: 140px 0 60px;
+                padding: 110px 0 50px;
                 text-align: center;
             }
             .hero-title {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
             }
             .hero-text {
                 margin: 0 auto 30px auto;
+                font-size: 0.95rem;
+                max-width: 100%;
             }
             .mockup-container {
-                transform: scale(0.85);
+                max-width: 90%;
+                height: 350px;
                 margin-top: 20px;
+            }
+            .about-section, .products-section, .contact-section {
+                padding: 60px 0;
+            }
+            .about-image-box img {
+                height: 350px;
+            }
+            .about-badge {
+                bottom: 15px;
+                left: 15px;
+                right: 15px;
+                padding: 10px 15px;
+            }
+            .about-badge-icon {
+                font-size: 1.5rem;
+            }
+            .map-container {
+                min-height: 250px;
             }
             .navbar-collapse {
                 background: white;
@@ -355,6 +377,15 @@
             .contact-card {
                 padding: 30px;
             }
+            .hero-shape-1, .hero-shape-2 {
+                display: none;
+            }
+        }
+        @media (max-width: 576px) {
+            .hero-title { font-size: 1.8rem; }
+            .hero-badge { font-size: 0.75rem; }
+            .d-flex.gap-4.mt-5 { flex-direction: column; text-align: center; gap: 15px !important; }
+            .d-flex.gap-4.mt-5 > div[style*="width: 2px"] { display: none; }
         }
     </style>
 </head>
