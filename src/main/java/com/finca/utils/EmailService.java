@@ -27,6 +27,11 @@ public class EmailService {
             props.put("mail.smtp.host", "smtp.gmail.com");
             props.put("mail.smtp.port", "465");
             props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+            
+            // TIMEOUTS VITALES PARA RAILWAY/RENDER (Falla rápido si bloquean el puerto)
+            props.put("mail.smtp.connectiontimeout", "3000"); // 3 segundos máximo
+            props.put("mail.smtp.timeout", "3000");
+            props.put("mail.smtp.writetimeout", "3000");
 
             Session session = Session.getInstance(props, new Authenticator() {
                 @Override
