@@ -59,6 +59,7 @@ public class RecuperarPasswordServlet extends HttpServlet {
                            + "<div style='background-color: #F8F9F3; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 3px; border: 1px solid #9CA889; border-radius: 10px; margin: 20px 0;'>"
                            + tempPassword + "</div>"
                            + "<p style='color: #dc3545;'><strong>Importante:</strong> Al iniciar sesión con esta clave temporal, el sistema te exigirá crear una nueva contraseña definitiva por tu seguridad.</p>"
+                           + "<p>Puedes iniciar sesión aquí: <a href='https://finca-la-rosa.up.railway.app/login'>https://finca-la-rosa.up.railway.app/login</a></p>"
                            + "<p>Si no solicitaste este cambio, por favor contacta al administrador del sistema de inmediato.</p>"
                            + "<hr style='border: none; border-top: 1px solid #ddd; margin: 20px 0;'/>"
                            + "<p style='font-size: 12px; color: #7F8C8D;'>Este es un mensaje automático, por favor no respondas a este correo.</p>"
