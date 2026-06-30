@@ -30,7 +30,12 @@ public class ImageServlet extends HttpServlet {
         // Esto garantiza que busque en la misma carpeta donde EmpleadoServlet
         // y PerfilServlet guardan las fotografías.
         // =================================================================
-        String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
+        String uploadPath;
+        if (File.separator.equals("/")) {
+            uploadPath = "/app/uploads";
+        } else {
+            uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
+        }
         File file = new File(uploadPath, filename);
         
         if (file.exists()) {
