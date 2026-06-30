@@ -24,8 +24,15 @@ public class FileService {
             
             String dynamicFileName = "arete_" + numeroArete.replaceAll("[^a-zA-Z0-9]", "_") + extension;
             
-            // Ruta Tomcat
-            String tomcatPath = request.getServletContext().getRealPath("") + File.separator + "uploads";
+            // Ruta Tomcat o Ruta Externa en Railway
+            String tomcatPath;
+            if (File.separator.equals("/")) {
+                // Estamos en Linux (Railway Docker)
+                tomcatPath = "/app/uploads";
+            } else {
+                // Estamos en Windows (Entorno Local)
+                tomcatPath = request.getServletContext().getRealPath("") + File.separator + "uploads";
+            }
             new File(tomcatPath).mkdirs();
             String rutaTomcat = tomcatPath + File.separator + dynamicFileName;
             
@@ -56,8 +63,13 @@ public class FileService {
             
             String dynamicFileName = "avatar_" + java.util.UUID.randomUUID().toString() + extension;
             
-            // Ruta Tomcat
-            String tomcatPath = request.getServletContext().getRealPath("") + File.separator + "uploads";
+            // Ruta Tomcat o Ruta Externa en Railway
+            String tomcatPath;
+            if (File.separator.equals("/")) {
+                tomcatPath = "/app/uploads";
+            } else {
+                tomcatPath = request.getServletContext().getRealPath("") + File.separator + "uploads";
+            }
             new File(tomcatPath).mkdirs();
             String rutaTomcat = tomcatPath + File.separator + dynamicFileName;
             
