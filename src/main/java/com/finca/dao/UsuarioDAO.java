@@ -194,6 +194,20 @@ public class UsuarioDAO {
         }
     }
 
+    public boolean restablecerPasswordTemporal(int idUsuario, String tempPassword) {
+        String sql = "UPDATE usuarios SET password = ?, requiere_cambio_password = true WHERE id = ?";
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             
+            stmt.setString(1, tempPassword);
+            stmt.setInt(2, idUsuario);
+            return stmt.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // ==========================================
     // 3. MÉTODOS DE RECURSOS HUMANOS (RRHH)
     // ==========================================

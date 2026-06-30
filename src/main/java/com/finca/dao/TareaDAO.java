@@ -11,6 +11,25 @@ import com.finca.utils.DbConnection;
 
 public class TareaDAO {
 
+    public TareaDAO() {
+        String sql = "CREATE TABLE IF NOT EXISTS tareas (" +
+                     "id_tarea SERIAL PRIMARY KEY, " +
+                     "titulo VARCHAR NOT NULL, " +
+                     "descripcion TEXT, " +
+                     "estado VARCHAR DEFAULT 'Pendiente', " +
+                     "fecha_limite DATE, " +
+                     "asignado_a INTEGER REFERENCES usuarios(id), " +
+                     "creado_por INTEGER REFERENCES usuarios(id), " +
+                     "created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP" +
+                     ")";
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            System.err.println("Error creando tabla tareas: " + e.getMessage());
+        }
+    }
+
     // 1. Para los Administradores (Trae TODO)
     public List<Tarea> obtenerTodas() {
         List<Tarea> lista = new ArrayList<>();
