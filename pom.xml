@@ -69,7 +69,7 @@
     </dependencies>
 
     <build>
-        <finalName>gestion-ganadera</finalName>
+        <finalName>ROOT</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
