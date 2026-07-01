@@ -516,7 +516,7 @@
                             <div style="width: 100%; height: 100%; background: rgba(13, 14, 12, 0.8); backdrop-filter: blur(15px); border-radius: 40px; z-index: 2; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5); padding: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: absolute; border: 1px solid var(--card-border);">
                                 <i class="bi bi-flower1" style="font-size: 8rem; color: var(--moss); opacity: 0.8;"></i>
                                 <h3 class="fw-bolder mt-3" style="color: var(--text-heading);">Finca La Rosa</h3>
-                                <p class="text-muted text-center fw-bold">Naturaleza en su mejor versión</p>
+                                <p class="text-center fw-bold" style="color: var(--text-muted);">Naturaleza en su mejor versión</p>
                             </div>
                         </div>
                     </div>
@@ -536,8 +536,8 @@
                         <div class="about-badge">
                             <i class="bi bi-check-decagram about-badge-icon"></i>
                             <div>
-                                <h5 class="mb-0 fw-bolder text-dark">Calidad Certificada</h5>
-                                <small class="text-muted fw-bold">Ganadería sostenible</small>
+                                <h5 class="mb-0 fw-bolder" style="color: var(--text-heading);">Calidad Certificada</h5>
+                                <small class="fw-bold" style="color: var(--text-muted);">Ganadería sostenible</small>
                             </div>
                         </div>
                     </div>
@@ -545,22 +545,22 @@
                 <div class="col-lg-6 order-1 order-lg-2">
                     <h6 class="text-uppercase fw-bold" style="color: var(--moss); letter-spacing: 2px;">Nuestra Historia</h6>
                     <h2 class="fw-bolder mb-4" style="color: var(--text-heading); font-size: 2.5rem;">Cuidado, Amor y Tradición por el Campo</h2>
-                    <p class="text-muted fs-5 mb-4" style="line-height: 1.8;">
+                    <p class="fs-5 mb-4" style="color: var(--text-muted); line-height: 1.8;">
                         Situada en los hermosos y verdes paisajes de Santa Rosa de Viterbo, Boyacá, la <strong>Finca La Rosa</strong> nació de la pasión por el trabajo agrícola y el respeto absoluto por la naturaleza y nuestros animales.
                     </p>
-                    <p class="text-muted mb-4" style="line-height: 1.8;">
+                    <p class="mb-4" style="color: var(--text-muted); line-height: 1.8;">
                         Contamos con procesos de vanguardia en bioseguridad, garantizando el bienestar de nuestro hato. Esto nos permite asegurar que cada gota de leche y cada producto lácteo que llega a tu mesa sea sinónimo de pureza y sabor excepcional.
                     </p>
                     
                     <div class="d-flex gap-4 mt-5">
                         <div>
                             <h3 class="fw-bolder" style="color: var(--moss);">100%</h3>
-                            <span class="text-muted fw-bold">Natural</span>
+                            <span class="fw-bold" style="color: var(--text-muted);">Natural</span>
                         </div>
-                        <div style="width: 2px; background: var(--border-subtle);"></div>
+                        <div style="width: 2px; background: var(--card-border);"></div>
                         <div>
                             <h3 class="fw-bolder" style="color: var(--moss);">1ra</h3>
-                            <span class="text-muted fw-bold">Calidad Genética</span>
+                            <span class="fw-bold" style="color: var(--text-muted);">Calidad Genética</span>
                         </div>
                     </div>
                 </div>
@@ -582,7 +582,7 @@
                     <div class="product-card">
                         <div class="product-icon"><i class="bi bi-droplet-fill"></i></div>
                         <h4 class="fw-bolder" style="color: var(--text-heading);">Leche Cruda Premium</h4>
-                        <p class="text-muted mt-3 mb-0" style="line-height: 1.6;">
+                        <p class="mt-3 mb-0" style="color: var(--text-muted); line-height: 1.6;">
                             Leche fresca y pura, extraída bajo los más altos estándares de higiene y control de calidad, ideal para procesamiento industrial o consumo directo tras hervir.
                         </p>
                     </div>
@@ -593,7 +593,7 @@
                     <div class="product-card">
                         <div class="product-icon"><i class="bi bi-diagram-3-fill"></i></div>
                         <h4 class="fw-bolder" style="color: var(--text-heading);">Venta de Ganado</h4>
-                        <p class="text-muted mt-3 mb-0" style="line-height: 1.6;">
+                        <p class="mt-3 mb-0" style="color: var(--text-muted); line-height: 1.6;">
                             Ofrecemos crías, novillas y toros de excelente ascendencia genética, perfectos para mejorar la capacidad productiva de su propio hato ganadero.
                         </p>
                     </div>
@@ -604,7 +604,7 @@
                     <div class="product-card">
                         <div class="product-icon"><i class="bi bi-basket2-fill"></i></div>
                         <h4 class="fw-bolder" style="color: var(--text-heading);">Derivados Lácteos</h4>
-                        <p class="text-muted mt-3 mb-0" style="line-height: 1.6;">
+                        <p class="mt-3 mb-0" style="color: var(--text-muted); line-height: 1.6;">
                             Producimos quesos artesanales (campesino, cuajada) procesados en nuestra propia fábrica de lácteos, garantizando sabor y frescura inigualable.
                         </p>
                     </div>
