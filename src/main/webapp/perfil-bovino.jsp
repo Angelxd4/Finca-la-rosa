@@ -169,10 +169,10 @@
         </div>
     <% } %>
 
-    <div class="row g-4 align-items-stretch">
+    <div class="row g-4">
         
         <div class="col-lg-4">
-            <div class="panel-finca text-center p-4 h-100 d-flex flex-column align-items-center">
+            <div class="panel-finca text-center p-4 d-flex flex-column align-items-center">
                 
                 <div class="profile-img-container mb-4 mt-3">
                     <% if(vaca.getImageUrl() != null && !vaca.getImageUrl().trim().isEmpty() && !vaca.getImageUrl().equals("null")) { %>
@@ -226,7 +226,7 @@
         </div>
 
         <div class="col-lg-8">
-            <div class="panel-finca p-4 h-100">
+            <div class="panel-finca p-4 mb-4">
                 
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 pb-3 border-bottom" style="border-color: var(--border-subtle) !important;">
                     <h4 class="fw-bolder text-brand mb-3 mb-md-0"><i class="bi bi-journal-medical me-2"></i> Historial Clínico</h4>
