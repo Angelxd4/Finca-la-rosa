@@ -51,7 +51,7 @@
             width: 220px;
             height: 220px;
             margin: 0 auto;
-            border-radius: 50%;
+            border-radius: 24px;
             padding: 8px;
             background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
             box-shadow: 0 10px 25px rgba(66, 57, 38, 0.2);
@@ -59,14 +59,14 @@
         }
         
         .profile-img-container:hover {
-            transform: scale(1.05) rotate(2deg);
+            transform: scale(1.05) translateY(-5px);
         }
 
         .profile-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 50%;
+            border-radius: 18px;
             border: 4px solid #fff;
             background-color: #fff;
         }
@@ -74,7 +74,7 @@
         .profile-placeholder {
             width: 100%;
             height: 100%;
-            border-radius: 50%;
+            border-radius: 18px;
             background: var(--bg-page);
             border: 4px solid #fff;
             display: flex; align-items: center; justify-content: center;
