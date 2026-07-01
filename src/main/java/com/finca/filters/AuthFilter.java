@@ -52,7 +52,12 @@ public class AuthFilter implements Filter {
                 res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 res.getWriter().write("{\"error\": \"Sesión expirada. Por favor inicie sesión de nuevo.\"}");
             } else {
-                res.sendRedirect(req.getContextPath() + "/login");
+                String scheme = req.getHeader("X-Forwarded-Proto");
+                if (scheme != null && scheme.equalsIgnoreCase("https")) {
+                    res.sendRedirect("https://" + req.getServerName() + req.getContextPath() + "/login");
+                } else {
+                    res.sendRedirect(req.getContextPath() + "/login");
+                }
             }
             return;
         }
@@ -62,7 +67,12 @@ public class AuthFilter implements Filter {
         if (u.isRequiereCambioPassword()) {
             boolean isPasswordChangeRoute = uri.endsWith("/cambiar-password.jsp");
             if (!isPasswordChangeRoute) {
-                res.sendRedirect(req.getContextPath() + "/cambiar-password.jsp");
+                String scheme = req.getHeader("X-Forwarded-Proto");
+                if (scheme != null && scheme.equalsIgnoreCase("https")) {
+                    res.sendRedirect("https://" + req.getServerName() + req.getContextPath() + "/cambiar-password.jsp");
+                } else {
+                    res.sendRedirect(req.getContextPath() + "/cambiar-password.jsp");
+                }
                 return;
             }
         }

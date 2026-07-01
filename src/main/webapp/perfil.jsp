@@ -79,7 +79,7 @@
         <div class="col-lg-4">
             <div class="card-apple text-center h-100">
                 <% if(u.getProfilePicture() != null && !u.getProfilePicture().isEmpty()) { %>
-                    <img src="uploads/<%= u.getProfilePicture() %>" class="avatar-lg" alt="Foto">
+                    <img src="<%= request.getContextPath() %>/uploads/<%= u.getProfilePicture().replace("\\", "/") %>?t=<%= System.currentTimeMillis() %>" class="avatar-lg" alt="Foto">
                 <% } else { %>
                     <div class="avatar-lg"><%= inicial %></div>
                 <% } %>

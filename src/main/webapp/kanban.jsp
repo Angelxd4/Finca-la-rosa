@@ -147,7 +147,7 @@
                     <div class="task-assignee" title="Asignado a: <%= t.getAsignadoNombre() != null ? t.getAsignadoNombre() : "Usuario" %>">
                         <div class="assignee-avatar">
                             <% if (t.getAsignadoFoto() != null && !t.getAsignadoFoto().isEmpty()) { %>
-                                <img src="uploads/<%= t.getAsignadoFoto() %>" alt="A">
+                                <img src="<%= request.getContextPath() %>/uploads/<%= t.getAsignadoFoto().replace("\\", "/") %>?t=<%= System.currentTimeMillis() %>" alt="A">
                             <% } else { %> <%= inicial %> <% } %>
                         </div>
                     </div>
@@ -183,7 +183,7 @@
                     <div class="task-assignee" title="Asignado a: <%= t.getAsignadoNombre() != null ? t.getAsignadoNombre() : "Usuario" %>">
                         <div class="assignee-avatar">
                             <% if (t.getAsignadoFoto() != null && !t.getAsignadoFoto().isEmpty()) { %>
-                                <img src="uploads/<%= t.getAsignadoFoto() %>" alt="A">
+                                <img src="<%= request.getContextPath() %>/uploads/<%= t.getAsignadoFoto().replace("\\", "/") %>?t=<%= System.currentTimeMillis() %>" alt="A">
                             <% } else { %> <%= inicial %> <% } %>
                         </div>
                     </div>
@@ -218,7 +218,7 @@
                     <div class="task-assignee" title="Asignado a: <%= t.getAsignadoNombre() != null ? t.getAsignadoNombre() : "Usuario" %>">
                         <div class="assignee-avatar" style="filter: grayscale(100%); border-color: #d1d5cb;">
                             <% if (t.getAsignadoFoto() != null && !t.getAsignadoFoto().isEmpty()) { %>
-                                <img src="uploads/<%= t.getAsignadoFoto() %>" alt="A">
+                                <img src="<%= request.getContextPath() %>/uploads/<%= t.getAsignadoFoto().replace("\\", "/") %>?t=<%= System.currentTimeMillis() %>" alt="A">
                             <% } else { %> <%= inicial %> <% } %>
                         </div>
                     </div>

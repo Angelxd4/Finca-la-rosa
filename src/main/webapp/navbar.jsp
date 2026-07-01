@@ -521,7 +521,7 @@
             <a href="perfil" style="text-decoration: none;">
                 <div class="user-avatar" title="Ir a mi perfil">
                     <% if(usuarioActual.getProfilePicture() != null && !usuarioActual.getProfilePicture().isEmpty()) { %>
-                        <img src="uploads/<%= usuarioActual.getProfilePicture() %>" alt="Foto Perfil">
+                        <img src="<%= request.getContextPath() %>/uploads/<%= usuarioActual.getProfilePicture().replace("\\", "/") %>?t=<%= System.currentTimeMillis() %>" alt="Foto Perfil">
                     <% } else { %>
                         <%= navInicial %>
                     <% } %>

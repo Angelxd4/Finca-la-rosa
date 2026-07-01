@@ -38,10 +38,12 @@ com\finca\controllers\AsistenciaServlet.class
 com\finca\models\Tarea.class
 com\finca\filters\AuthFilter.class
 com\finca\models\Venta.class
+com\finca\utils\EmailService$2.class
 com\finca\servlets\NotificacionesServlet.class
 com\finca\services\DashboardService.class
 com\finca\models\LoteProduccion.class
 com\finca\dao\ProductoLacteoDAO.class
+com\finca\controllers\RecuperarPasswordServlet.class
 com\finca\controllers\EmpleadoServlet.class
 com\finca\controllers\LogoutServlet.class
 com\finca\controllers\LoginServlet.class
