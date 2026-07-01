@@ -36,6 +36,10 @@
             --contact-card-text: #ffffff;
             --footer-bg: #2b2b2b;
             --footer-text: #b7b7b7;
+            
+            --hero-bg-center: #e8eadf;
+            --mockup-bg: rgba(255, 255, 255, 0.9);
+            --hero-shape: rgba(156, 166, 70, 0.15);
         }
 
         [data-theme="dark"] {
@@ -63,6 +67,10 @@
             --contact-card-text: var(--text-main);
             --footer-bg: #090a08;
             --footer-text: #8c9387;
+            
+            --hero-bg-center: #1a1f14;
+            --mockup-bg: rgba(13, 14, 12, 0.8);
+            --hero-shape: rgba(164, 178, 145, 0.1);
         }
 
         html, body {
@@ -143,7 +151,7 @@
         /* --- SECCIÓN HERO --- */
         .hero-section {
             padding: 160px 0 100px;
-            background: radial-gradient(circle at 50% -20%, #1a1f14 0%, var(--bg-dark) 80%);
+            background: radial-gradient(circle at 50% -20%, var(--hero-bg-center) 0%, var(--bg-dark) 80%);
             position: relative;
             overflow: hidden;
         }
@@ -154,7 +162,7 @@
             right: -100px;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, rgba(156, 166, 70, 0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, var(--hero-shape) 0%, transparent 70%);
             border-radius: 50%;
             z-index: 0;
         }
@@ -165,7 +173,7 @@
             left: -150px;
             width: 600px;
             height: 600px;
-            background: radial-gradient(circle, rgba(164, 178, 145, 0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, var(--hero-shape) 0%, transparent 70%);
             border-radius: 50%;
             z-index: 0;
         }
@@ -513,7 +521,7 @@
                     <div class="d-flex justify-content-center">
                         <div class="mockup-container">
                             <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--moss), var(--sage)); border-radius: 40px; transform: rotate(5deg); position: absolute; z-index: 1; opacity: 0.25;"></div>
-                            <div style="width: 100%; height: 100%; background: rgba(13, 14, 12, 0.8); backdrop-filter: blur(15px); border-radius: 40px; z-index: 2; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5); padding: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: absolute; border: 1px solid var(--card-border);">
+                            <div style="width: 100%; height: 100%; background: var(--mockup-bg); backdrop-filter: blur(15px); border-radius: 40px; z-index: 2; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2); padding: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: absolute; border: 1px solid var(--card-border);">
                                 <i class="bi bi-flower1" style="font-size: 8rem; color: var(--moss); opacity: 0.8;"></i>
                                 <h3 class="fw-bolder mt-3" style="color: var(--text-heading);">Finca La Rosa</h3>
                                 <p class="text-center fw-bold" style="color: var(--text-muted);">Naturaleza en su mejor versión</p>
