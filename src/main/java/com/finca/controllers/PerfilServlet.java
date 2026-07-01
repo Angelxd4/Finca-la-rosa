@@ -77,9 +77,14 @@ public class PerfilServlet extends HttpServlet {
 
         // Lógica para actualizar la Foto de Perfil
         try {
-            Part filePart = request.getPart("profilePicture");
-            String fileName = fileService.guardarImagenEmpleado(request, filePart, u.getProfilePicture());
-            u.setProfilePicture(fileName);
+            String removePhoto = request.getParameter("removePhoto");
+            if ("true".equals(removePhoto)) {
+                u.setProfilePicture(null);
+            } else {
+                Part filePart = request.getPart("profilePicture");
+                String fileName = fileService.guardarImagenEmpleado(request, filePart, u.getProfilePicture());
+                u.setProfilePicture(fileName);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

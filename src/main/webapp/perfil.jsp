@@ -132,7 +132,16 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Actualizar Foto de Perfil</label>
-                            <input type="file" name="profilePicture" class="form-control bg-white" accept="image/*">
+                            <input type="file" name="profilePicture" class="form-control bg-white mb-2" accept="image/*">
+                            
+                            <% if (u.getProfilePicture() != null && !u.getProfilePicture().isEmpty()) { %>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" role="switch" id="removePhoto" name="removePhoto" value="true">
+                                <label class="form-check-label text-danger" for="removePhoto" style="font-size: 0.8rem; font-weight: 600;">
+                                    <i class="bi bi-trash-fill"></i> Eliminar foto actual
+                                </label>
+                            </div>
+                            <% } %>
                         </div>
                     </div>
                     
