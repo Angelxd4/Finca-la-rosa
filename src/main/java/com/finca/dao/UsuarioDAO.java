@@ -228,14 +228,26 @@ public class UsuarioDAO {
             stmt.setString(2, u.getDocumentId());
             stmt.setString(3, u.getEmail());
             stmt.setString(4, u.getProfilePicture());
-            stmt.setDate(5, u.getFechaNacimiento());
+            
+            if (u.getFechaNacimiento() != null) {
+                stmt.setDate(5, u.getFechaNacimiento());
+            } else {
+                stmt.setNull(5, java.sql.Types.DATE);
+            }
+            
             stmt.setString(6, u.getDireccion());
             stmt.setString(7, u.getTelefono());
             stmt.setString(8, u.getContactoEmergencia());
             stmt.setString(9, u.getEps());
             stmt.setString(10, u.getCodigoEmpleado());
             stmt.setString(11, u.getCargo());
-            stmt.setDate(12, u.getFechaIngreso());
+            
+            if (u.getFechaIngreso() != null) {
+                stmt.setDate(12, u.getFechaIngreso());
+            } else {
+                stmt.setNull(12, java.sql.Types.DATE);
+            }
+            
             stmt.setString(13, u.getTipoContrato());
             stmt.setDouble(14, u.getSalarioBase());
             stmt.setString(15, u.getHorario());
