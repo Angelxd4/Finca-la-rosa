@@ -12,6 +12,33 @@
 
     <style>
         :root {
+            /* LIGHT MODE PALETTE (Default) */
+            --moss: #464704;
+            --moss-dark: #353602;
+            --sage: #9CA889;
+            --khaki: #B7A78C;
+            
+            --bg-dark: #f8f9fa; /* Background */
+            --bg-section: #ffffff; /* Section background */
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(70, 71, 4, 0.08);
+            
+            --text-main: #2b3445;
+            --text-muted: #555555;
+            --text-heading: #423926;
+            
+            --nav-bg: rgba(255, 255, 255, 0.95);
+            --overlay: rgba(70, 71, 4, 0.6);
+            --badge-bg: rgba(255, 255, 255, 0.9);
+            --product-card-bg: #ffffff;
+            --product-card-hover: #ffffff;
+            --contact-card-bg: var(--text-heading);
+            --contact-card-text: #ffffff;
+            --footer-bg: #2b2b2b;
+            --footer-text: #b7b7b7;
+        }
+
+        [data-theme="dark"] {
             /* DARK MODE PALETTE */
             --moss: #9ca646;       /* Bright moss green for highlights */
             --moss-dark: #68702c;  /* Darker moss for hover states */
@@ -26,6 +53,16 @@
             --text-main: #e2e4e0;  /* Off-white text */
             --text-muted: #9ba195; /* Muted text */
             --text-heading: #ffffff; /* Pure white headings */
+            
+            --nav-bg: rgba(13, 14, 12, 0.85);
+            --overlay: rgba(13, 14, 12, 0.8);
+            --badge-bg: rgba(13, 14, 12, 0.7);
+            --product-card-bg: var(--card-bg);
+            --product-card-hover: rgba(255, 255, 255, 0.08);
+            --contact-card-bg: var(--card-bg);
+            --contact-card-text: var(--text-main);
+            --footer-bg: #090a08;
+            --footer-text: #8c9387;
         }
 
         html, body {
@@ -39,7 +76,7 @@
 
         /* --- NAVEGACIÓN PÚBLICA --- */
         .navbar-public {
-            background: rgba(13, 14, 12, 0.85);
+            background: var(--nav-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--card-border);
@@ -231,14 +268,14 @@
         .about-image-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(0deg, rgba(13,14,12,0.8) 0%, rgba(0,0,0,0) 100%);
+            background: linear-gradient(0deg, var(--overlay) 0%, rgba(0,0,0,0) 100%);
         }
 
         .about-badge {
             position: absolute;
             bottom: 30px;
             left: 30px;
-            background: rgba(13, 14, 12, 0.7);
+            background: var(--badge-bg);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             padding: 15px 25px;
@@ -261,7 +298,7 @@
         }
 
         .product-card {
-            background: var(--card-bg);
+            background: var(--product-card-bg);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 24px;
@@ -279,7 +316,7 @@
             transform: translateY(-10px);
             box-shadow: 0 25px 50px rgba(0,0,0,0.4);
             border-color: var(--moss);
-            background: rgba(255, 255, 255, 0.08);
+            background: var(--product-card-hover);
         }
 
         .product-icon {
@@ -444,7 +481,10 @@
                     <li class="nav-item"><a class="nav-link" href="#productos">Productos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
                 </ul>
-                <div class="d-lg-flex align-items-center">
+                <div class="d-lg-flex align-items-center gap-3">
+                    <button class="btn btn-link nav-link p-0 d-none d-lg-block" id="themeToggle" style="font-size: 1.2rem;" title="Cambiar Tema">
+                        <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                    </button>
                     <a href="login" class="btn-login-outline">
                         <i class="bi bi-person-circle me-1"></i> Portal Empleados
                     </a>
@@ -679,6 +719,34 @@
         </div>
     </footer>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('themeToggle');
+            const icon = document.getElementById('themeIcon');
+            const root = document.documentElement;
+            
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            root.setAttribute('data-theme', currentTheme);
+            updateIcon(currentTheme);
+            
+            toggle.addEventListener('click', () => {
+                const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                root.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateIcon(newTheme);
+            });
+            
+            function updateIcon(theme) {
+                if(theme === 'dark') {
+                    icon.className = 'bi bi-sun-fill';
+                    icon.style.color = '#ffc107'; 
+                } else {
+                    icon.className = 'bi bi-moon-stars-fill';
+                    icon.style.color = 'var(--text-main)'; 
+                }
+            }
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
