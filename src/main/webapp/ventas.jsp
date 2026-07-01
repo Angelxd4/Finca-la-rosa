@@ -234,7 +234,13 @@
                   <div class="product-grid">
                       <% if(ganado != null && !ganado.isEmpty()) { for(Bovino b : ganado) { %>
                       <div class="product-card" onclick="addToCart('<%= b.getIdBovino() %>', 'Ganado', 'Vaca <%= b.getNumeroArete() %>', <%= b.getPrecioEstimado() %>, false, 1)">
-                          <div class="product-icon"><i class="bi bi-tags-fill"></i></div>
+                          <div class="product-icon" style="overflow: hidden; padding: 0;">
+                              <% if(b.getImageUrl() != null && !b.getImageUrl().trim().isEmpty() && !b.getImageUrl().equals("null")) { %>
+                                  <img src="<%= request.getContextPath() %><%= b.getImageUrl() %>" style="width: 100%; height: 100%; object-fit: cover;" alt="Bovino">
+                              <% } else { %>
+                                  <i class="bi bi-tags-fill"></i>
+                              <% } %>
+                          </div>
                           <h6>Arete: <%= b.getNumeroArete() %></h6>
                           <div class="product-stock"><%= b.getClasificacion() %></div>
                           <div class="product-price">$ <%= String.format("%,.2f", b.getPrecioEstimado()) %></div>
