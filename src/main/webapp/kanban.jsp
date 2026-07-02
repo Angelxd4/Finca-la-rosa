@@ -281,11 +281,27 @@
 </div>
 <% } %>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mobile-drag-drop@2.3.0-rc.2/default.css">
+<script src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@2.3.0-rc.2/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@2.3.0-rc.2/scroll-behaviour.min.js"></script>
+<script>
+    // Iniciar polyfill para celulares
+    MobileDragDrop.polyfill({
+        dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride
+    });
+    // Necesario para iOS
+    window.addEventListener('touchmove', function() {}, {passive: false});
+</script>
+
 <script>
     // LÓGICA DE DRAG & DROP
     function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
     function leaveDrop(ev) { ev.currentTarget.classList.remove('drag-over'); }
-    function drag(ev) { ev.dataTransfer.setData("idTareaNode", ev.target.id); }
+    function drag(ev) { 
+        ev.dataTransfer.setData("idTareaNode", ev.target.id); 
+        // Hack para el polyfill
+        ev.dataTransfer.dropEffect = "move"; 
+    }
 
     function drop(ev, nuevoEstado) {
         ev.preventDefault();

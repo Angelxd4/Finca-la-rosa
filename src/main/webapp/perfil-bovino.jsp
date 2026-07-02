@@ -29,6 +29,15 @@
         body {
             background: linear-gradient(135deg, #F3F5E7 0%, #e0e5d1 100%) !important;
         }
+        
+        html[data-theme="dark"] body {
+            background: linear-gradient(135deg, #09090b 0%, #18181b 100%) !important;
+        }
+
+        html[data-theme="dark"] {
+            --glass-bg: rgba(24, 24, 27, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
         .panel-finca {
             background: var(--glass-bg) !important;
@@ -93,9 +102,16 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.02);
             transition: all 0.2s;
         }
+        html[data-theme="dark"] .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
         .info-card:hover {
             background: #fff;
             transform: scale(1.02);
+        }
+        html[data-theme="dark"] .info-card:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
         /* TABLA DE HISTORIAL */
@@ -108,11 +124,17 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             padding: 15px; /* Added padding so datatables controls have space */
         }
+        html[data-theme="dark"] .table-custom-wrapper {
+            background: rgba(24, 24, 27, 0.8);
+        }
         .table { margin-bottom: 0; }
         .table th { font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; padding: 18px 15px; border-bottom: 2px solid var(--brand-accent) !important; background-color: rgba(70, 71, 4, 0.05) !important; color: var(--brand-primary) !important; }
+        html[data-theme="dark"] .table th { background-color: rgba(255, 255, 255, 0.05) !important; }
         .table td { vertical-align: middle; padding: 16px 15px; color: var(--text-main); font-size: 0.95rem; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        html[data-theme="dark"] .table td { border-bottom: 1px solid rgba(255,255,255,0.05); }
         .table tbody tr { transition: all 0.2s; }
         .table tbody tr:hover { background-color: rgba(255,255,255, 0.9) !important; transform: scale(1.01); box-shadow: 0 4px 10px rgba(0,0,0,0.05); z-index: 10; position: relative; }
+        html[data-theme="dark"] .table tbody tr:hover { background-color: rgba(255,255,255, 0.1) !important; }
         
         /* DATATABLES OVERRIDES */
         div.dataTables_wrapper div.dataTables_filter input { border-radius: 12px; border: 1px solid var(--glass-border); padding: 8px 12px; outline: none; }
