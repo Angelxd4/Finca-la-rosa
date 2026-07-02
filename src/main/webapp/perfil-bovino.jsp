@@ -199,10 +199,10 @@
         </div>
     <% } %>
 
-    <div class="row g-4">
+    <div class="row g-4 align-items-stretch">
         
         <div class="col-lg-4">
-            <div class="panel-finca text-center p-4 d-flex flex-column align-items-center">
+            <div class="panel-finca h-100 text-center p-4 d-flex flex-column align-items-center">
                 
                 <div class="profile-img-container mb-4 mt-3">
                     <% if(vaca.getImageUrl() != null && !vaca.getImageUrl().trim().isEmpty() && !vaca.getImageUrl().equals("null")) { %>
@@ -256,7 +256,7 @@
         </div>
 
         <div class="col-lg-8">
-            <div class="panel-finca p-4 mb-4">
+            <div class="panel-finca h-100 p-4">
                 
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 pb-3 border-bottom" style="border-color: var(--border-subtle) !important;">
                     <h4 class="fw-bolder text-brand mb-3 mb-md-0"><i class="bi bi-journal-medical me-2"></i> Historial Clínico</h4>
@@ -303,19 +303,22 @@
                     </table>
                 </div>
             </div>
-            
-            <% if("Producción".equals(vaca.getClasificacion())) { %>
-            <div class="panel-finca p-4 mt-4 mb-4">
+        </div>
+    </div>
+    
+    <% if("Producción".equals(vaca.getClasificacion())) { %>
+    <div class="row mt-2">
+        <div class="col-12">
+            <div class="panel-finca p-4 mb-4">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3 pb-2 border-bottom" style="border-color: var(--border-subtle) !important;">
                     <h5 class="fw-bolder text-brand mb-0"><i class="bi bi-graph-up-arrow me-2 text-info"></i> Analítica: Curva de Lactancia Ideal vs Real</h5>
                     <span class="badge bg-light text-dark border"><i class="bi bi-info-circle me-1"></i> Basado en modelo de 305 días</span>
                 </div>
                 <div id="lactanciaChart" style="height: 320px;"></div>
             </div>
-            <% } %>
-            
         </div>
     </div>
+    <% } %>
 </div>
 
 <div class="modal fade" id="modalEventoMedico" tabindex="-1">
@@ -617,7 +620,7 @@
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
             },
-            dom: '<"row mb-3 align-items-center"<"col-md-6 mb-3 mb-md-0 text-center text-md-start"B><"col-md-6 d-flex justify-content-center justify-content-md-end"f>>rt<"row mt-3"<"col-md-6 text-center text-md-start text-subtle small mb-2 mb-md-0"i><"col-md-6 d-flex justify-content-center justify-content-md-end"p>>',
+            dom: '<"row mb-3 align-items-center"<"col-md-6 mb-3 mb-md-0 text-center text-md-start d-flex gap-2"B><"col-md-6 d-flex justify-content-center justify-content-md-end"f>>rt<"row mt-3"<"col-md-6 text-center text-md-start text-subtle small mb-2 mb-md-0"i><"col-md-6 d-flex justify-content-center justify-content-md-end"p>>',
             buttons: [
                 {
                     extend: 'pdfHtml5',

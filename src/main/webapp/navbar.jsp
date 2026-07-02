@@ -479,29 +479,38 @@
     </div>
 
     <nav class="sidebar-nav">
-        <a href="dashboard" class="sidebar-link nav-auto-active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+        <% 
+            String reqURI = request.getRequestURI();
+            boolean esCliente = "5".equals(rNav) || "Cliente".equalsIgnoreCase(rNav);
+            if (!esCliente) { 
+        %>
+        <a href="dashboard" class="sidebar-link <%= reqURI.contains("dashboard") ? "active-page" : "" %>"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
         
         <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: var(--moss); opacity: 0.6; letter-spacing: 1px;">Gestión Animal</div>
-        <a href="inventario-ganado" class="sidebar-link nav-auto-active"><i class="bi bi-clipboard2-data-fill"></i> Inventario Bovino</a>
+        <a href="inventario-ganado" class="sidebar-link <%= reqURI.contains("inventario-ganado") ? "active-page" : "" %>"><i class="bi bi-clipboard2-data-fill"></i> Inventario Bovino</a>
         
         <% if (!"2".equals(rNav) && !"Veterinario".equalsIgnoreCase(rNav)) { %>
         <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: var(--moss); opacity: 0.6; letter-spacing: 1px;">Lechería y Fábrica</div>
-        <a href="produccion" class="sidebar-link nav-auto-active"><i class="bi bi-droplet-half"></i> Producción / Ordeño</a>
-        <a href="lacteos" class="sidebar-link nav-auto-active"><i class="bi bi-shop"></i> Fábrica de Lácteos</a>
-        <a href="ventas" class="sidebar-link nav-auto-active"><i class="bi bi-cash-coin"></i> Punto de Venta (POS)</a>
+        <a href="produccion" class="sidebar-link <%= reqURI.contains("produccion") ? "active-page" : "" %>"><i class="bi bi-droplet-half"></i> Producción / Ordeño</a>
+        <a href="lacteos" class="sidebar-link <%= reqURI.contains("lacteos") ? "active-page" : "" %>"><i class="bi bi-shop"></i> Fábrica de Lácteos</a>
+        <a href="ventas" class="sidebar-link <%= reqURI.contains("ventas") ? "active-page" : "" %>"><i class="bi bi-cash-coin"></i> Punto de Venta (POS)</a>
         <% } %>
         
         <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: var(--moss); opacity: 0.6; letter-spacing: 1px;">Administración</div>
-        <a href="kanban" class="sidebar-link nav-auto-active"><i class="bi bi-kanban"></i> Tablero de Tareas</a>
+        <a href="kanban" class="sidebar-link <%= reqURI.contains("kanban") ? "active-page" : "" %>"><i class="bi bi-kanban"></i> Tablero de Tareas</a>
+        <% } else { %>
+        <div class="mt-3 mb-2 px-3 text-uppercase fw-bold" style="font-size: 10px; color: var(--moss); opacity: 0.6; letter-spacing: 1px;">Mi Cuenta</div>
+        <a href="catalogo" class="sidebar-link <%= reqURI.contains("catalogo") ? "active-page" : "" %>"><i class="bi bi-shop-window"></i> Catálogo de Productos</a>
+        <% } %>
         
         <%-- 🛡️ BLINDAJE ANTI-ESPACIOS: SOLAMENTE EL ADMINISTRADOR PUEDE VER EL BOTÓN DE PERSONAL --%>
         <% 
             String rolMenuSeguro = (rNav != null) ? rNav.trim().toLowerCase() : "";
-            if (rolMenuSeguro.equals("1") || rolMenuSeguro.contains("admin")) { 
+            if (!esCliente && (rolMenuSeguro.equals("1") || rolMenuSeguro.contains("admin"))) { 
         %>
-        <a href="empleados" class="sidebar-link nav-auto-active"><i class="bi bi-people-fill"></i> Personal</a>
-        <a href="asistencias" class="sidebar-link nav-auto-active"><i class="bi bi-calendar2-check-fill"></i> Asistencias</a>
-        <a href="asistencia-escaner.jsp" class="sidebar-link nav-auto-active" target="_blank"><i class="bi bi-qr-code-scan"></i> Escáner QR de Ingreso</a>
+        <a href="empleados" class="sidebar-link <%= reqURI.contains("empleados") ? "active-page" : "" %>"><i class="bi bi-people-fill"></i> Personal</a>
+        <a href="asistencias" class="sidebar-link <%= reqURI.contains("asistencias") && !reqURI.contains("escaner") ? "active-page" : "" %>"><i class="bi bi-calendar2-check-fill"></i> Asistencias</a>
+        <a href="asistencia-escaner.jsp" class="sidebar-link <%= reqURI.contains("asistencia-escaner") ? "active-page" : "" %>" target="_blank"><i class="bi bi-qr-code-scan"></i> Escáner QR de Ingreso</a>
         <% } %>
     </nav>
 
@@ -569,13 +578,8 @@
 
     initDarkMode();
 
-    // 1. LÓGICA DE NAVEGACIÓN ACTIVA
-    let currentPath = window.location.pathname;
-    let navLinks = document.querySelectorAll('.nav-auto-active');
-    navLinks.forEach(link => {
-        let linkHref = link.getAttribute('href');
-        if (linkHref && currentPath.includes(linkHref)) { link.classList.add('active-page'); }
-    });
+    // 1. LÓGICA DE NAVEGACIÓN (Renderizado desde el servidor JSP para evitar parpadeos)
+    // El resaltado ahora viene incrustado en el HTML.
 
     // 2. LÓGICA DE RELOJ Y FECHA FORZADA A HORA DE COLOMBIA
     function updateDateTime() {

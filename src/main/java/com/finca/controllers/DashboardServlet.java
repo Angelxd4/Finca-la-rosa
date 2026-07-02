@@ -29,6 +29,13 @@ public class DashboardServlet extends HttpServlet {
 
         Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
 
+        // Si el usuario es un Cliente, redirigirlo a su portal de catálogo
+        String r = usuarioLogueado.getRol();
+        if (r != null && (r.equals("5") || r.equalsIgnoreCase("Cliente"))) {
+            response.sendRedirect("catalogo");
+            return;
+        }
+
         // Enviamos el nombre y el rol traducido a la vista
         request.setAttribute("nombreCorto", authService.obtenerNombreCorto(usuarioLogueado));
         request.setAttribute("rolTexto", authService.obtenerRolTexto(usuarioLogueado));

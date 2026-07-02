@@ -10,8 +10,10 @@
     else if(r.equals("2") || r.equalsIgnoreCase("Veterinario")) rolTexto = "Veterinario";
     else if(r.equals("3") || r.equalsIgnoreCase("Operario")) rolTexto = "Operario (Vaquero)";
     else if(r.equals("4") || r.equalsIgnoreCase("Vendedor")) rolTexto = "Vendedor";
+    else if(r.equals("5") || r.equalsIgnoreCase("Cliente")) rolTexto = "Cliente";
     
-    String inicial = u.getFullName().substring(0, 1).toUpperCase();
+    boolean isCliente = "5".equals(r) || "Cliente".equalsIgnoreCase(r);
+    String inicial = u.getFullName() != null && u.getFullName().length() > 0 ? u.getFullName().substring(0, 1).toUpperCase() : "U";
 %>
 <!DOCTYPE html>
 <html lang="es">
@@ -86,6 +88,7 @@
                 
                 <h4 class="fw-bolder" style="color: var(--brand-dark);"><%= u.getFullName() %></h4>
                 <p class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-bold"><%= rolTexto %></p>
+                <% if (!isCliente) { %>
                 <p class="text-muted small mt-2"><i class="bi bi-briefcase-fill me-1"></i> <%= u.getCargo() != null ? u.getCargo() : "Sin cargo oficial" %></p>
                 
                 <hr style="border-color: var(--border-subtle); margin: 25px 0;">
@@ -95,6 +98,7 @@
                     <div id="miQrCode"></div>
                 </div>
                 <p class="small text-muted mt-2" style="font-size: 0.75rem;">Muestra este código en la entrada de la finca para registrar tu asistencia.</p>
+                <% } %>
             </div>
         </div>
 
@@ -145,6 +149,7 @@
                         </div>
                     </div>
                     
+                    <% if (!isCliente) { %>
                     <hr style="border-color: var(--border-subtle); margin: 30px 0;">
 
                     <div class="row">
@@ -161,6 +166,7 @@
                             <input type="text" class="form-control" value="<%= u.getArl() != null ? u.getArl() : "No registrada" %>" readonly>
                         </div>
                     </div>
+                    <% } %>
 
                     <div class="text-end mt-4 pt-2">
                         <button type="submit" class="btn btn-brand shadow-sm">
@@ -176,6 +182,7 @@
 <script>
     // Generar el código QR personal cuando cargue la página
     document.addEventListener("DOMContentLoaded", function() {
+        <% if (!isCliente) { %>
         var documento = "<%= u.getDocumentId() %>";
         var qrString = "FINCA-LAROSA-DOC-" + documento;
         
@@ -187,6 +194,7 @@
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
         });
+        <% } %>
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -129,4 +129,9 @@ public class AuthService {
     public boolean tienePermisoProduccion(HttpServletRequest request) {
         return esAdministrador(request) || esOperario(request);
     }
+
+    public boolean esCliente(HttpServletRequest request) {
+        String rol = getRolUsuarioLogueado(request);
+        return rol.equals("5") || rol.equalsIgnoreCase("Cliente");
+    }
 }

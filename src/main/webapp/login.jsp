@@ -250,7 +250,7 @@
     <div class="container" id="container">
         
         <div class="form-container sign-up">
-            <form action="registro" method="POST">
+            <form id="clientRegisterForm" action="login" method="POST">
                 <div class="brand-emblem" style="animation: fadeInUp 0.6s;">
                     <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 16v6" />
@@ -262,19 +262,42 @@
                     </svg>
                 </div>
                 <h1 style="animation: fadeInUp 0.6s 0.1s backwards;">Crear Cuenta</h1>
-                <span class="subtitle" style="animation: fadeInUp 0.6s 0.2s backwards;">Uso exclusivo de la administración</span>
+                <span class="subtitle" style="animation: fadeInUp 0.6s 0.2s backwards;">Exclusivo para nuestros Clientes</span>
                 
-                <div class="input-group" style="animation: fadeInUp 0.6s 0.3s backwards;">
+                <!-- Google Sign-In -->
+                <div id="g_id_onload"
+                     data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                     data-context="signup"
+                     data-ux_mode="popup"
+                     data-callback="handleCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin"
+                     data-type="standard"
+                     data-shape="pill"
+                     data-theme="outline"
+                     data-text="continue_with"
+                     data-size="large"
+                     data-logo_alignment="left"
+                     style="margin-bottom: 15px; animation: fadeInUp 0.6s 0.3s backwards;">
+                </div>
+                <div style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; animation: fadeInUp 0.6s 0.35s backwards;">
+                    <hr style="flex-grow: 1; border-color: var(--border-subtle);">
+                    <span style="font-size: 0.8rem; color: var(--text-subtle); text-transform: uppercase; font-weight: 700;">O regístrate con correo</span>
+                    <hr style="flex-grow: 1; border-color: var(--border-subtle);">
+                </div>
+
+                <div class="input-group" style="animation: fadeInUp 0.6s 0.4s backwards;">
                     <input type="text" name="nombre" placeholder="Nombre Completo" required>
                 </div>
-                <div class="input-group" style="animation: fadeInUp 0.6s 0.4s backwards;">
+                <div class="input-group" style="animation: fadeInUp 0.6s 0.5s backwards;">
                     <input type="email" name="email" placeholder="Correo Electrónico" required>
                 </div>
-                <div class="input-group" style="animation: fadeInUp 0.6s 0.5s backwards;">
+                <div class="input-group" style="animation: fadeInUp 0.6s 0.6s backwards;">
                     <input type="password" name="password" id="pass_signup" placeholder="Contraseña" required>
                     <i class="fa-solid fa-eye toggle-password" onclick="togglePasswordVisibility('pass_signup', this)"></i>
                 </div>
-                <button type="button" style="animation: fadeInUp 0.6s 0.6s backwards;" onclick="mostrarAlertaRegistro()">Solicitar Acceso</button>
+                <button type="submit" style="animation: fadeInUp 0.6s 0.7s backwards;" onclick="event.preventDefault(); Swal.fire('Información', 'El registro manual está en construcción. Usa Google por ahora.', 'info');">Crear Cuenta</button>
             </form>
         </div>
         
@@ -318,9 +341,9 @@
                             <path d="M12 11c-1.5-1-1.5-3 0-4" />
                         </svg>
                     </div>
-                    <h2>¡Bienvenido!</h2>
-                    <p>Si ya posees un usuario asignado en la finca, inicia sesión para continuar con tus registros.</p>
-                    <button class="btn-ghost" id="login" style="max-width: 250px;">Volver al Login</button>
+                    <h2>¡Bienvenido de vuelta!</h2>
+                    <p>Si ya posees una cuenta, inicia sesión para continuar con tus pedidos.</p>
+                    <button class="btn-ghost" id="login" style="max-width: 250px;">Iniciar Sesión</button>
                 </div>
                 <div class="toggle-panel toggle-right">
                     <div class="brand-emblem">
@@ -333,8 +356,8 @@
                             <path d="M12 11c-1.5-1-1.5-3 0-4" />
                         </svg>
                     </div>
-                    <h2>Portal Interno</h2>
-                    <p>¿Eres un nuevo operario o veterinario de la finca? Consulta las opciones de registro del sistema.</p>
+                    <h2>Eres Nuevo?</h2>
+                    <p>Crea tu cuenta de cliente para acceder a nuestro catálogo en línea y realizar pedidos de Lácteos y Ganado.</p>
                     <button class="btn-ghost" id="register" style="max-width: 250px;">Registrarse</button>
                 </div>
             </div>
@@ -369,15 +392,39 @@
             }
         });
 
-        function togglePasswordVisibility(inputId, iconElement) {
-            const passwordInput = document.getElementById(inputId);
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                iconElement.classList.replace('fa-eye', 'fa-eye-slash');
+        function togglePasswordVisibility(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
             } else {
-                passwordInput.type = 'password';
-                iconElement.classList.replace('fa-eye-slash', 'fa-eye');
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
             }
+        }
+
+        // Google Sign-In Callback
+        function handleCredentialResponse(response) {
+            // El token ID de Google está en response.credential
+            fetch('login?action=login_with_google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'credential=' + encodeURIComponent(response.credential)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success', title: '¡Bienvenido!', text: 'Ingresando al sistema...',
+                        showConfirmButton: false, timer: 1500
+                    }).then(() => window.location.href = 'dashboard');
+                } else {
+                    Swal.fire('Error', data.message || 'No se pudo iniciar sesión con Google.', 'error');
+                }
+            })
+            .catch(err => Swal.fire('Error', 'Fallo de conexión al servidor.', 'error'));
         }
 
         function mostrarAlertaRegistro() {
@@ -536,6 +583,29 @@
                 }
             }
         }
+
+        // Google Sign-In Callback
+        function handleCredentialResponse(response) {
+            // El token ID de Google está en response.credential
+            fetch('login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'action=login_with_google&credential=' + encodeURIComponent(response.credential)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success', title: '¡Bienvenido!', text: 'Ingresando al sistema...',
+                        showConfirmButton: false, timer: 1500
+                    }).then(() => window.location.href = 'dashboard');
+                } else {
+                    Swal.fire('Error', data.message || 'No se pudo iniciar sesión con Google.', 'error');
+                }
+            })
+            .catch(err => Swal.fire('Error', 'Fallo de conexión al servidor.', 'error'));
+        }
     </script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 </html>

@@ -10,7 +10,9 @@ public class EmpleadoService {
     private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
     public List<Usuario> obtenerTodos() {
-        return usuarioDAO.obtenerTodos();
+        List<Usuario> todos = usuarioDAO.obtenerTodos();
+        todos.removeIf(u -> "5".equals(u.getRol()) || "Cliente".equalsIgnoreCase(u.getRol()));
+        return todos;
     }
 
     public boolean eliminar(int id) {

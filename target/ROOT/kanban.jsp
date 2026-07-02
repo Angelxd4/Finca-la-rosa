@@ -80,7 +80,8 @@
             .kanban-col {
                 flex: 1 1 auto;
                 width: 100%;
-                min-height: auto;
+                min-height: 120px;
+                margin-bottom: 15px;
             }
             .task-card {
                 margin-bottom: 12px;
@@ -146,7 +147,7 @@
                     <div class="task-assignee" title="Asignado a: <%= t.getAsignadoNombre() != null ? t.getAsignadoNombre() : "Usuario" %>">
                         <div class="assignee-avatar">
                             <% if (t.getAsignadoFoto() != null && !t.getAsignadoFoto().isEmpty()) { %>
-                                <img src="uploads/<%= t.getAsignadoFoto() %>" alt="A">
+                                <img src="<%= request.getContextPath() %>/uploads/<%= t.getAsignadoFoto().replace("\\", "/") %>?t=<%= System.currentTimeMillis() %>" alt="A">
                             <% } else { %> <%= inicial %> <% } %>
                         </div>
                     </div>
@@ -182,7 +183,7 @@
                     <div class="task-assignee" title="Asignado a: <%= t.getAsignadoNombre() != null ? t.getAsignadoNombre() : "Usuario" %>">
                         <div class="assignee-avatar">
                             <% if (t.getAsignadoFoto() != null && !t.getAsignadoFoto().isEmpty()) { %>
-                                <img src="uploads/<%= t.getAsignadoFoto() %>" alt="A">
+                                <img src="<%= request.getContextPath() %>/uploads/<%= t.getAsignadoFoto().replace("\\", "/") %>?t=<%= System.currentTimeMillis() %>" alt="A">
                             <% } else { %> <%= inicial %> <% } %>
                         </div>
                     </div>
@@ -217,7 +218,7 @@
                     <div class="task-assignee" title="Asignado a: <%= t.getAsignadoNombre() != null ? t.getAsignadoNombre() : "Usuario" %>">
                         <div class="assignee-avatar" style="filter: grayscale(100%); border-color: #d1d5cb;">
                             <% if (t.getAsignadoFoto() != null && !t.getAsignadoFoto().isEmpty()) { %>
-                                <img src="uploads/<%= t.getAsignadoFoto() %>" alt="A">
+                                <img src="<%= request.getContextPath() %>/uploads/<%= t.getAsignadoFoto().replace("\\", "/") %>?t=<%= System.currentTimeMillis() %>" alt="A">
                             <% } else { %> <%= inicial %> <% } %>
                         </div>
                     </div>
@@ -280,11 +281,27 @@
 </div>
 <% } %>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mobile-drag-drop@2.3.0-rc.2/default.css">
+<script src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@2.3.0-rc.2/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@2.3.0-rc.2/scroll-behaviour.min.js"></script>
+<script>
+    // Iniciar polyfill para celulares
+    MobileDragDrop.polyfill({
+        dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride
+    });
+    // Necesario para iOS
+    window.addEventListener('touchmove', function() {}, {passive: false});
+</script>
+
 <script>
     // LÓGICA DE DRAG & DROP
     function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
     function leaveDrop(ev) { ev.currentTarget.classList.remove('drag-over'); }
-    function drag(ev) { ev.dataTransfer.setData("idTareaNode", ev.target.id); }
+    function drag(ev) { 
+        ev.dataTransfer.setData("idTareaNode", ev.target.id); 
+        // Hack para el polyfill
+        ev.dataTransfer.dropEffect = "move"; 
+    }
 
     function drop(ev, nuevoEstado) {
         ev.preventDefault();

@@ -119,7 +119,7 @@
         .form-control:focus, .form-select:focus { background: #ffffff !important; border-color: var(--brand-primary) !important; box-shadow: 0 0 0 4px rgba(70, 71, 4, 0.15) !important; outline: none; }
         .modal-content { background: var(--bg-card) !important; border-radius: 28px; border: none; box-shadow: 0 25px 50px -12px rgba(66, 57, 38, 0.25); }
         
-        .summary-bar { position: sticky; bottom: 0; background: var(--bg-page) !important; border-top: 1px solid var(--border-subtle) !important; z-index: 10; padding: 20px; }
+        .summary-bar { background: var(--bg-page) !important; border-top: 1px solid var(--border-subtle) !important; padding: 20px; }
         tr.vaca-row { animation: fadeIn 0.4s ease forwards; }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
@@ -491,10 +491,10 @@
                     <h4 class="modal-title fw-bold text-dark"><i class="bi bi-clipboard-check text-brand me-2"></i> Registro de Ordeño</h4>
                     <button type="button" class="btn-close position-absolute end-0 me-4" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="produccion" method="POST" id="formSesion">
+                <form action="produccion" method="POST" id="formSesion" class="d-flex flex-column m-0" style="flex: 1; overflow: hidden; min-height: 0;">
                     <input type="hidden" name="action" value="registrar">
                     <input type="hidden" name="filtroActual" value="<%= filtroActivo %>">
-                    <div class="modal-body px-4 py-4">
+                    <div class="modal-body px-4 py-4" style="overflow-y: auto; flex: 1 1 auto;">
                         <div class="row g-3 mb-4 p-3 rounded-4 border shadow-sm" style="background-color: var(--bg-page); border-color: var(--border-subtle) !important;">
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold text-subtle text-uppercase ms-1">Fecha y Hora</label>
@@ -570,13 +570,13 @@
                             <textarea name="observaciones" class="form-control shadow-sm" rows="2" placeholder="Ej: Clima lluvioso, todo transcurrió con normalidad." style="border-radius: 18px;"></textarea>
                         </div>
                     </div>
-                    <div class="summary-bar">
+                    <div class="summary-bar mt-auto">
                         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
                             <div class="d-flex gap-3 gap-md-4 ms-0 ms-md-3 flex-wrap justify-content-center w-100 w-md-auto">
-                                <div><small class="text-subtle fw-bold d-block text-uppercase" style="font-size: 11px;">Total Vacas</small><strong class="fs-4 text-dark" id="resVacas">0</strong></div>
-                                <div><small class="text-brand fw-bold d-block text-uppercase" style="font-size: 11px;">Comercial</small><strong class="fs-4 text-brand"><span id="resLitros">0.0</span> L</strong></div>
-                                <div class="d-none d-md-block"><small class="text-subtle fw-bold d-block text-uppercase" style="font-size: 11px;">Promedio General</small><strong class="fs-4 text-dark"><span id="resPromedio">0.0</span> L</strong></div>
-                                <div><small class="fw-bold d-block text-uppercase text-danger" style="font-size: 11px;">Descarte</small><strong class="fs-4 text-danger"><span id="resDescarte">0.0</span> L</strong></div>
+                                <div class="text-center"><small class="text-subtle fw-bold d-block text-uppercase" style="font-size: 10px;">Total Vacas</small><strong class="fs-5 fs-md-4 text-dark" id="resVacas">0</strong></div>
+                                <div class="text-center"><small class="text-brand fw-bold d-block text-uppercase" style="font-size: 10px;">Comercial</small><strong class="fs-5 fs-md-4 text-brand"><span id="resLitros">0.0</span> L</strong></div>
+                                <div class="d-none d-md-block text-center"><small class="text-subtle fw-bold d-block text-uppercase" style="font-size: 10px;">Promedio General</small><strong class="fs-5 fs-md-4 text-dark"><span id="resPromedio">0.0</span> L</strong></div>
+                                <div class="text-center"><small class="fw-bold d-block text-uppercase text-danger" style="font-size: 10px;">Descarte</small><strong class="fs-5 fs-md-4 text-danger"><span id="resDescarte">0.0</span> L</strong></div>
                             </div>
                             <div class="d-flex flex-column flex-md-row w-100 w-md-auto gap-2">
                                 <button type="button" class="btn btn-outline-brand fw-bold px-4 rounded-pill shadow-sm w-100 w-md-auto" data-bs-dismiss="modal">Cancelar</button>

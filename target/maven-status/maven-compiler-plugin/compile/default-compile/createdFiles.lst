@@ -10,6 +10,7 @@ com\finca\dao\VentaDAO.class
 com\finca\services\LacteosService.class
 com\finca\controllers\DashboardServlet.class
 com\finca\controllers\PerfilServlet.class
+com\finca\controllers\CatalogoClienteServlet.class
 com\finca\services\ProduccionService.class
 com\finca\controllers\PerfilBovinoServlet.class
 com\finca\controllers\KanbanServlet.class
@@ -38,6 +39,7 @@ com\finca\controllers\AsistenciaServlet.class
 com\finca\models\Tarea.class
 com\finca\filters\AuthFilter.class
 com\finca\models\Venta.class
+com\finca\utils\AlterDb.class
 com\finca\utils\EmailService$2.class
 com\finca\servlets\NotificacionesServlet.class
 com\finca\services\DashboardService.class

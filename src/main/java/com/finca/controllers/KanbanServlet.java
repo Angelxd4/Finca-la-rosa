@@ -26,6 +26,10 @@ public class KanbanServlet extends HttpServlet {
             response.sendRedirect("login");
             return;
         }
+        if (authService.esCliente(request)) {
+            response.sendRedirect("catalogo");
+            return;
+        }
 
         Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogueado");
         
@@ -70,6 +74,10 @@ public class KanbanServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!authService.estaAutenticado(request)) {
             response.sendRedirect("login");
+            return;
+        }
+        if (authService.esCliente(request)) {
+            response.sendRedirect("catalogo");
             return;
         }
 

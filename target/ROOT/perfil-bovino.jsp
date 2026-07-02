@@ -19,89 +19,147 @@
     <title>Perfil Bovino | Finca La Rosa</title>
     
     <style>
-        /* UTILIDADES DE MARCA (Blindadas) */
-        .text-brand { color: var(--brand-primary) !important; }
-        .text-subtle { color: var(--text-subtle) !important; }
-        .text-dark { color: var(--brand-dark) !important; }
-        .bg-brand-subtle { background-color: var(--brand-info) !important; color: #FFFFFF !important; }
-        
-        /* BOTONES MODERNOS BLINDADOS A LA PALETA */
-        .btn-brand { 
-            background-color: var(--brand-primary) !important; 
-            color: #FFFFFF !important; 
-            border: 2px solid var(--brand-primary) !important; 
-            font-weight: 700 !important; 
-            border-radius: 12px !important; 
-            transition: all 0.2s ease; 
+        /* AESTHETICS - PREMIUM DESIGN */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-shadow: 0 8px 32px 0 rgba(66, 57, 38, 0.1);
         }
-        .btn-brand:hover { background-color: var(--brand-dark) !important; border-color: var(--brand-dark) !important; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(66, 57, 38, 0.2); }
         
-        .btn-accent { 
-            background-color: var(--brand-accent) !important; 
-            color: var(--brand-dark) !important; 
-            border: 2px solid var(--brand-accent) !important; 
-            font-weight: 800 !important; 
-            border-radius: 12px !important; 
-            transition: all 0.2s ease; 
+        body {
+            background: linear-gradient(135deg, #F3F5E7 0%, #e0e5d1 100%) !important;
         }
-        .btn-accent:hover { background-color: var(--brand-info) !important; border-color: var(--brand-info) !important; color: #FFFFFF !important; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(156, 168, 137, 0.3); }
+        
+        html[data-theme="dark"] body {
+            background: linear-gradient(135deg, #09090b 0%, #18181b 100%) !important;
+        }
 
-        .btn-outline-brand { 
-            color: var(--brand-dark) !important; 
-            border: 2px solid var(--brand-accent) !important; 
-            font-weight: 700 !important; 
-            border-radius: 12px !important; 
-            background: var(--bg-card) !important; 
-            transition: all 0.2s ease; 
+        html[data-theme="dark"] {
+            --glass-bg: rgba(24, 24, 27, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
-        .btn-outline-brand:hover { background-color: var(--brand-accent) !important; color: var(--brand-dark) !important; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(183, 167, 140, 0.25); }
-        
-        /* PANELES Y TARJETAS */
+
         .panel-finca {
-            background: var(--bg-card) !important;
-            border: 1px solid var(--border-subtle) !important;
-            border-radius: 24px;
-            box-shadow: var(--shadow-finca);
+            background: var(--glass-bg) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 28px;
+            box-shadow: var(--glass-shadow);
             overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .panel-finca:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px 0 rgba(66, 57, 38, 0.15);
+        }
+
+        .profile-img-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto;
+            border-radius: 24px;
+            padding: 8px;
+            background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+            box-shadow: 0 10px 25px rgba(66, 57, 38, 0.2);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .profile-img-container:hover {
+            transform: scale(1.05) translateY(-5px);
         }
 
         .profile-img {
-            width: 200px;
-            height: 200px;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            border-radius: 20px;
-            border: 4px solid var(--border-subtle);
-            box-shadow: 0 10px 25px rgba(66, 57, 38, 0.1);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 18px;
+            border: 4px solid #fff;
+            background-color: #fff;
         }
-        .profile-img:hover { transform: scale(1.05) translateY(-5px); border-color: var(--brand-accent); }
         
         .profile-placeholder {
-            width: 200px;
-            height: 200px;
-            border-radius: 20px;
+            width: 100%;
+            height: 100%;
+            border-radius: 18px;
             background: var(--bg-page);
-            border: 2px dashed var(--brand-accent);
+            border: 4px solid #fff;
             display: flex; align-items: center; justify-content: center;
             font-size: 70px; color: var(--brand-info);
         }
 
+        .info-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            transition: all 0.2s;
+        }
+        html[data-theme="dark"] .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .info-card:hover {
+            background: #fff;
+            transform: scale(1.02);
+        }
+        html[data-theme="dark"] .info-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
         /* TABLA DE HISTORIAL */
-        .table-custom-wrapper { border-radius: 16px; overflow: hidden; border: 1px solid var(--border-subtle); background-color: var(--bg-card); }
+        .table-custom-wrapper { 
+            border-radius: 20px; 
+            overflow: hidden; 
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            padding: 15px; /* Added padding so datatables controls have space */
+        }
+        html[data-theme="dark"] .table-custom-wrapper {
+            background: rgba(24, 24, 27, 0.8);
+        }
         .table { margin-bottom: 0; }
-        .table th { font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; padding: 18px 15px; border-bottom: 2px solid var(--brand-accent) !important; background-color: var(--bg-page) !important; color: var(--brand-dark) !important;}
-        .table td { vertical-align: middle; padding: 16px 15px; color: var(--text-main); font-size: 0.95rem; border-bottom: 1px solid var(--border-subtle); }
+        .table th { font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; padding: 18px 15px; border-bottom: 2px solid var(--brand-accent) !important; background-color: rgba(70, 71, 4, 0.05) !important; color: var(--brand-primary) !important; }
+        html[data-theme="dark"] .table th { background-color: rgba(255, 255, 255, 0.05) !important; }
+        .table td { vertical-align: middle; padding: 16px 15px; color: var(--text-main); font-size: 0.95rem; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        html[data-theme="dark"] .table td { border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .table tbody tr { transition: all 0.2s; }
+        .table tbody tr:hover { background-color: rgba(255,255,255, 0.9) !important; transform: scale(1.01); box-shadow: 0 4px 10px rgba(0,0,0,0.05); z-index: 10; position: relative; }
+        html[data-theme="dark"] .table tbody tr:hover { background-color: rgba(255,255,255, 0.1) !important; }
         
-        /* FORMULARIOS */
-        .form-control, .form-select {
-            border-radius: 12px; padding: 12px 16px; background: var(--bg-page); border: 1px solid var(--border-subtle); color: var(--text-main); transition: all 0.3s ease; font-weight: 500;
-        }
-        .form-control:focus, .form-select:focus {
-            background: #ffffff; border-color: var(--brand-primary); box-shadow: 0 0 0 4px rgba(70, 71, 4, 0.15); outline: none;
+        /* DATATABLES OVERRIDES */
+        div.dataTables_wrapper div.dataTables_filter input { border-radius: 12px; border: 1px solid var(--glass-border); padding: 8px 12px; outline: none; }
+        div.dataTables_wrapper div.dataTables_filter input:focus { border-color: var(--brand-info); box-shadow: 0 0 0 3px rgba(156, 168, 137, 0.2); }
+        .page-item.active .page-link { background-color: var(--brand-primary) !important; border-color: var(--brand-primary) !important; color: #fff !important; }
+        .page-link { color: var(--brand-primary); border-radius: 8px; margin: 0 3px; border: none; font-weight: 600; }
+        .page-link:hover { background-color: rgba(70, 71, 4, 0.1); color: var(--brand-primary); }
+        
+        /* BOTONES */
+        .btn-brand, .btn-accent {
+            border-radius: 16px !important;
+            padding: 12px 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
         }
         
-        /* MODALES */
-        .modal-content { border-radius: 24px; border: none; box-shadow: 0 25px 50px -12px rgba(66, 57, 38, 0.25); background-color: var(--bg-card); }
+        .badge-status {
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
 
         @media print {
             body * { visibility: hidden; }
@@ -144,57 +202,61 @@
     <div class="row g-4 align-items-stretch">
         
         <div class="col-lg-4">
-            <div class="panel-finca text-center p-4 h-100 d-flex flex-column align-items-center">
+            <div class="panel-finca h-100 text-center p-4 d-flex flex-column align-items-center">
                 
-                <% if(vaca.getImageUrl() != null && !vaca.getImageUrl().trim().isEmpty() && !vaca.getImageUrl().equals("null")) { %>
-                    <img src="<%= request.getContextPath() %>/<%= vaca.getImageUrl() %>" class="profile-img mx-auto mb-4" onerror="this.src='https://placehold.co/200x200/F3F5E7/9CA889?text=Sin+Foto'">
-                <% } else { %>
-                    <div class="profile-placeholder mx-auto mb-4"><i class="bi bi-camera"></i></div>
-                <% } %>
+                <div class="profile-img-container mb-4 mt-3">
+                    <% if(vaca.getImageUrl() != null && !vaca.getImageUrl().trim().isEmpty() && !vaca.getImageUrl().equals("null")) { %>
+                        <img src="<%= request.getContextPath() %>/<%= vaca.getImageUrl() %>" class="profile-img" onerror="this.src='https://placehold.co/200x200/F3F5E7/9CA889?text=Sin+Foto'">
+                    <% } else { %>
+                        <div class="profile-placeholder"><i class="bi bi-camera"></i></div>
+                    <% } %>
+                </div>
                 
                 <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
-                    <h2 class="fw-bolder text-brand mb-0" style="letter-spacing: -1px;"><%= vaca.getNumeroArete() %></h2>
+                    <h2 class="fw-bolder text-brand mb-0" style="font-size: 2.2rem;"><%= vaca.getNumeroArete() %></h2>
                     <i class="bi <%= vaca.getGenero().equals("Hembra") ? "bi-gender-female text-danger" : "bi-gender-male" %> fs-3" style="<%= vaca.getGenero().equals("Macho") ? "color: var(--brand-info);" : "" %>"></i>
                 </div>
-                <h5 class="text-subtle fw-bold mb-4"><%= vaca.getRaza() %> • <%= vaca.getEdadAnios() %> años</h5>
+                <h5 class="text-subtle fw-bold mb-4 px-3 py-1 bg-light rounded-pill border"><%= vaca.getRaza() %> • <%= vaca.getEdadAnios() %> años</h5>
 
-                <button class="btn btn-accent w-100 mb-4 py-2" data-bs-toggle="modal" data-bs-target="#modalInforme">
-                    <i class="bi bi-printer-fill me-2"></i> Generar Ficha Clínica
+                <button class="btn btn-accent w-100 mb-4 py-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalInforme">
+                    <i class="bi bi-printer-fill me-2 fs-5 align-middle"></i> Generar Ficha Clínica
                 </button>
                 
-                <div class="w-100 p-4 rounded-4 text-start mt-auto" style="background-color: var(--bg-page); border: 1px solid var(--border-subtle);">
-                    <p class="mb-3 d-flex justify-content-between border-bottom pb-2" style="border-color: var(--border-subtle) !important;">
-                        <span class="text-subtle fw-bold small text-uppercase"><i class="bi bi-tag-fill me-2 text-brand"></i> Grupo</span>
-                        <span class="fw-bold text-dark"><%= vaca.getClasificacion() %></span>
-                    </p>
-                    <p class="mb-3 d-flex justify-content-between border-bottom pb-2" style="border-color: var(--border-subtle) !important;">
-                        <span class="text-subtle fw-bold small text-uppercase"><i class="bi bi-speedometer me-2 text-brand"></i> Peso</span>
-                        <span class="fw-bold text-dark"><%= vaca.getPesoKg() %> Kg</span>
-                    </p>
-                    <p class="mb-3 d-flex justify-content-between border-bottom pb-2 align-items-center" style="border-color: var(--border-subtle) !important;">
-                        <span class="text-subtle fw-bold small text-uppercase"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i> Salud</span>
-                        <span class="badge <%= vaca.getEstadoSalud().equals("Sano") || vaca.getEstadoSalud().equals("Sana") ? "bg-success" : (vaca.getEstadoSalud().equals("En Tratamiento") ? "bg-warning text-dark" : "bg-danger") %> rounded-pill px-3 py-2 fw-bold">
+                <div class="w-100 mt-auto">
+                    <div class="info-card">
+                        <span class="text-subtle fw-bold small text-uppercase"><i class="bi bi-tag-fill me-2 fs-5 align-middle text-brand"></i> Grupo</span>
+                        <span class="fw-bolder text-dark fs-5"><%= vaca.getClasificacion() %></span>
+                    </div>
+                    
+                    <div class="info-card">
+                        <span class="text-subtle fw-bold small text-uppercase"><i class="bi bi-speedometer me-2 fs-5 align-middle text-brand"></i> Peso</span>
+                        <span class="fw-bolder text-dark fs-5"><%= vaca.getPesoKg() %> Kg</span>
+                    </div>
+                    
+                    <div class="info-card">
+                        <span class="text-subtle fw-bold small text-uppercase"><i class="bi bi-heart-pulse-fill me-2 fs-5 align-middle text-danger"></i> Salud</span>
+                        <span class="badge-status <%= vaca.getEstadoSalud().equals("Sano") || vaca.getEstadoSalud().equals("Sana") ? "bg-success text-white" : (vaca.getEstadoSalud().equals("En Tratamiento") ? "bg-warning text-dark" : "bg-danger text-white") %>">
                             <%= vaca.getEstadoSalud() %>
                         </span>
-                    </p>
+                    </div>
                     
                     <% if("Hembra".equals(vaca.getGenero())) { %>
-                        <p class="mb-0 d-flex justify-content-between">
-                            <span class="text-subtle fw-bold small text-uppercase"><i class="bi bi-clipboard2-plus-fill me-2 text-brand"></i> Partos</span>
-                            <span class="fw-bold text-dark"><%= vaca.getNumeroPartos() %></span>
-                        </p>
+                        <div class="info-card">
+                            <span class="text-subtle fw-bold small text-uppercase"><i class="bi bi-clipboard2-plus-fill me-2 fs-5 align-middle text-brand"></i> Partos</span>
+                            <span class="fw-bolder text-dark fs-5"><%= vaca.getNumeroPartos() %></span>
+                        </div>
                     <% } else { %>
-                        <p class="mb-0 d-flex justify-content-between">
-                            <span class="text-subtle fw-bold small text-uppercase"><i class="bi bi-bullseye me-2 text-brand"></i> Propósito</span>
-                            <span class="fw-bold text-dark"><%= vaca.getProposito() %></span>
-                        </p>
+                        <div class="info-card">
+                            <span class="text-subtle fw-bold small text-uppercase"><i class="bi bi-bullseye me-2 fs-5 align-middle text-brand"></i> Propósito</span>
+                            <span class="fw-bolder text-dark fs-5"><%= vaca.getProposito() %></span>
+                        </div>
                     <% } %>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-8">
-            <div class="panel-finca p-4 h-100">
+            <div class="panel-finca h-100 p-4">
                 
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 pb-3 border-bottom" style="border-color: var(--border-subtle) !important;">
                     <h4 class="fw-bolder text-brand mb-3 mb-md-0"><i class="bi bi-journal-medical me-2"></i> Historial Clínico</h4>
@@ -241,19 +303,22 @@
                     </table>
                 </div>
             </div>
-            
-            <% if("Producción".equals(vaca.getClasificacion())) { %>
-            <div class="panel-finca p-4 mt-4 mb-4">
+        </div>
+    </div>
+    
+    <% if("Producción".equals(vaca.getClasificacion())) { %>
+    <div class="row mt-2">
+        <div class="col-12">
+            <div class="panel-finca p-4 mb-4">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3 pb-2 border-bottom" style="border-color: var(--border-subtle) !important;">
                     <h5 class="fw-bolder text-brand mb-0"><i class="bi bi-graph-up-arrow me-2 text-info"></i> Analítica: Curva de Lactancia Ideal vs Real</h5>
                     <span class="badge bg-light text-dark border"><i class="bi bi-info-circle me-1"></i> Basado en modelo de 305 días</span>
                 </div>
                 <div id="lactanciaChart" style="height: 320px;"></div>
             </div>
-            <% } %>
-            
         </div>
     </div>
+    <% } %>
 </div>
 
 <div class="modal fade" id="modalEventoMedico" tabindex="-1">
@@ -555,12 +620,12 @@
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
             },
-            dom: '<"row mb-3"<"col-md-6"B><"col-md-6"f>>rt<"row"<"col-md-6"i><"col-md-6"p>>',
+            dom: '<"row mb-3 align-items-center"<"col-md-6 mb-3 mb-md-0 text-center text-md-start d-flex gap-2"B><"col-md-6 d-flex justify-content-center justify-content-md-end"f>>rt<"row mt-3"<"col-md-6 text-center text-md-start text-subtle small mb-2 mb-md-0"i><"col-md-6 d-flex justify-content-center justify-content-md-end"p>>',
             buttons: [
                 {
                     extend: 'pdfHtml5',
                     text: '<i class="bi bi-file-earmark-pdf-fill"></i> PDF Clínica',
-                    className: 'btn btn-danger btn-sm',
+                    className: 'btn btn-brand btn-sm',
                     orientation: 'portrait',
                     pageSize: 'A4',
                     title: 'FINCA LA ROSA - HISTORIAL CLÍNICO',
@@ -598,7 +663,7 @@
                 {
                     extend: 'print',
                     text: '<i class="bi bi-printer-fill"></i> Imprimir',
-                    className: 'btn btn-secondary btn-sm'
+                    className: 'btn btn-outline-brand btn-sm'
                 }
             ],
             pageLength: 10,

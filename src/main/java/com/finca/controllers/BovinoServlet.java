@@ -27,6 +27,7 @@ public class BovinoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!authService.estaAutenticado(request)) { response.sendRedirect("login"); return; }
+        if (authService.esCliente(request)) { response.sendRedirect("catalogo"); return; }
         
         request.setAttribute("listaProduccion", bovinoService.obtenerPorClasificacion("Producción"));
         request.setAttribute("listaVenta", bovinoService.obtenerPorClasificacion("Venta"));
@@ -39,6 +40,10 @@ public class BovinoServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!authService.estaAutenticado(request)) {
             response.sendRedirect("login");
+            return;
+        }
+        if (authService.esCliente(request)) {
+            response.sendRedirect("catalogo");
             return;
         }
 

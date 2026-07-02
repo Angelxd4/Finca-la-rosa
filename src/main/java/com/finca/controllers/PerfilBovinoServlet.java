@@ -27,6 +27,10 @@ public class PerfilBovinoServlet extends HttpServlet {
             response.sendRedirect("login");
             return;
         }
+        if (authService.esCliente(request)) {
+            response.sendRedirect("catalogo");
+            return;
+        }
 
         String idStr = request.getParameter("id");
         if (idStr == null || idStr.isEmpty()) {
@@ -64,6 +68,10 @@ public class PerfilBovinoServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!authService.estaAutenticado(request)) {
             response.sendRedirect("login");
+            return;
+        }
+        if (authService.esCliente(request)) {
+            response.sendRedirect("catalogo");
             return;
         }
 

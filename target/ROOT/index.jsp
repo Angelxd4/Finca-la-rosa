@@ -12,18 +12,71 @@
 
     <style>
         :root {
+            /* LIGHT MODE PALETTE (Default) */
             --moss: #464704;
+            --moss-dark: #353602;
             --sage: #9CA889;
             --khaki: #B7A78C;
-            --drab: #423926;
-            --ivory: #F3F5E7;
-            --text-dark: #2b3445;
+            
+            --bg-dark: #f8f9fa; /* Background */
+            --bg-section: #ffffff; /* Section background */
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(70, 71, 4, 0.08);
+            
+            --text-main: #2b3445;
+            --text-muted: #555555;
+            --text-heading: #423926;
+            
+            --nav-bg: rgba(255, 255, 255, 0.95);
+            --overlay: rgba(70, 71, 4, 0.6);
+            --badge-bg: rgba(255, 255, 255, 0.9);
+            --product-card-bg: #ffffff;
+            --product-card-hover: #ffffff;
+            --contact-card-bg: var(--text-heading);
+            --contact-card-text: #ffffff;
+            --footer-bg: #2b2b2b;
+            --footer-text: #b7b7b7;
+            
+            --hero-bg-center: #e8eadf;
+            --mockup-bg: rgba(255, 255, 255, 0.9);
+            --hero-shape: rgba(156, 166, 70, 0.15);
+        }
+
+        [data-theme="dark"] {
+            /* DARK MODE PALETTE */
+            --moss: #9ca646;       /* Bright moss green for highlights */
+            --moss-dark: #68702c;  /* Darker moss for hover states */
+            --sage: #A4B291;       /* Soft sage */
+            --khaki: #c4b69d;      /* Warm accent */
+            
+            --bg-dark: #0d0e0c;    /* Very dark green-tinted black */
+            --bg-section: #141612; /* Slightly lighter section background */
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --card-border: rgba(255, 255, 255, 0.08);
+            
+            --text-main: #e2e4e0;  /* Off-white text */
+            --text-muted: #9ba195; /* Muted text */
+            --text-heading: #ffffff; /* Pure white headings */
+            
+            --nav-bg: rgba(13, 14, 12, 0.85);
+            --overlay: rgba(13, 14, 12, 0.8);
+            --badge-bg: rgba(13, 14, 12, 0.7);
+            --product-card-bg: var(--card-bg);
+            --product-card-hover: rgba(255, 255, 255, 0.08);
+            --contact-card-bg: var(--card-bg);
+            --contact-card-text: var(--text-main);
+            --footer-bg: #090a08;
+            --footer-text: #8c9387;
+            
+            --hero-bg-center: #1a1f14;
+            --mockup-bg: rgba(13, 14, 12, 0.8);
+            --hero-shape: rgba(164, 178, 145, 0.1);
         }
 
         html, body {
             font-family: 'Montserrat', sans-serif;
-            background-color: #f8f9fa;
-            color: var(--text-dark);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             overflow-x: hidden;
             max-width: 100%;
             scroll-behavior: smooth;
@@ -31,9 +84,10 @@
 
         /* --- NAVEGACIÓN PÚBLICA --- */
         .navbar-public {
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--nav-bg);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(70, 71, 4, 0.08);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
             padding: 15px 0;
             position: fixed;
             top: 0;
@@ -43,7 +97,7 @@
 
         .navbar-brand {
             font-weight: 800;
-            color: var(--drab) !important;
+            color: var(--text-heading) !important;
             font-size: 1.5rem;
             display: flex;
             align-items: center;
@@ -51,7 +105,7 @@
         }
 
         .brand-icon {
-            background: var(--ivory);
+            background: var(--card-bg);
             color: var(--moss);
             width: 45px;
             height: 45px;
@@ -59,18 +113,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(70, 71, 4, 0.15);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 15px rgba(156, 166, 70, 0.15);
         }
 
         .nav-link {
-            color: var(--drab) !important;
+            color: var(--text-main) !important;
             font-weight: 600;
             font-size: 0.95rem;
-            transition: color 0.3s;
+            transition: color 0.3s, text-shadow 0.3s;
         }
 
         .nav-link:hover {
             color: var(--moss) !important;
+            text-shadow: 0 0 10px rgba(156, 166, 70, 0.4);
         }
 
         .btn-login-outline {
@@ -88,14 +144,14 @@
 
         .btn-login-outline:hover {
             background: var(--moss);
-            color: white;
-            box-shadow: 0 5px 15px rgba(70, 71, 4, 0.25);
+            color: var(--bg-dark);
+            box-shadow: 0 5px 20px rgba(156, 166, 70, 0.3);
         }
 
         /* --- SECCIÓN HERO --- */
         .hero-section {
             padding: 160px 0 100px;
-            background: linear-gradient(135deg, var(--ivory) 0%, #ffffff 100%);
+            background: radial-gradient(circle at 50% -20%, var(--hero-bg-center) 0%, var(--bg-dark) 80%);
             position: relative;
             overflow: hidden;
         }
@@ -106,7 +162,7 @@
             right: -100px;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, rgba(156, 168, 137, 0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, var(--hero-shape) 0%, transparent 70%);
             border-radius: 50%;
             z-index: 0;
         }
@@ -117,7 +173,7 @@
             left: -150px;
             width: 600px;
             height: 600px;
-            background: radial-gradient(circle, rgba(70, 71, 4, 0.08) 0%, transparent 70%);
+            background: radial-gradient(circle, var(--hero-shape) 0%, transparent 70%);
             border-radius: 50%;
             z-index: 0;
         }
@@ -128,7 +184,7 @@
         }
 
         .hero-badge {
-            background: rgba(156, 168, 137, 0.2);
+            background: var(--card-bg);
             color: var(--moss);
             padding: 8px 20px;
             border-radius: 50px;
@@ -137,7 +193,8 @@
             display: inline-block;
             margin-bottom: 20px;
             letter-spacing: 1px;
-            border: 1px solid rgba(156, 168, 137, 0.4);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
         }
 
         .hero-title {
@@ -145,7 +202,7 @@
             font-weight: 800;
             line-height: 1.1;
             margin-bottom: 20px;
-            color: var(--drab);
+            color: var(--text-heading);
             letter-spacing: -1px;
         }
 
@@ -158,7 +215,7 @@
 
         .hero-text {
             font-size: 1.1rem;
-            color: #555;
+            color: var(--text-muted);
             margin-bottom: 40px;
             line-height: 1.7;
             max-width: 90%;
@@ -166,16 +223,16 @@
 
         .btn-primary-custom {
             background: var(--moss);
-            color: white;
+            color: var(--bg-dark);
             padding: 15px 40px;
             border-radius: 50px;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 1rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             border: none;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(70, 71, 4, 0.3);
+            box-shadow: 0 10px 25px rgba(156, 166, 70, 0.3);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
@@ -183,10 +240,10 @@
         }
 
         .btn-primary-custom:hover {
-            background: var(--drab);
+            background: #b1bb64;
             transform: translateY(-3px);
-            color: white;
-            box-shadow: 0 15px 35px rgba(66, 57, 38, 0.4);
+            color: var(--bg-dark);
+            box-shadow: 0 15px 35px rgba(156, 166, 70, 0.5);
         }
 
         .mockup-container {
@@ -200,14 +257,14 @@
         /* --- SECCIÓN NOSOTROS --- */
         .about-section {
             padding: 100px 0;
-            background: #ffffff;
+            background: var(--bg-section);
         }
 
         .about-image-box {
             position: relative;
             border-radius: 30px;
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
         }
 
         .about-image-box img {
@@ -219,20 +276,22 @@
         .about-image-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(0deg, rgba(70,71,4,0.6) 0%, rgba(0,0,0,0) 100%);
+            background: linear-gradient(0deg, var(--overlay) 0%, rgba(0,0,0,0) 100%);
         }
 
         .about-badge {
             position: absolute;
             bottom: 30px;
             left: 30px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
+            background: var(--badge-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             padding: 15px 25px;
             border-radius: 20px;
             display: flex;
             align-items: center;
             gap: 15px;
+            border: 1px solid var(--card-border);
         }
 
         .about-badge-icon {
@@ -243,32 +302,35 @@
         /* --- SECCIÓN PRODUCTOS --- */
         .products-section {
             padding: 100px 0;
-            background: var(--ivory);
+            background: var(--bg-dark);
         }
 
         .product-card {
-            background: #ffffff;
+            background: var(--product-card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-radius: 24px;
             padding: 40px 30px;
             height: 100%;
             transition: all 0.4s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             position: relative;
             overflow: hidden;
             text-align: center;
-            border: 1px solid rgba(156, 168, 137, 0.2);
+            border: 1px solid var(--card-border);
         }
 
         .product-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(70, 71, 4, 0.1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
             border-color: var(--moss);
+            background: var(--product-card-hover);
         }
 
         .product-icon {
             width: 80px;
             height: 80px;
-            background: var(--ivory);
+            background: rgba(156, 166, 70, 0.1);
             color: var(--moss);
             border-radius: 50%;
             display: flex;
@@ -277,46 +339,53 @@
             font-size: 2.5rem;
             margin: 0 auto 25px auto;
             transition: all 0.3s ease;
+            border: 1px solid rgba(156, 166, 70, 0.3);
         }
 
         .product-card:hover .product-icon {
             background: var(--moss);
-            color: white;
+            color: var(--bg-dark);
             transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(156, 166, 70, 0.4);
         }
 
         /* --- SECCIÓN UBICACIÓN --- */
         .contact-section {
             padding: 100px 0;
-            background: #ffffff;
+            background: var(--bg-section);
         }
 
         .contact-card {
-            background: var(--drab);
-            color: white;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--text-main);
             border-radius: 30px;
             padding: 50px;
-            box-shadow: 0 20px 50px rgba(66, 57, 38, 0.2);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            border: 1px solid var(--card-border);
             height: 100%;
         }
 
         .map-container {
             border-radius: 30px;
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            border: 1px solid var(--card-border);
             height: 100%;
             min-height: 400px;
         }
 
         /* --- FOOTER --- */
         .footer {
-            background: #2b2b2b;
-            color: #b7b7b7;
+            background: #090a08;
+            color: #8c9387;
             padding: 60px 0 30px;
+            border-top: 1px solid var(--card-border);
         }
         
         .footer-brand {
-            color: white;
+            color: var(--text-heading);
             font-weight: 800;
             font-size: 1.5rem;
             margin-bottom: 20px;
@@ -363,12 +432,14 @@
                 min-height: 250px;
             }
             .navbar-collapse {
-                background: white;
+                background: rgba(13, 14, 12, 0.95);
+                backdrop-filter: blur(20px);
                 padding: 20px;
                 border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
                 margin-top: 15px;
                 text-align: center;
+                border: 1px solid var(--card-border);
             }
             .btn-login-outline {
                 display: block;
@@ -418,7 +489,10 @@
                     <li class="nav-item"><a class="nav-link" href="#productos">Productos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
                 </ul>
-                <div class="d-lg-flex align-items-center">
+                <div class="d-lg-flex align-items-center gap-3">
+                    <button class="btn btn-link nav-link p-0 d-none d-lg-block" id="themeToggle" style="font-size: 1.2rem;" title="Cambiar Tema">
+                        <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                    </button>
                     <a href="login" class="btn-login-outline">
                         <i class="bi bi-person-circle me-1"></i> Portal Empleados
                     </a>
@@ -447,10 +521,10 @@
                     <div class="d-flex justify-content-center">
                         <div class="mockup-container">
                             <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--moss), var(--sage)); border-radius: 40px; transform: rotate(5deg); position: absolute; z-index: 1; opacity: 0.25;"></div>
-                            <div style="width: 100%; height: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-radius: 40px; z-index: 2; box-shadow: 0 25px 60px rgba(66, 57, 38, 0.15); padding: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: absolute; border: 1px solid rgba(255,255,255,0.5);">
-                                <i class="bi bi-flower1" style="font-size: 8rem; color: var(--sage); opacity: 0.5;"></i>
-                                <h3 class="fw-bolder mt-3" style="color: var(--drab);">Finca La Rosa</h3>
-                                <p class="text-muted text-center fw-bold">Naturaleza en su mejor versión</p>
+                            <div style="width: 100%; height: 100%; background: var(--mockup-bg); backdrop-filter: blur(15px); border-radius: 40px; z-index: 2; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2); padding: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: absolute; border: 1px solid var(--card-border);">
+                                <i class="bi bi-flower1" style="font-size: 8rem; color: var(--moss); opacity: 0.8;"></i>
+                                <h3 class="fw-bolder mt-3" style="color: var(--text-heading);">Finca La Rosa</h3>
+                                <p class="text-center fw-bold" style="color: var(--text-muted);">Naturaleza en su mejor versión</p>
                             </div>
                         </div>
                     </div>
@@ -470,31 +544,31 @@
                         <div class="about-badge">
                             <i class="bi bi-check-decagram about-badge-icon"></i>
                             <div>
-                                <h5 class="mb-0 fw-bolder text-dark">Calidad Certificada</h5>
-                                <small class="text-muted fw-bold">Ganadería sostenible</small>
+                                <h5 class="mb-0 fw-bolder" style="color: var(--text-heading);">Calidad Certificada</h5>
+                                <small class="fw-bold" style="color: var(--text-muted);">Ganadería sostenible</small>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6 order-1 order-lg-2">
-                    <h6 class="text-uppercase fw-bold" style="color: var(--sage); letter-spacing: 2px;">Nuestra Historia</h6>
-                    <h2 class="fw-bolder mb-4" style="color: var(--drab); font-size: 2.5rem;">Cuidado, Amor y Tradición por el Campo</h2>
-                    <p class="text-muted fs-5 mb-4" style="line-height: 1.8;">
+                    <h6 class="text-uppercase fw-bold" style="color: var(--moss); letter-spacing: 2px;">Nuestra Historia</h6>
+                    <h2 class="fw-bolder mb-4" style="color: var(--text-heading); font-size: 2.5rem;">Cuidado, Amor y Tradición por el Campo</h2>
+                    <p class="fs-5 mb-4" style="color: var(--text-muted); line-height: 1.8;">
                         Situada en los hermosos y verdes paisajes de Santa Rosa de Viterbo, Boyacá, la <strong>Finca La Rosa</strong> nació de la pasión por el trabajo agrícola y el respeto absoluto por la naturaleza y nuestros animales.
                     </p>
-                    <p class="text-muted mb-4" style="line-height: 1.8;">
+                    <p class="mb-4" style="color: var(--text-muted); line-height: 1.8;">
                         Contamos con procesos de vanguardia en bioseguridad, garantizando el bienestar de nuestro hato. Esto nos permite asegurar que cada gota de leche y cada producto lácteo que llega a tu mesa sea sinónimo de pureza y sabor excepcional.
                     </p>
                     
                     <div class="d-flex gap-4 mt-5">
                         <div>
                             <h3 class="fw-bolder" style="color: var(--moss);">100%</h3>
-                            <span class="text-muted fw-bold">Natural</span>
+                            <span class="fw-bold" style="color: var(--text-muted);">Natural</span>
                         </div>
-                        <div style="width: 2px; background: var(--border-subtle);"></div>
+                        <div style="width: 2px; background: var(--card-border);"></div>
                         <div>
                             <h3 class="fw-bolder" style="color: var(--moss);">1ra</h3>
-                            <span class="text-muted fw-bold">Calidad Genética</span>
+                            <span class="fw-bold" style="color: var(--text-muted);">Calidad Genética</span>
                         </div>
                     </div>
                 </div>
@@ -506,8 +580,8 @@
     <section id="productos" class="products-section">
         <div class="container">
             <div class="text-center mb-5 pb-3">
-                <h6 class="text-uppercase fw-bold" style="color: var(--sage); letter-spacing: 2px;">Lo que Ofrecemos</h6>
-                <h2 class="fw-bolder" style="color: var(--drab); font-size: 2.5rem;">Nuestros Productos</h2>
+                <h6 class="text-uppercase fw-bold" style="color: var(--moss); letter-spacing: 2px;">Lo que Ofrecemos</h6>
+                <h2 class="fw-bolder" style="color: var(--text-heading); font-size: 2.5rem;">Nuestros Productos</h2>
             </div>
             
             <div class="row g-4 justify-content-center">
@@ -515,8 +589,8 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="product-card">
                         <div class="product-icon"><i class="bi bi-droplet-fill"></i></div>
-                        <h4 class="fw-bolder" style="color: var(--drab);">Leche Cruda Premium</h4>
-                        <p class="text-muted mt-3 mb-0" style="line-height: 1.6;">
+                        <h4 class="fw-bolder" style="color: var(--text-heading);">Leche Cruda Premium</h4>
+                        <p class="mt-3 mb-0" style="color: var(--text-muted); line-height: 1.6;">
                             Leche fresca y pura, extraída bajo los más altos estándares de higiene y control de calidad, ideal para procesamiento industrial o consumo directo tras hervir.
                         </p>
                     </div>
@@ -526,8 +600,8 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="product-card">
                         <div class="product-icon"><i class="bi bi-diagram-3-fill"></i></div>
-                        <h4 class="fw-bolder" style="color: var(--drab);">Venta de Ganado</h4>
-                        <p class="text-muted mt-3 mb-0" style="line-height: 1.6;">
+                        <h4 class="fw-bolder" style="color: var(--text-heading);">Venta de Ganado</h4>
+                        <p class="mt-3 mb-0" style="color: var(--text-muted); line-height: 1.6;">
                             Ofrecemos crías, novillas y toros de excelente ascendencia genética, perfectos para mejorar la capacidad productiva de su propio hato ganadero.
                         </p>
                     </div>
@@ -537,8 +611,8 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="product-card">
                         <div class="product-icon"><i class="bi bi-basket2-fill"></i></div>
-                        <h4 class="fw-bolder" style="color: var(--drab);">Derivados Lácteos</h4>
-                        <p class="text-muted mt-3 mb-0" style="line-height: 1.6;">
+                        <h4 class="fw-bolder" style="color: var(--text-heading);">Derivados Lácteos</h4>
+                        <p class="mt-3 mb-0" style="color: var(--text-muted); line-height: 1.6;">
                             Producimos quesos artesanales (campesino, cuajada) procesados en nuestra propia fábrica de lácteos, garantizando sabor y frescura inigualable.
                         </p>
                     </div>
@@ -553,38 +627,38 @@
             <div class="row g-4">
                 <div class="col-lg-5">
                     <div class="contact-card">
-                        <h2 class="fw-bolder mb-4">Visítanos o Contáctanos</h2>
-                        <p class="mb-5" style="color: rgba(255,255,255,0.8); line-height: 1.7;">
+                        <h2 class="fw-bolder mb-4 text-heading" style="color: var(--text-heading);">Visítanos o Contáctanos</h2>
+                        <p class="mb-5" style="color: var(--text-muted); line-height: 1.7;">
                             Estamos siempre dispuestos a atenderte. Ya sea para realizar pedidos al por mayor, conocer nuestra genética o disfrutar de nuestros quesos.
                         </p>
                         
                         <div class="d-flex align-items-center gap-3 mb-4">
-                            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            <div style="width: 50px; height: 50px; background: rgba(156, 166, 70, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--moss);">
                                 <i class="bi bi-geo-alt-fill"></i>
                             </div>
                             <div>
                                 <h6 class="mb-1 fw-bold text-white">Ubicación</h6>
-                                <span style="color: rgba(255,255,255,0.7);">Santa Rosa de Viterbo, Boyacá, Colombia</span>
+                                <span style="color: var(--text-muted);">Santa Rosa de Viterbo, Boyacá, Colombia</span>
                             </div>
                         </div>
 
                         <div class="d-flex align-items-center gap-3 mb-4">
-                            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            <div style="width: 50px; height: 50px; background: rgba(156, 166, 70, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--moss);">
                                 <i class="bi bi-whatsapp"></i>
                             </div>
                             <div>
                                 <h6 class="mb-1 fw-bold text-white">WhatsApp de Ventas</h6>
-                                <span style="color: rgba(255,255,255,0.7);">+57 300 000 0000</span>
+                                <span style="color: var(--text-muted);">+57 300 000 0000</span>
                             </div>
                         </div>
 
                         <div class="d-flex align-items-center gap-3">
-                            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            <div style="width: 50px; height: 50px; background: rgba(156, 166, 70, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--moss);">
                                 <i class="bi bi-envelope-paper-fill"></i>
                             </div>
                             <div>
                                 <h6 class="mb-1 fw-bold text-white">Correo Electrónico</h6>
-                                <span style="color: rgba(255,255,255,0.7);">contacto@fincalarosa.com</span>
+                                <span style="color: var(--text-muted);">contacto@fincalarosa.com</span>
                             </div>
                         </div>
                     </div>
@@ -594,13 +668,13 @@
                     <!-- Mapa interactivo de Google centrado en Santa Rosa de Viterbo -->
                     <div class="map-container">
                         <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15887.320579624843!2d-72.9904257134375!3d5.875225126839308!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e6a45e7f1a3e611%3A0xb351e7f338c21a44!2sSanta%20Rosa%20de%20Viterbo%2C%20Boyac%C3%A1!5e0!3m2!1ses!2sco!4v1700000000000!5m2!1ses!2sco" 
+                            src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d248.04826656906474!2d-72.9870904418029!3d5.887589396620476!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sco!4v1782991861842!5m2!1ses-419!2sco" 
                             width="100%" 
                             height="100%" 
                             style="border:0;" 
                             allowfullscreen="" 
                             loading="lazy" 
-                            referrerpolicy="no-referrer-when-downgrade">
+                            referrerpolicy="strict-origin-when-cross-origin">
                         </iframe>
                     </div>
                 </div>
@@ -653,6 +727,34 @@
         </div>
     </footer>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('themeToggle');
+            const icon = document.getElementById('themeIcon');
+            const root = document.documentElement;
+            
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            root.setAttribute('data-theme', currentTheme);
+            updateIcon(currentTheme);
+            
+            toggle.addEventListener('click', () => {
+                const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                root.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateIcon(newTheme);
+            });
+            
+            function updateIcon(theme) {
+                if(theme === 'dark') {
+                    icon.className = 'bi bi-sun-fill';
+                    icon.style.color = '#ffc107'; 
+                } else {
+                    icon.className = 'bi bi-moon-stars-fill';
+                    icon.style.color = 'var(--text-main)'; 
+                }
+            }
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

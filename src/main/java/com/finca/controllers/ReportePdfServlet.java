@@ -9,6 +9,7 @@ import java.awt.Color;
 
 import com.finca.dao.BovinoDAO;
 import com.finca.models.Bovino;
+import com.finca.services.AuthService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -31,10 +32,20 @@ import com.lowagie.text.pdf.PdfWriter;
 public class ReportePdfServlet extends HttpServlet {
 
     private final BovinoDAO bovinoDAO = new BovinoDAO();
+    private final AuthService authService = new AuthService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+            
+        if (!authService.estaAutenticado(request)) {
+            response.sendRedirect("login");
+            return;
+        }
+        if (authService.esCliente(request)) {
+            response.sendRedirect("catalogo");
+            return;
+        }
 
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "inline; filename=\"Reporte_Ejecutivo_Finca.pdf\"");

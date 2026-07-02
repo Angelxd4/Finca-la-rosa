@@ -44,6 +44,8 @@ public class LoginServlet extends HttpServlet {
             handleResetPassword(request, response, out);
         } else if ("change_first_password".equals(action)) {
             handleChangeFirstPassword(request, response, out);
+        } else if ("login_with_google".equals(action)) {
+            handleLoginWithGoogle(request, response, out);
         } else {
             JsonObject json = new JsonObject();
             json.addProperty("success", false);
@@ -71,7 +73,7 @@ public class LoginServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace(); 
             json.addProperty("success", false);
-            json.addProperty("message", "Falla en el servidor: " + e.getMessage());
+            json.addProperty("message", "Error al procesar el cambio de contraseña: " + e.getMessage());
         }
         out.print(json.toString());
     }
@@ -195,6 +197,52 @@ public class LoginServlet extends HttpServlet {
             e.printStackTrace();
             json.addProperty("success", false);
             json.addProperty("message", "Error interno en el servidor.");
+        }
+        out.print(json.toString());
+    }
+
+    private void handleLoginWithGoogle(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {
+        String credential = request.getParameter("credential");
+        JsonObject json = new JsonObject();
+        try {
+            if (credential == null || !credential.contains(".")) {
+                throw new Exception("Token inválido.");
+            }
+            // Decodificar JWT (mock, para entorno local/prueba sin validar firma con clave pública de Google)
+            String payloadBase64 = credential.split("\\.")[1];
+            String payloadJson = new String(java.util.Base64.getUrlDecoder().decode(payloadBase64));
+            JsonObject payload = new com.google.gson.Gson().fromJson(payloadJson, JsonObject.class);
+            
+            String email = payload.get("email").getAsString();
+            String name = payload.has("name") ? payload.get("name").getAsString() : "Cliente Google";
+            
+            Usuario u = authService.obtenerPorEmail(email);
+            if (u == null) {
+                // Registrar nuevo cliente
+                u = new Usuario();
+                u.setEmail(email);
+                u.setFullName(name);
+                u.setDocumentId("GOOGLE-" + System.currentTimeMillis());
+                u.setPassword("GOOGLE_SSO");
+                u.setRol("5"); // 5 = Cliente
+                
+                com.finca.dao.UsuarioDAO usuarioDAO = new com.finca.dao.UsuarioDAO();
+                boolean registrado = usuarioDAO.registrar(u);
+                if (!registrado) {
+                    throw new Exception("Error al crear cuenta de cliente en base de datos.");
+                }
+                u = authService.obtenerPorEmail(email); // Obtenerlo con ID
+            }
+            
+            // Iniciar sesión (saltando el OTP)
+            HttpSession session = request.getSession();
+            session.setAttribute("usuarioLogueado", u);
+            json.addProperty("success", true);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            json.addProperty("success", false);
+            json.addProperty("message", "Fallo al procesar autenticación con Google: " + e.getMessage());
         }
         out.print(json.toString());
     }

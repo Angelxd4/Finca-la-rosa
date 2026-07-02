@@ -525,7 +525,7 @@
 
         setTimeout(() => {
             const opciones = {
-                margin:       [0, 0, 0, 0],
+                margin:       0,
                 filename:     'Gafete_' + nombreEmpleado + '.pdf',
                 image:        { type: 'jpeg', quality: 1.0 },
                 html2canvas:  { 
@@ -533,7 +533,7 @@
                     useCORS: true,
                     backgroundColor: '#ffffff'
                 },
-                jsPDF:        { unit: 'mm', format: [54, 86], orientation: 'portrait' }
+                jsPDF:        { unit: 'px', format: [340, 540], orientation: 'portrait' }
             };
 
             html2pdf().set(opciones).from(elemento).save().then(() => {

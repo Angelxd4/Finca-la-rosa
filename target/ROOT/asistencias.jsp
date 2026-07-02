@@ -177,7 +177,7 @@
                         <td data-label="Empleado" class="ps-4">
                             <div class="d-flex align-items-center gap-3">
                                 <% if (a.getProfilePicture() != null && !a.getProfilePicture().isEmpty()) { %>
-                                    <img src="uploads/<%= a.getProfilePicture() %>" alt="Foto" class="rounded-circle shadow-sm" style="width: 42px; height: 42px; object-fit: cover;">
+                                    <img src="<%= request.getContextPath() %>/uploads/<%= a.getProfilePicture().replace("\\", "/") %>?t=<%= System.currentTimeMillis() %>" alt="Foto" class="rounded-circle shadow-sm" style="width: 42px; height: 42px; object-fit: cover;">
                                 <% } else { %>
                                     <div class="avatar-circle shadow-sm" style="width: 42px; height: 42px; font-size: 1rem;">
                                         <%= a.getNombreUsuario().substring(0, 1).toUpperCase() %>
