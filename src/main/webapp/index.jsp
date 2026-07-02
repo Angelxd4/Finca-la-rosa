@@ -668,13 +668,13 @@
                     <!-- Mapa interactivo de Google centrado en Santa Rosa de Viterbo -->
                     <div class="map-container">
                         <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15887.320579624843!2d-72.9904257134375!3d5.875225126839308!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e6a45e7f1a3e611%3A0xb351e7f338c21a44!2sSanta%20Rosa%20de%20Viterbo%2C%20Boyac%C3%A1!5e0!3m2!1ses!2sco!4v1700000000000!5m2!1ses!2sco" 
+                            src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d248.04826656906474!2d-72.9870904418029!3d5.887589396620476!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sco!4v1782991861842!5m2!1ses-419!2sco" 
                             width="100%" 
                             height="100%" 
                             style="border:0;" 
                             allowfullscreen="" 
                             loading="lazy" 
-                            referrerpolicy="no-referrer-when-downgrade">
+                            referrerpolicy="strict-origin-when-cross-origin">
                         </iframe>
                     </div>
                 </div>
