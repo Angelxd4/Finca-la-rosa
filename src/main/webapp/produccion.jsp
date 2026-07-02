@@ -119,7 +119,7 @@
         .form-control:focus, .form-select:focus { background: #ffffff !important; border-color: var(--brand-primary) !important; box-shadow: 0 0 0 4px rgba(70, 71, 4, 0.15) !important; outline: none; }
         .modal-content { background: var(--bg-card) !important; border-radius: 28px; border: none; box-shadow: 0 25px 50px -12px rgba(66, 57, 38, 0.25); }
         
-        .summary-bar { position: sticky; bottom: 0; background: var(--bg-page) !important; border-top: 1px solid var(--border-subtle) !important; z-index: 10; padding: 20px; }
+        .summary-bar { background: var(--bg-page) !important; border-top: 1px solid var(--border-subtle) !important; padding: 20px; }
         tr.vaca-row { animation: fadeIn 0.4s ease forwards; }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
@@ -494,7 +494,7 @@
                 <form action="produccion" method="POST" id="formSesion" class="d-flex flex-column m-0" style="flex: 1; overflow: hidden; min-height: 0;">
                     <input type="hidden" name="action" value="registrar">
                     <input type="hidden" name="filtroActual" value="<%= filtroActivo %>">
-                    <div class="modal-body px-4 py-4" style="overflow-y: auto;">
+                    <div class="modal-body px-4 py-4" style="overflow-y: auto; flex: 1 1 auto;">
                         <div class="row g-3 mb-4 p-3 rounded-4 border shadow-sm" style="background-color: var(--bg-page); border-color: var(--border-subtle) !important;">
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold text-subtle text-uppercase ms-1">Fecha y Hora</label>

@@ -595,7 +595,7 @@
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
             },
-            dom: '<"row mb-3"<"col-md-6"B><"col-md-6"f>>rt<"row"<"col-md-6"i><"col-md-6"p>>',
+            dom: '<"row mb-3 align-items-center"<"col-md-6 mb-3 mb-md-0 text-center text-md-start"B><"col-md-6 d-flex justify-content-center justify-content-md-end"f>>rt<"row mt-3"<"col-md-6 text-center text-md-start text-subtle small mb-2 mb-md-0"i><"col-md-6 d-flex justify-content-center justify-content-md-end"p>>',
             buttons: [
                 {
                     extend: 'pdfHtml5',
