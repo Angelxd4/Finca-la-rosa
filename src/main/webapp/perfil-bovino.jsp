@@ -106,12 +106,20 @@
             backdrop-filter: blur(10px);
             border: 1px solid var(--glass-border);
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            padding: 15px; /* Added padding so datatables controls have space */
         }
         .table { margin-bottom: 0; }
-        .table th { font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; padding: 20px 15px; border-bottom: none !important; background-color: var(--brand-dark) !important; color: #fff !important;}
-        .table td { vertical-align: middle; padding: 18px 15px; color: var(--text-main); font-size: 0.95rem; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .table th { font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; padding: 18px 15px; border-bottom: 2px solid var(--brand-accent) !important; background-color: rgba(70, 71, 4, 0.05) !important; color: var(--brand-primary) !important; }
+        .table td { vertical-align: middle; padding: 16px 15px; color: var(--text-main); font-size: 0.95rem; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .table tbody tr { transition: all 0.2s; }
         .table tbody tr:hover { background-color: rgba(255,255,255, 0.9) !important; transform: scale(1.01); box-shadow: 0 4px 10px rgba(0,0,0,0.05); z-index: 10; position: relative; }
+        
+        /* DATATABLES OVERRIDES */
+        div.dataTables_wrapper div.dataTables_filter input { border-radius: 12px; border: 1px solid var(--glass-border); padding: 8px 12px; outline: none; }
+        div.dataTables_wrapper div.dataTables_filter input:focus { border-color: var(--brand-info); box-shadow: 0 0 0 3px rgba(156, 168, 137, 0.2); }
+        .page-item.active .page-link { background-color: var(--brand-primary) !important; border-color: var(--brand-primary) !important; color: #fff !important; }
+        .page-link { color: var(--brand-primary); border-radius: 8px; margin: 0 3px; border: none; font-weight: 600; }
+        .page-link:hover { background-color: rgba(70, 71, 4, 0.1); color: var(--brand-primary); }
         
         /* BOTONES */
         .btn-brand, .btn-accent {
@@ -592,7 +600,7 @@
                 {
                     extend: 'pdfHtml5',
                     text: '<i class="bi bi-file-earmark-pdf-fill"></i> PDF Clínica',
-                    className: 'btn btn-danger btn-sm',
+                    className: 'btn btn-brand btn-sm',
                     orientation: 'portrait',
                     pageSize: 'A4',
                     title: 'FINCA LA ROSA - HISTORIAL CLÍNICO',
@@ -630,7 +638,7 @@
                 {
                     extend: 'print',
                     text: '<i class="bi bi-printer-fill"></i> Imprimir',
-                    className: 'btn btn-secondary btn-sm'
+                    className: 'btn btn-outline-brand btn-sm'
                 }
             ],
             pageLength: 10,
