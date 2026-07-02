@@ -36,6 +36,14 @@
     <title>Fábrica y Lácteos | Finca La Rosa</title>
     
     <style>
+        body {
+            background: linear-gradient(135deg, #F3F5E7 0%, #e0e5d1 100%) !important;
+        }
+        
+        html[data-theme="dark"] body {
+            background: linear-gradient(135deg, #09090b 0%, #18181b 100%) !important;
+        }
+
         /* Estilos específicos de Lácteos */
         .card-stat { background: var(--bg-card); border-radius: 20px; padding: 20px; border: 1px solid var(--border-subtle); box-shadow: 0 10px 25px rgba(66, 57, 38, 0.05); display: flex; align-items: center; gap: 15px; height: 100%; transition: transform 0.3s; }
         .card-stat:hover { transform: translateY(-5px); border-color: var(--brand-accent); }
@@ -43,6 +51,7 @@
         
         /* Contenedor Principal */
         .module-container { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 24px; padding: 24px; box-shadow: var(--shadow-finca); }
+        html[data-theme="dark"] .module-container, html[data-theme="dark"] .card-stat { background: rgba(24, 24, 27, 0.7); backdrop-filter: blur(12px); border-color: rgba(255, 255, 255, 0.1); }
         
         /* Tabs Personalizados (Pestañas) */
         .apple-tabs-wrapper { background: var(--bg-page); padding: 6px; border-radius: 18px; display: inline-flex; border: 1px solid var(--border-subtle); }
@@ -53,9 +62,13 @@
 
         /* Tablas Limpias */
         .table-custom-wrapper { border-radius: 16px; overflow: hidden; border: 1px solid var(--border-subtle); background: var(--bg-card); }
-        .table-clean th { background-color: var(--bg-page); color: var(--moss); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; border-bottom: 2px solid var(--brand-accent); padding: 18px 15px; letter-spacing: 1px; }
+        html[data-theme="dark"] .table-custom-wrapper { background: rgba(24, 24, 27, 0.8); }
+        .table-clean th { background-color: rgba(70, 71, 4, 0.05); color: var(--moss); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; border-bottom: 2px solid var(--brand-accent); padding: 18px 15px; letter-spacing: 1px; }
+        html[data-theme="dark"] .table-clean th { background-color: rgba(255, 255, 255, 0.05); }
         .table-clean td { vertical-align: middle; padding: 16px 15px; color: var(--text-main); font-weight: 600; font-size: 0.95rem; border-bottom: 1px solid var(--border-subtle); }
+        html[data-theme="dark"] .table-clean td { border-bottom: 1px solid rgba(255,255,255,0.05); }
         .table-hover tbody tr:hover td { background-color: var(--bg-page); }
+        html[data-theme="dark"] .table-hover tbody tr:hover td { background-color: rgba(255,255,255,0.05); }
 
         /* Botones Paleta */
         .btn-brand { background-color: var(--brand-primary) !important; color: white !important; border: none; font-weight: 700; border-radius: 12px; transition: all 0.2s ease; }
@@ -106,16 +119,16 @@
 
 <div class="container-fluid px-4 py-4">
     
-    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom" style="border-color: var(--border-subtle) !important;">
-        <div>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 pb-2 border-bottom" style="border-color: var(--border-subtle) !important; gap: 15px;">
+        <div class="text-center text-md-start">
             <h3 class="fw-bolder mb-0" style="color: var(--brand-dark);">Fábrica de Lácteos</h3>
             <span class="fw-bold" style="font-size: 0.9rem; color: var(--text-subtle);">Gestión de producción, lotes y catálogo de ventas</span>
         </div>
-        <div class="d-flex gap-2">
-            <button class="btn btn-outline-brand fw-bold px-4" data-bs-toggle="modal" data-bs-target="#modalLote">
+        <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">
+            <button class="btn btn-outline-brand fw-bold px-4 w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#modalLote">
                 <i class="bi bi-gear-wide-connected me-2"></i> Nuevo Lote
             </button>
-            <button class="btn btn-brand px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalLacteo">
+            <button class="btn btn-brand px-4 shadow-sm w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#modalLacteo">
                 <i class="bi bi-plus-lg me-2"></i> Nuevo Producto
             </button>
         </div>
